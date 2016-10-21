@@ -37,6 +37,26 @@ public class Exon implements GenomicRegion {
 	public int getStop() {
 		return this.stop;
 	}
+	
+	public void setStart(int start){
+		this.start = start;
+	}
+	
+	public void setStop(int stop){
+		this.stop = stop;
+	}
+	
+	public void setStrand(String strand){
+		if(strand.charAt(0) == '+'){
+			this.strand = true;
+		}else if(strand.charAt(0) == '-'){
+			this.strand = false;
+		}
+	}
+	
+	public void setChromosomeID(String id){
+		this.chromosomeID = id;
+	}
 
 	@Override
 	public Iterator<GenomicRegion> iterator() {

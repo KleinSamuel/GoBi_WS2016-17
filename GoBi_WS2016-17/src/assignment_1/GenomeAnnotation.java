@@ -6,17 +6,24 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GenomeAnnotation implements Iterable<GenomicRegion>{
 
-	private HashMap<String, Chromosome> chromosomes;
+//	private HashMap<String, Chromosome> chromosomes;
+	private ConcurrentHashMap<String, Chromosome> chromosomes;
 	
 	public GenomeAnnotation(){
-		this.chromosomes = new HashMap<String, Chromosome>();
+		this.chromosomes = new ConcurrentHashMap<String, Chromosome>();
 	}
 
-	public HashMap<String, Chromosome> getChromosomeList() {
+	public ConcurrentHashMap<String, Chromosome> getChromosomeList() {
 		return chromosomes;
+	}
+	
+	public GenomeAnnotation addChromosome(Chromosome chr){
+		this.chromosomes.put(chr.getChromosomeID(), chr);
+		return this;
 	}
 	
 	public Gene getGene(String id){
@@ -54,6 +61,38 @@ public class GenomeAnnotation implements Iterable<GenomicRegion>{
 			}
 		}
 		return null;
+	}
+	
+	public int getAmountChromsomes(){
+		return this.chromosomes.size();
+	}
+	
+	public int getAmountGenes(){
+		int out = 0;
+		for(Chromosome c : chromosomes.values()){
+			out += c.getGenes().size();
+		}
+		return out;
+	}
+	
+	public int getAmountExons(){
+		int out = 0;
+		for(Chromosome c : chromosomes.values()){
+			for(Gene g : c.getGenes().values()){
+				out += g.getExons().size();
+			}
+		}
+		return out;
+	}
+	
+	public int getAmountTranscripts(){
+		int out = 0;
+		for(Chromosome c : chromosomes.values()){
+			for(Gene g : c.getGenes().values()){
+				out += g.getTranscripts().size();
+			}
+		}
+		return out;
 	}
 
 	@Override

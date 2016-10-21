@@ -27,6 +27,7 @@ public class Transcript implements GenomicRegion{
 		}
 		
 		this.exons = new HashMap<String, Exon>();
+		this.cds = new CDS();
 	}
 
 	public String getID() {
@@ -65,8 +66,9 @@ public class Transcript implements GenomicRegion{
 		return exons;
 	}
 
-	public void addExon(Exon exon) {
+	public Transcript addExon(Exon exon) {
 		this.exons.put(exon.getID(), exon);
+		return this;
 	}
 
 	@Override

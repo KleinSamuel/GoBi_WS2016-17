@@ -99,16 +99,18 @@ public class Gene implements GenomicRegion {
 		return transcripts;
 	}
 
-	public void addTranscript(Transcript t) {
+	public Gene addTranscript(Transcript t) {
 		this.transcripts.put(t.getID(), t);
+		return this;
 	}
 
 	public HashMap<String, Exon> getExons() {
 		return exons;
 	}
 
-	public void addExon(Exon e) {
+	public Gene addExon(Exon e) {
 		this.exons.put(e.getID(), e);
+		return this;
 	}
 
 }

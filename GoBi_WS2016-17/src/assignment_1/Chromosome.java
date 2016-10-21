@@ -55,8 +55,9 @@ public class Chromosome implements GenomicRegion{
 		return genes;
 	}
 
-	public void addGene(Gene g) {
+	public Chromosome addGene(Gene g) {
 		this.genes.put(g.getID(), g);
+		return this;
 	}
 
 }

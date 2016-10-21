@@ -4,243 +4,317 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GTF_Parser {
+import dateNtimeStuff.DateFactory;
+import debugStuff.DebugMessageFactory;
+import thread.Consumable;
+
+public class GTF_Parser implements Runnable {
 
 	private GenomeAnnotation genomeAnnotation;
+	private String threadName;
+	private String FILEPATH;
+	private ArrayList<String> lines;
 	
-	public GTF_Parser(){
-		
-		this.genomeAnnotation = new GenomeAnnotation();
-		
+	public GTF_Parser(String name, ArrayList<String> lines, GenomeAnnotation genomeAnnotation){
+		this.threadName = name;
+		this.lines = lines;
+		this.genomeAnnotation = genomeAnnotation;
 	}
 	
 	private void readFile(String filePath){
+			
+		Gene currentGene = null;
+		Transcript currentTranscript = null;
+		Exon currentExon = null;
+		CDS currentCDS = null;
+		CDSPart currentCDSPart = null;
 		
-		boolean isStart = true;
+		String tmpID_gene = "";
+		String tmpID_trans = null;
+		String tmpID_exon;
+		String tmpID_cds;
 		
-		try {
+		String[] tempArray;
+		
+		String line = "";
+		
+		int exonCounter = 0;
+		
+		String seqname, source, feature, start, end, score, strand, frame, attribute;
+		
+		/* storing values for current IDs */
+		String tempChrID, tempGeneID, tempTranscriptID;
+		
+		HashMap<String, String> tempMap;
+		String[] a1;
+		
+		long currentByte;
+		
+		for(String s : lines){
 			
-			BufferedReader br = new BufferedReader(new FileReader(filePath));
+			line = s;
 			
-			String line = null;
+			if(line.startsWith("#")){
+				continue;
+			}
 			
-			Gene currentGene = null;
-			Transcript currentTranscript = null;
-			Exon currentExon = null;
-			CDS currentCDS = null;
-			CDSPart currentCDSPart = null;
 			
-			String tmpID_gene = "";
-			String tmpID_trans = null;
-			String tmpID_exon;
-			String tmpID_cds;
+			tempArray = line.split("\t");
 			
-			String[] tempArray;
+			seqname = tempArray[0];
+			source = tempArray[1];
+			feature = tempArray[2];
+			start = tempArray[3];
+			end = tempArray[4];
+			score = tempArray[5];
+			strand = tempArray[6];
+			frame = tempArray[7];
+			attribute = tempArray[8];
 			
-			String seqname, source, feature, start, end, score, strand, frame, attribute;
+			tempMap = new HashMap<String, String>();
 			
-			HashMap<String, String> tempMap;
-			String[] a1;
+			a1 = attribute.split("; ");
 			
-			while((line = br.readLine()) != null){
+			for (int i = 0; i < a1.length; i++) {
+				Pattern p = Pattern.compile("(.*)? \"(.*)?\"");
+				Matcher m = p.matcher(a1[i]);
 				
-				if(line.startsWith("#")){
-					continue;
+				if(m.find()){
+					tempMap.put(m.group(1), m.group(2));
 				}
+			}
+			
+			switch (feature) {
+			
+			case "gene":
 				
-				tempArray = line.split("\t");
+				tempChrID = seqname;
 				
-				seqname = tempArray[0];
-				source = tempArray[1];
-				feature = tempArray[2];
-				start = tempArray[3];
-				end = tempArray[4];
-				score = tempArray[5];
-				strand = tempArray[6];
-				frame = tempArray[7];
-				attribute = tempArray[8];
+				tmpID_gene = getValueFromAttribute("gene_id", tempMap);
+				currentGene = new Gene(Integer.parseInt(start), Integer.parseInt(start), tmpID_gene, strand, tempChrID);
 				
-				tempMap = new HashMap<String, String>();
-				
-				a1 = attribute.split("; ");
-				
-				for (int i = 0; i < a1.length; i++) {
-					Pattern p = Pattern.compile("(.*)? \"(.*)?\"");
-					Matcher m = p.matcher(a1[i]);
+				/* chromosome for gene already exists */
+				if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
 					
-					if(m.find()){
-						tempMap.put(m.group(1), m.group(2));
+					Chromosome tmpCHR = genomeAnnotation.getChromosomeList().get(tempChrID);
+					
+					/* gene already exists but may have some entries missing */
+					if(tmpCHR.getGenes().containsKey(tmpID_gene)){
+						
+						Gene g = tmpCHR.getGenes().get(tmpID_gene);
+						
+						if(g.getStart() == -1){
+							g.setStart(Integer.parseInt(start));
+							g.setStop(Integer.parseInt(end));
+							g.setStrand(strand);
+							g.setChromosomeID(seqname);
+						}
+					}
+					/* gene does not exists */
+					else{
+						tmpCHR.addGene(currentGene);
 					}
 				}
+				/* chromosome does not exist -> add new dummy chromosome -> add gene */
+				else{
+					genomeAnnotation.addChromosome(createDummyChromosome(tempChrID).addGene(currentGene));
+				}
 				
-				switch (feature) {
-				case "gene":
-					
-					tmpID_gene = getValueFromAttribute("gene_id", tempMap);
-					currentGene = new Gene(Integer.parseInt(start), Integer.parseInt(start), tmpID_gene, strand, seqname);
-					
-					/* chromosome for gene already exists */
-					if(genomeAnnotation.getChromosomeList().containsKey(currentGene.getChromosomeID())){
+				break;
+			case "transcript":
+				
+				tmpID_trans = getValueFromAttribute("transcript_id", tempMap);
+				currentTranscript = new Transcript(Integer.parseInt(start), Integer.parseInt(end), tmpID_trans, seqname, strand);
+				
+				tempChrID = seqname;
+				tempGeneID = getValueFromAttribute("gene_id", tempMap);
+				
+//					/* transcript is for current gene */
+//					if(tmpID_gene.equals(tempGeneID)){
+//						currentGene.addTranscript(currentTranscript);
+//					}
+//					/* search for corresponding gene */
+//					else{
+					/* chromosome already exists */
+					if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
 						
-						/* gene already exists but may have some entries missing */
-						if(genomeAnnotation.getChromosomeList().get(currentGene.getChromosomeID()).getGenes().containsKey(currentGene.getID())){
+						Chromosome tmpCHR = genomeAnnotation.getChromosomeList().get(tempChrID);
+						
+						/* gene for transcript already exists */
+						if(tmpCHR.getGenes().containsKey(tempGeneID)){
 							
-							/* Gene has been added with any entries missing -> add missing entries */
-							if(genomeAnnotation.getChromosomeList().get(currentGene.getChromosomeID()).getGenes().get(currentGene.getID()).getStart() == -1){
-								Gene g = genomeAnnotation.getChromosomeList().get(currentGene.getChromosomeID()).getGenes().get(currentGene.getID());
-								g.setStart(Integer.parseInt(start));
-								g.setStop(Integer.parseInt(end));
-								g.setStrand(strand);
-								g.setChromosomeID(seqname);
-							}
-						}
-						/* gene does not exists */
-						else{
-							genomeAnnotation.getChromosomeList().get(currentGene.getChromosomeID()).addGene(currentGene);
-						}
-					}
-					/* chromosome does not exist -> add new dummy chromosome -> add gene */
-					else{
-						Chromosome tmpChrom = new Chromosome(currentGene.getChromosomeID());
-						tmpChrom.addGene(currentGene);
-						genomeAnnotation.getChromosomeList().put(currentGene.getChromosomeID(), tmpChrom);
-					}
-					
-					break;
-				case "transcript":
-					
-					tmpID_trans = getValueFromAttribute("transcript_id", tempMap);
-					currentTranscript = new Transcript(Integer.parseInt(start), Integer.parseInt(end), tmpID_trans, seqname, strand);
-					
-					/* transcript is for current gene */
-					if(tmpID_gene.equals(getValueFromAttribute("gene_id", tempMap))){
-						currentGene.addTranscript(currentTranscript);
-					}
-					/* search for corresponding gene */
-					else{
-						/* chromosome already exists */
-						if(genomeAnnotation.getChromosomeList().containsKey(seqname)){
-							/* gene for transcript already exists */
-							if(genomeAnnotation.getChromosomeList().get(seqname).getGenes().containsKey(getValueFromAttribute("gene_id", tempMap))){
-								/* transcript already exists but is dummy and misses some entries */
-								if(genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).getTranscripts().containsKey(currentTranscript.getID())){
-									Transcript t = genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).getTranscripts().get(currentTranscript.getID());
-									
-									if(t.getStart() == -1){
-										t.setStart(Integer.parseInt(start));
-										t.setStop(Integer.parseInt(end));
-										t.setStrand(strand);
-										t.setChromosomeID(seqname);
-									}
-								}
-								/* transcript does not exist */
-								else{
-									genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).addTranscript(currentTranscript);
+							/* transcript already exists but is dummy and misses some entries */
+							if(tmpCHR.getGenes().get(tempGeneID).getTranscripts().containsKey(tmpID_trans)){
+								
+								Transcript t = tmpCHR.getGenes().get(tempGeneID).getTranscripts().get(tmpID_trans);
+								
+								if(t.getStart() == -1){
+									t.setStart(Integer.parseInt(start));
+									t.setStop(Integer.parseInt(end));
+									t.setStrand(strand);
+									t.setChromosomeID(tempChrID);
 								}
 							}
-							/* gene for transcript does not exist */
+							/* transcript does not exist */
 							else{
-								genomeAnnotation.getChromosomeList().get(seqname).addGene(new Gene(-1, -1, getValueFromAttribute("gene_id", tempMap), "", ""));
-								genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).addTranscript(currentTranscript);
+								tmpCHR.getGenes().get(tempGeneID).addTranscript(currentTranscript);
 							}
 						}
-						/* chromosome does not exist -> add new dummy chromosome -> add new dummy gene to chromosome -> add transcript*/
+						/* gene for transcript does not exist -> create dummy gene*/
 						else{
-							genomeAnnotation.getChromosomeList().put(seqname, new Chromosome(seqname));
-							genomeAnnotation.getChromosomeList().get(seqname).addGene(new Gene(-1, -1, getValueFromAttribute("gene_id", tempMap), "", ""));
-							genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).addTranscript(currentTranscript);
+							tmpCHR.addGene(createDummyGene(tempGeneID).addTranscript(currentTranscript));
 						}
 					}
-					
-					break;
-					
-				case "exon":
-					
-					tmpID_exon = getValueFromAttribute("exon_id", tempMap);
-					currentExon = new Exon(Integer.parseInt(start), Integer.parseInt(end), tmpID_exon, strand, seqname);
-					
-					/* exon is for current gene */
-					if(tmpID_gene.equals(getValueFromAttribute("gene_id", tempMap))){
-						currentGene.addExon(currentExon);
-					}
-					/* search for corresponding gene */
+					/* chromosome does not exist -> add new dummy chromosome -> add new dummy gene to chromosome -> add transcript*/
 					else{
-						/* chromosome already exists */
-						if(genomeAnnotation.getChromosomeList().containsKey(seqname)){
-							/* gene for exon already exists */
-							if(genomeAnnotation.getChromosomeList().get(seqname).getGenes().containsKey(getValueFromAttribute("gene_id", tempMap))){
-								genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).addExon(currentExon);
-							}
-							/* gene for exon does not exist */
-							else{
-								genomeAnnotation.getChromosomeList().get(seqname).addGene(new Gene(-1, -1, getValueFromAttribute("gene_id", tempMap), "", ""));
-								genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).addExon(currentExon);
-							}
-						}
-						/* chromosome does not exist -> add new dummy chromosome -> add new dummy gene to chromosome -> add exon*/
-						else{
-							genomeAnnotation.getChromosomeList().put(seqname, new Chromosome(seqname));
-							genomeAnnotation.getChromosomeList().get(seqname).addGene(new Gene(-1, -1, getValueFromAttribute("gene_id", tempMap), "", ""));
-							genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).addExon(currentExon);
-						}
+						genomeAnnotation.addChromosome(createDummyChromosome(tempChrID).addGene(createDummyGene(tempGeneID).addTranscript(currentTranscript)));
 					}
-					
-					/* check if exon corresponds to a transcript */
-					if(getValueFromAttribute("transcript_id", tempMap) != null){
+//					}
+				
+				break;
+				
+			case "exon":
+				
+				tmpID_exon = getValueFromAttribute("exon_id", tempMap);
+				currentExon = new Exon(Integer.parseInt(start), Integer.parseInt(end), tmpID_exon, strand, seqname);
+				
+				tempChrID = seqname;
+				tempGeneID = getValueFromAttribute("gene_id", tempMap);
+				tempTranscriptID = getValueFromAttribute("transcript_id", tempMap);
+				
+//					/* exon is for current gene */
+//					if(tmpID_gene.equals(tempGeneID)){
+//						currentGene.addExon(currentExon);
+//					}
+//					/* search for corresponding gene */
+//					else{
+					/* chromosome already exists */
+					if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
 						
-						/* transcript already exists */
-						if(genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).getTranscripts().containsKey(getValueFromAttribute("transcript_id", tempMap))){
-							genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).getTranscripts().get(getValueFromAttribute("transcript_id", tempMap)).addExon(currentExon);
+						Chromosome tmpCHR = genomeAnnotation.getChromosomeList().get(tempChrID);
+						
+						/* gene for exon already exists */
+						if(tmpCHR.getGenes().containsKey(tempGeneID)){
+							
+							/*exon already exists but is dummy and misses some entries */
+							if(tmpCHR.getGenes().get(tempGeneID).getExons().containsKey(tmpID_exon)){
+								
+								Exon e = tmpCHR.getGenes().get(tempGeneID).getExons().get(tmpID_exon);
+								
+								if(e.getStart() == -1){
+									e.setStart(Integer.parseInt(start));
+									e.setStop(Integer.parseInt(end));
+									e.setStrand(strand);
+									e.setChromosomeID(tempChrID);
+								}
+								
+							}
+							/* exon does not exist */
+							else{
+								tmpCHR.getGenes().get(tempGeneID).addExon(currentExon);
+							}
 						}
-						/* transcript does not exist */
+						/* gene for exon does not exist -> create dummy gene*/
 						else{
-							Transcript t = new Transcript(-1, -1, getValueFromAttribute("transcript_id", tempMap), "", "");
-							t.addExon(currentExon);
-							genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(getValueFromAttribute("gene_id", tempMap)).addTranscript(t);
+							tmpCHR.addGene(createDummyGene(tempGeneID).addExon(currentExon));
 						}
 					}
-					
-					break;
-					
-				case "CDS":
-					
-					tmpID_cds = getValueFromAttribute("protein_id", tempMap);
-					currentCDSPart = new CDSPart(Integer.parseInt(start), Integer.parseInt(end), tmpID_cds, seqname);
-					
-					/* cds is for current transcript */
-					if(tmpID_trans.equals(tmpID_cds)){
-						currentTranscript.addCds(new CDS());
-						currentTranscript.getCds().addPart(currentCDSPart);
-					}else{
-						System.err.println("FAILED!");
+					/* chromosome does not exist -> add new dummy chromosome -> add new dummy gene to chromosome -> add exon*/
+					else{
+						genomeAnnotation.addChromosome(createDummyChromosome(tempChrID).addGene(createDummyGene(tempGeneID).addExon(currentExon)));
 					}
+//					}
+				
+				/* check if exon corresponds to a transcript */
+				if(tempTranscriptID != null){
 					
-					break;
+					/* transcript already exists */
+					if(genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(tempGeneID).getTranscripts().containsKey(tempTranscriptID)){
+						genomeAnnotation.getChromosomeList().get(seqname).getGenes().get(tempGeneID).getTranscripts().get(tempTranscriptID).addExon(currentExon);
+					}
+					/* transcript does not exist */
+					else{
+						genomeAnnotation.getChromosomeList().get(tempChrID).getGenes().get(tempGeneID).addTranscript(createDummyTranscript(tempTranscriptID).addExon(currentExon));
+					}
 				}
 				
+				break;
+				
+			case "CDS":
+				
+				tmpID_cds = getValueFromAttribute("protein_id", tempMap);
+				currentCDSPart = new CDSPart(Integer.parseInt(start), Integer.parseInt(end), tmpID_cds, seqname);
+				
+				tempChrID = seqname;
+				tempGeneID = getValueFromAttribute("gene_id", tempMap);
+				tempTranscriptID = getValueFromAttribute("transcript_id", tempMap);
+				
+//					/* cds is for current transcript */
+//					if(tmpID_trans.equals(tmpID_cds)){
+//						currentTranscript.getCds().addPart(currentCDSPart);
+//					}
+//					/* search for corresponding gene */
+//					else{
+					/* chromosome already exists */
+					if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
+						
+						Chromosome tmpCHR1 = genomeAnnotation.getChromosomeList().get(seqname);
+						Transcript dummyTrans = createDummyTranscript(tempTranscriptID);
+						
+						/* gene for transcript already exists */
+						if(tmpCHR1.getGenes().containsKey(tempGeneID)){
+							
+							Gene tmpGENE1 = tmpCHR1.getGenes().get(tempGeneID);
+							
+							/* transcript for cds already exists */
+							if(tmpGENE1.getTranscripts().containsKey(tempTranscriptID)){
+								tmpGENE1.getTranscripts().get(tempTranscriptID).getCds().addPart(currentCDSPart);
+							}
+							/* transcript for cds does not exist */
+							else{
+								dummyTrans.getCds().addPart(currentCDSPart);
+								tmpGENE1.addTranscript(dummyTrans);
+							}
+						}
+						/* gene for transcript does not exist */
+						else{
+							dummyTrans.getCds().addPart(currentCDSPart);
+							tmpCHR1.addGene(createDummyGene(tempGeneID).addTranscript(dummyTrans));
+						}
+						
+					}
+					/* chromosome does not exist -> add new dummy chromosome -> add new dummy gene to chromosome -> add new dummy transcript -> add cds*/
+					else{
+						Transcript dummyTrans = createDummyTranscript(tempTranscriptID);
+						dummyTrans.getCds().addPart(currentCDSPart);
+						genomeAnnotation.addChromosome(createDummyChromosome(tempChrID).addGene(createDummyGene(tempGeneID).addTranscript(dummyTrans)));
+					}
+//					}
+				
+				break;
 			}
 			
-			
-			if(genomeAnnotation.getChromosomeList().containsKey(currentGene.getChromosomeID())){
-				genomeAnnotation.getChromosomeList().get(currentGene.getChromosomeID()).addGene(currentGene);
-			}else{
-				Chromosome tmpChrom = new Chromosome(currentGene.getChromosomeID());
-				tmpChrom.addGene(currentGene);
-				genomeAnnotation.getChromosomeList().put(currentGene.getChromosomeID(), tmpChrom);
-			}
-			
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		
+			
+	}
+	
+	private Transcript createDummyTranscript(String transID){
+		return new Transcript(-1, -1, transID, "", ".");
+	}
+	
+	private Gene createDummyGene(String geneID){
+		return new Gene(-1, -1, geneID, ".", "");
+	}
+	
+	private Chromosome createDummyChromosome(String chrID){
+		return new Chromosome(chrID);
 	}
 
 	public GenomeAnnotation getGenomeAnnotation() {
@@ -294,32 +368,48 @@ public class GTF_Parser {
 							
 						}
 					}
-					
 				}
-				
 			}
-			
 		}
-		
 		return "";
 	}
+	
+	@Override
+	public void run() {
+		
+		DebugMessageFactory.printInfoDebugMessage(true, "Thread #"+this.threadName+" started.");
+		
+		this.readFile(this.FILEPATH);
+		
+		DebugMessageFactory.printInfoDebugMessage(true, "Thread #"+this.threadName+" finished.");
+	}
+	
+	
 	
 	public static void main(String[] args) {
 		
 		
-		GTF_Parser parser = new GTF_Parser();
+//		GTF_Parser parser = new GTF_Parser("Single Thread started.", 0, 0);
+//		
+//		long start = System.currentTimeMillis();
+//		
+//		parser.readFile("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
+////		parser.readFile("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Homo_sapiens.GRCh38.86.gtf");
+//		
+//		
+//		long stop = System.currentTimeMillis();
+//		
+//		System.out.println("time needed: "+(stop-start)+" milliseconds.");
+//		
+//		GenomeAnnotation ga = parser.getGenomeAnnotation();
+//		
+//		System.out.println("Amount Chromosomes\t"+ga.getAmountChromsomes());
+//		System.out.println("Amount Genes:\t\t"+ga.getAmountGenes());
+//		System.out.println("Amount Exons:\t\t"+ga.getAmountExons());
 		
-		long start = System.currentTimeMillis();
 		
-		parser.readFile("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
-		
-		long stop = System.currentTimeMillis();
-		
-		System.out.println("time needed: "+(stop-start)+" milliseconds.");
-		
-		GenomeAnnotation ga = parser.getGenomeAnnotation();
-		
-		parser.toString();
+//		parser.toString();
 		
 	}
+
 }
