@@ -1,22 +1,15 @@
 package assignment_1;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dateNtimeStuff.DateFactory;
 import debugStuff.DebugMessageFactory;
-import thread.Consumable;
 
 public class GTF_Parser implements Runnable {
-
+		
 	private GenomeAnnotation genomeAnnotation;
 	private String threadName;
 	private String FILEPATH;
@@ -33,7 +26,6 @@ public class GTF_Parser implements Runnable {
 		Gene currentGene = null;
 		Transcript currentTranscript = null;
 		Exon currentExon = null;
-		CDS currentCDS = null;
 		CDSPart currentCDSPart = null;
 		
 		String tmpID_gene = "";
@@ -45,17 +37,13 @@ public class GTF_Parser implements Runnable {
 		
 		String line = "";
 		
-		int exonCounter = 0;
-		
 		String seqname, source, feature, start, end, score, strand, frame, attribute;
 		
 		/* storing values for current IDs */
-		String tempChrID, tempGeneID, tempTranscriptID;
+		String tempChrID, tempGeneID, tempTranscriptID, tempBiotype;
 		
 		HashMap<String, String> tempMap;
 		String[] a1;
-		
-		long currentByte;
 		
 		for(String s : lines){
 			
@@ -64,7 +52,6 @@ public class GTF_Parser implements Runnable {
 			if(line.startsWith("#")){
 				continue;
 			}
-			
 			
 			tempArray = line.split("\t");
 			
@@ -96,9 +83,10 @@ public class GTF_Parser implements Runnable {
 			case "gene":
 				
 				tempChrID = seqname;
+				tempBiotype = getValueFromAttribute("gene_biotype", tempMap);
 				
 				tmpID_gene = getValueFromAttribute("gene_id", tempMap);
-				currentGene = new Gene(Integer.parseInt(start), Integer.parseInt(start), tmpID_gene, strand, tempChrID);
+				currentGene = new Gene(Integer.parseInt(start), Integer.parseInt(start), tmpID_gene, strand, tempChrID, tempBiotype);
 				
 				/* chromosome for gene already exists */
 				if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
@@ -115,6 +103,7 @@ public class GTF_Parser implements Runnable {
 							g.setStop(Integer.parseInt(end));
 							g.setStrand(strand);
 							g.setChromosomeID(seqname);
+							g.setBioType(tempBiotype);
 						}
 					}
 					/* gene does not exists */
@@ -136,12 +125,12 @@ public class GTF_Parser implements Runnable {
 				tempChrID = seqname;
 				tempGeneID = getValueFromAttribute("gene_id", tempMap);
 				
-//					/* transcript is for current gene */
-//					if(tmpID_gene.equals(tempGeneID)){
-//						currentGene.addTranscript(currentTranscript);
-//					}
-//					/* search for corresponding gene */
-//					else{
+					/* transcript is for current gene */
+					if(tmpID_gene != null && tmpID_gene.equals(tempGeneID)){
+						currentGene.addTranscript(currentTranscript);
+					}
+					/* search for corresponding gene */
+					else{
 					/* chromosome already exists */
 					if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
 						
@@ -176,7 +165,7 @@ public class GTF_Parser implements Runnable {
 					else{
 						genomeAnnotation.addChromosome(createDummyChromosome(tempChrID).addGene(createDummyGene(tempGeneID).addTranscript(currentTranscript)));
 					}
-//					}
+					}
 				
 				break;
 				
@@ -189,12 +178,12 @@ public class GTF_Parser implements Runnable {
 				tempGeneID = getValueFromAttribute("gene_id", tempMap);
 				tempTranscriptID = getValueFromAttribute("transcript_id", tempMap);
 				
-//					/* exon is for current gene */
-//					if(tmpID_gene.equals(tempGeneID)){
-//						currentGene.addExon(currentExon);
-//					}
-//					/* search for corresponding gene */
-//					else{
+					/* exon is for current gene */
+					if(tmpID_gene != null && tmpID_gene.equals(tempGeneID)){
+						currentGene.addExon(currentExon);
+					}
+					/* search for corresponding gene */
+					else{
 					/* chromosome already exists */
 					if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
 						
@@ -230,7 +219,7 @@ public class GTF_Parser implements Runnable {
 					else{
 						genomeAnnotation.addChromosome(createDummyChromosome(tempChrID).addGene(createDummyGene(tempGeneID).addExon(currentExon)));
 					}
-//					}
+					}
 				
 				/* check if exon corresponds to a transcript */
 				if(tempTranscriptID != null){
@@ -256,12 +245,12 @@ public class GTF_Parser implements Runnable {
 				tempGeneID = getValueFromAttribute("gene_id", tempMap);
 				tempTranscriptID = getValueFromAttribute("transcript_id", tempMap);
 				
-//					/* cds is for current transcript */
-//					if(tmpID_trans.equals(tmpID_cds)){
-//						currentTranscript.getCds().addPart(currentCDSPart);
-//					}
-//					/* search for corresponding gene */
-//					else{
+					/* cds is for current transcript */
+					if(tmpID_trans != null && tmpID_trans.equals(tmpID_cds)){
+						currentTranscript.getCds().addPart(currentCDSPart);
+					}
+					/* search for corresponding gene */
+					else{
 					/* chromosome already exists */
 					if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
 						
@@ -296,7 +285,7 @@ public class GTF_Parser implements Runnable {
 						dummyTrans.getCds().addPart(currentCDSPart);
 						genomeAnnotation.addChromosome(createDummyChromosome(tempChrID).addGene(createDummyGene(tempGeneID).addTranscript(dummyTrans)));
 					}
-//					}
+					}
 				
 				break;
 			}
@@ -310,7 +299,7 @@ public class GTF_Parser implements Runnable {
 	}
 	
 	private Gene createDummyGene(String geneID){
-		return new Gene(-1, -1, geneID, ".", "");
+		return new Gene(-1, -1, geneID, ".", "", "");
 	}
 	
 	private Chromosome createDummyChromosome(String chrID){
@@ -334,38 +323,29 @@ public class GTF_Parser implements Runnable {
 	public String toString(){
 		
 		for(Entry<String, Chromosome> entryChrom : genomeAnnotation.getChromosomeList().entrySet()){
-			
 			System.out.println("[chr] "+entryChrom.getKey());
 			System.out.println("|");
 			
 			for(Entry<String, Gene> entryGene : entryChrom.getValue().getGenes().entrySet()){
-				
 				System.out.println("|__[gene] "+entryGene.getKey());
 				System.out.println("|  |");
 				
 				for(Entry<String, Exon> entryExon : entryGene.getValue().getExons().entrySet()){
-					
 					System.out.println("|  |__[exon]  "+entryExon.getKey());
 					System.out.println("|  |");
-					
 				}
 				
 				for(Entry<String, Transcript> entryTrans : entryGene.getValue().getTranscripts().entrySet()){
-					
 					System.out.println("|  |__[trans] "+entryTrans.getKey());
 					System.out.println("|     |");
 					
 					for(Entry<String, Exon> entryExon : entryTrans.getValue().getExons().entrySet()){
-						
 						System.out.println("|     |__[exon] "+entryExon.getKey());
-						
 					}
 					
 					if(entryTrans.getValue().getCds() != null){
 						for(CDSPart entryCDS : entryTrans.getValue().getCds().getParts()){
-							
 							System.out.println("|     |__[cds]  "+entryCDS.getID());
-							
 						}
 					}
 				}
@@ -382,34 +362,6 @@ public class GTF_Parser implements Runnable {
 		this.readFile(this.FILEPATH);
 		
 		DebugMessageFactory.printInfoDebugMessage(true, "Thread #"+this.threadName+" finished.");
-	}
-	
-	
-	
-	public static void main(String[] args) {
-		
-		
-//		GTF_Parser parser = new GTF_Parser("Single Thread started.", 0, 0);
-//		
-//		long start = System.currentTimeMillis();
-//		
-//		parser.readFile("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
-////		parser.readFile("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Homo_sapiens.GRCh38.86.gtf");
-//		
-//		
-//		long stop = System.currentTimeMillis();
-//		
-//		System.out.println("time needed: "+(stop-start)+" milliseconds.");
-//		
-//		GenomeAnnotation ga = parser.getGenomeAnnotation();
-//		
-//		System.out.println("Amount Chromosomes\t"+ga.getAmountChromsomes());
-//		System.out.println("Amount Genes:\t\t"+ga.getAmountGenes());
-//		System.out.println("Amount Exons:\t\t"+ga.getAmountExons());
-		
-		
-//		parser.toString();
-		
 	}
 
 }

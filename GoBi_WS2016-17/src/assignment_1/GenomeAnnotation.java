@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GenomeAnnotation implements Iterable<GenomicRegion>{
 
-//	private HashMap<String, Chromosome> chromosomes;
 	private ConcurrentHashMap<String, Chromosome> chromosomes;
 	
 	public GenomeAnnotation(){
@@ -93,6 +92,34 @@ public class GenomeAnnotation implements Iterable<GenomicRegion>{
 			}
 		}
 		return out;
+	}
+	
+	public ArrayList<String> getDifferentBiotypes(){
+		ArrayList<String> outputList = new ArrayList<>();
+		for(Chromosome c : chromosomes.values()){
+			for(Gene g : c.getGenes().values()){
+				if(!outputList.contains(g.getBioType())){
+					outputList.add(g.getBioType());
+				}
+			}
+		}
+		return outputList;
+	}
+	
+	public HashMap<String, Integer> getAmountGenesPerBiotype(){
+		
+		HashMap<String, Integer> outputMap = new HashMap<String, Integer>();
+		
+		for(Chromosome c : chromosomes.values()){
+			for(Gene g : c.getGenes().values()){
+				if(outputMap.containsKey(g.getBioType())){
+					outputMap.put(g.getBioType(), outputMap.get(g.getBioType())+1);
+				}else{
+					outputMap.put(g.getBioType(), 1);
+				}
+			}
+		}
+		return outputMap;
 	}
 
 	@Override

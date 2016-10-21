@@ -2,26 +2,18 @@ package assignment_1;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.List;
 
 import debugStuff.DebugMessageFactory;
-import thread.CommerceRunner;
-import thread.Consumable;
-import thread.SimpleProducer;
 
 public class ThreadHandler {
 
 	private int THREAD_AMOUNT;
-	private long FILELENGTH;
 	private GenomeAnnotation genomeAnnotation;
 	private ArrayList<Thread> threadList;
 	
@@ -36,6 +28,8 @@ public class ThreadHandler {
 	}
 	
 	public void startThreads(String filepath){
+		
+		DebugMessageFactory.printInfoDebugMessage(true, "PARSING FILE : "+filepath);
 		
 		try {
 			
@@ -126,26 +120,30 @@ public class ThreadHandler {
 		}
 	}
 	
-	
-	public static void main(String[] args) {
-		
-		ThreadHandler th = new ThreadHandler(1);
-		
-		long startTime = System.currentTimeMillis();
-		
-//		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
-//		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Mus_musculus.GRCm38.75.gtf");
-//		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Homo_sapiens.GRCh37.75.gtf");
-		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Mus_musculus.GRCm38.75.gtf");
-		
-		long endTime = System.currentTimeMillis();
-		
-		System.out.println("[NEEDED TIME] "+(endTime-startTime)+" milliseconds");
-		
-		System.out.println("Chromosomes:\t"+th.genomeAnnotation.getAmountChromsomes());
-		System.out.println("Genes:\t\t"+th.genomeAnnotation.getAmountGenes());
-		System.out.println("Exons:\t\t"+th.genomeAnnotation.getAmountExons());
-		System.out.println("Transcripte:\t"+th.genomeAnnotation.getAmountTranscripts());
-		
+	public GenomeAnnotation getGenomeAnnotation(){
+		return this.genomeAnnotation;
 	}
+	
+	
+//	public static void main(String[] args) {
+//		
+//		ThreadHandler th = new ThreadHandler();
+//		
+//		long startTime = System.currentTimeMillis();
+//		
+////		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
+////		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Mus_musculus.GRCm38.75.gtf");
+////		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Homo_sapiens.GRCh37.75.gtf");
+//		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Mus_musculus.GRCm38.75.gtf");
+//		
+//		long endTime = System.currentTimeMillis();
+//		
+//		System.out.println("[NEEDED TIME] "+(endTime-startTime)+" milliseconds");
+//		
+//		System.out.println("Chromosomes:\t"+th.genomeAnnotation.getAmountChromsomes());
+//		System.out.println("Genes:\t\t"+th.genomeAnnotation.getAmountGenes());
+//		System.out.println("Exons:\t\t"+th.genomeAnnotation.getAmountExons());
+//		System.out.println("Transcripte:\t"+th.genomeAnnotation.getAmountTranscripts());
+//		
+//	}
 }

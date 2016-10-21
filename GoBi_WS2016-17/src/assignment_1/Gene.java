@@ -3,6 +3,8 @@ package assignment_1;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import augmentedTree.IntervalTree;
+
 public class Gene implements GenomicRegion {
 
 	private String id;
@@ -10,15 +12,19 @@ public class Gene implements GenomicRegion {
 	private int stop;
 	private boolean strand;
 	private String chromosomeID;
+	private String bioType;
 	
 	private HashMap<String, Transcript> transcripts;
 	private HashMap<String, Exon> exons;
 	
-	public Gene(int start, int stop, String id, String strand, String chromosomeID){
+	private IntervalTree<Exon> exonTree;
+	
+	public Gene(int start, int stop, String id, String strand, String chromosomeID, String biotype){
 		this.start = start;
 		this.stop = stop;
 		this.id = id;
 		this.chromosomeID = chromosomeID;
+		this.bioType = biotype;
 		
 		if(strand.charAt(0) == '+'){
 			this.strand = true;
@@ -28,6 +34,7 @@ public class Gene implements GenomicRegion {
 		
 		this.transcripts = new HashMap<String, Transcript>();
 		this.exons = new HashMap<String, Exon>();
+		this.exonTree = new IntervalTree<Exon>();
 	}
 	
 	public String getID(){
@@ -110,7 +117,19 @@ public class Gene implements GenomicRegion {
 
 	public Gene addExon(Exon e) {
 		this.exons.put(e.getID(), e);
+		this.exonTree.add(e);
 		return this;
 	}
 
+	public IntervalTree<Exon> getExonIntervalTree(){
+		return this.exonTree;
+	}
+
+	public String getBioType() {
+		return bioType;
+	}
+
+	public void setBioType(String bioType) {
+		this.bioType = bioType;
+	}
 }
