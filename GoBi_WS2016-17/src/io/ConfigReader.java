@@ -23,6 +23,7 @@ public class ConfigReader {
 		return this.getClass().getClassLoader().getResource("config/gtf-paths.txt").toExternalForm().substring(5);
 	}
 
+
 	/**
 	 * Read in a config file.
 	 * Seperated key-value pairs
@@ -32,7 +33,7 @@ public class ConfigReader {
 	 * @param ignoredCharacter String[] of ignored line beginnings
 	 * @return HashMap<String, String> with key and value
 	 */
-	public HashMap<String, String> readFilepathConfig(String filepath, String seperator, String[] ignoredCharacter){
+	public static HashMap<String, String> readFilepathConfig(String filepath, String seperator, String[] ignoredCharacter){
 		
 		HashMap<String, String> outputMap = new HashMap<>();
 		ArrayList<String> ignoredCharList = new ArrayList<>();

@@ -1,15 +1,54 @@
 package io;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.Map.Entry;
 
 import debugStuff.DebugMessageFactory;
 
 public class AllroundFileWriter {
-
+	
+	public static void writeVector(Vector<Object> vector, File file){
+		writeVector(vector, file, false);
+	}
+	
+	public static void writeVector(Vector<Object> vector, File file, boolean append){
+		
+		String convertedVector = "";
+		
+		for(Object d : vector){
+			
+			if(d instanceof String){
+				convertedVector += "\""+String.valueOf(d)+"\" ";
+			}else if(d instanceof Double){
+				convertedVector += String.valueOf(d)+" ";
+			}
+		}
+		
+		convertedVector = convertedVector.substring(0, convertedVector.length()-1);
+		
+		try {
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file,true));
+			
+			if(append){
+				bw.newLine();
+				bw.append(convertedVector);
+			}else{
+				bw.write(convertedVector);
+			}
+			
+			bw.flush();
+			bw.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static void writeXMLForTask1(String filepath, HashMap<String, HashMap<String, Integer>> map){
 	

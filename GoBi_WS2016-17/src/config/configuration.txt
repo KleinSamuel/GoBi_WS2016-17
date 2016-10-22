@@ -1,0 +1,14 @@
+###############
+# CONFIG FILE #
+###############
+# ignored lines start with "#"
+# if a attribute is not needed put in "null"
+#
+# output directory for files and plots and stuff
+output_directory	/home/sam/
+#
+# path to R binary
+r_binary	/usr/bin/R
+#
+# directory for temp files
+temp_directory	/home/sam
