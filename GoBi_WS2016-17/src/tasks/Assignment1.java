@@ -1,5 +1,6 @@
 package tasks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Vector;
@@ -56,12 +57,14 @@ public class Assignment1 {
 		HashMap<String, HashMap<String, Integer>> s = fr.readXMLForTask1(ch.getDefaultOutputPath()+"biotypes_genes_organisms.xml");
 		
 		HashMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultOutputPath()+"annot.map");
+		ArrayList<String> pathList = new ArrayList<>();
+		int counter = 1;
 		
 		for(Entry<String, HashMap<String, Integer>> entryMain : s.entrySet()){
 			
-			if(!entryMain.getKey().equals("protein_coding")){
-				continue;
-			}
+//			if(!entryMain.getKey().equals("protein_coding")){
+//				continue;
+//			}
 
 			Vector<Object> values = new Vector<>(entryMain.getValue().values());
 			Vector<Object> descr = new Vector<>();
@@ -75,7 +78,13 @@ public class Assignment1 {
 			BarPlot bp = new BarPlot(tmpVector, entryMain.getKey(), "", "");
 			bp.plot();
 			
+			pathList.add(ch.getDefaultOutputPath()+""+entryMain.getKey());
+			
+			DebugMessageFactory.printInfoDebugMessage(true, "PLOTTED "+counter+" / "+s.entrySet().size());
+			counter++;
 		}
+		
+		AllroundFileWriter.createHTMLforBarplots(ch.getDefaultOutputPath()+"genetypes.html", pathList);
 		
 	}
 

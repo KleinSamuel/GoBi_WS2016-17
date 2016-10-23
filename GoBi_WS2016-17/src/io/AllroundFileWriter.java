@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Map.Entry;
@@ -47,6 +48,37 @@ public class AllroundFileWriter {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void createHTMLforBarplots(String filepath, ArrayList<String> plotPaths){
+		
+		try {
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(filepath));
+			
+			bw.write("<!DOCTYPE html>\n");
+			bw.write("<html>\n");
+			bw.write("<body>\n");
+			
+			for(String fp : plotPaths){
+				
+				bw.write("<figure>\n");
+				
+				bw.write("<img src=\""+fp+".png\" width=\"1000\" height=\"1000\">\n");
+				
+				bw.write("</figure>\n");
+			}
+			
+			bw.write("</body>\n");
+			bw.write("</html>");
+			
+			bw.flush();
+			bw.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static void writeXMLForTask1(String filepath, HashMap<String, HashMap<String, Integer>> map){
