@@ -10,26 +10,61 @@ import java.util.HashMap;
 /**
  * Main class for every read in shit
  * 
+ * TODO: find a way to read in configuration file just one time but stay static
+ * 
  * @author Samuel Klein
- *
  */
 public class ConfigReader {
 	
-	/**
-	 * 
-	 * @return String path to config package
-	 */
-	public String getDefaultConfigPath(){
-		return this.getClass().getClassLoader().getResource("config/gtf-paths.txt").toExternalForm().substring(5);
+	public static HashMap<String, String> readConfig(){
+		
+		ConfigHelper ch = new ConfigHelper();
+		HashMap<String, String> configMap = new HashMap<>();
+		
+		try {
+			
+			BufferedReader br = new BufferedReader(new FileReader(ch.getDefaultConfigPath("configuration.txt")));
+			
+			String line = "";
+			
+			while((line = br.readLine()) != null){
+				if(line.startsWith("#")){
+					continue;
+				}
+				String[] tmpArray = line.split("\t");
+				
+				if(tmpArray[1].equals("DEFAULT")){
+					
+					switch (tmpArray[0]) {
+					case "output_directory":
+						configMap.put(tmpArray[0], ch.getDefaultOutputPath());
+						break;
+					case "temp_directory":
+						configMap.put(tmpArray[0], ch.getDefaultTempPath());
+						break;
+					}
+					
+				}else{
+					configMap.put(tmpArray[0], tmpArray[1]);
+				}
+				
+			}
+			br.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return configMap;
 	}
 
-
 	/**
-	 * Read in a config file.
-	 * Seperated key-value pairs
+	 * Read in a configuration file.
+	 * Separated key-value pairs
 	 * 
 	 * @param filepath to file
-	 * @param seperator String by which the values are seperated
+	 * @param seperator String by which the values are separated
 	 * @param ignoredCharacter String[] of ignored line beginnings
 	 * @return HashMap<String, String> with key and value
 	 */

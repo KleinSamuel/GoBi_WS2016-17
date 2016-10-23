@@ -1,5 +1,9 @@
 package plotting;
 
+import java.util.Vector;
+
+import javafx.util.Pair;
+
 /**
  * Abstract class for every plot class.
  * 
@@ -62,5 +66,5 @@ public abstract class Plot {
 	 * 
 	 * @param filename String plot output filepath
 	 */
-	abstract void plot(String filename);
+	abstract void plot();
 }

@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import debugStuff.DebugMessageFactory;
 import io.AllroundFileWriter;
+import io.ConfigReader;
 import io.TemporaryFile;
 import javafx.util.Pair;
 
@@ -20,16 +21,18 @@ public class BarPlot extends Plot{
 		setYLab(yLab);
 	}
 	
-	public void plot(String filename){
-		RExecutor r = new RExecutor(generateCommand(filename));
+	public void plot(){
+		RExecutor r = new RExecutor(generateCommand(ConfigReader.readConfig().get("output_directory")+this.title+".png"));
 		
 		Thread t = new Thread(r);
 		t.start();
 		
 		try {
+			
 			DebugMessageFactory.printNormalDebugMessage(true, "Wait for R to plot..");
 			t.join();
 			DebugMessageFactory.printNormalDebugMessage(true, "R thread terminated.");
+			
 		} catch (InterruptedException e) {
 			throw new RuntimeException("R did not exit properly!");
 		}
@@ -38,7 +41,7 @@ public class BarPlot extends Plot{
 	@Override
 	String generateCommand(String filename) {
 		
-		File tmp = TemporaryFile.createTempFile("/home/sam/");
+		File tmp = TemporaryFile.createTempFile();
 		
 		AllroundFileWriter.writeVector(this.pair.getKey(), tmp);
 		AllroundFileWriter.writeVector(this.pair.getValue(), tmp, true);
@@ -62,7 +65,7 @@ public class BarPlot extends Plot{
 		
 		Pair<Vector<Object>, Vector<Object>> pair = new Pair<Vector<Object>, Vector<Object>>(eins, zwei);
 	
-		BarPlot bp = new BarPlot(pair, "Test Title", "x-axis", "y-axis");
-		bp.plot("/home/sam/Plot.png");
+		BarPlot bp = new BarPlot(pair, "Test Barplot", "x-axis", "y-axis");
+		bp.plot();
 	}
 }

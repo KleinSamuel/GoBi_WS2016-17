@@ -7,6 +7,7 @@ import assignment_1.GenomeAnnotation;
 import assignment_1.ThreadHandler;
 import debugStuff.DebugMessageFactory;
 import io.AllroundFileWriter;
+import io.ConfigHelper;
 import io.ConfigReader;
 
 public class Assignment1_Task1 {
@@ -15,9 +16,9 @@ public class Assignment1_Task1 {
 		
 		long start = System.currentTimeMillis();
 		
-		ConfigReader cf = new ConfigReader();
+		ConfigHelper ch = new ConfigHelper();
 		
-		HashMap<String, String> fileMap = cf.readFilepathConfig(cf.getDefaultConfigPath(), "\t", new String[]{"#"});
+		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"), "\t", new String[]{"#"});
 		
 		HashMap<String, HashMap<String, Integer>> biotypesOrgansimnCount = new HashMap<>();
 		

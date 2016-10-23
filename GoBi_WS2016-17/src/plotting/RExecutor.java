@@ -2,6 +2,8 @@ package plotting;
 
 import java.io.IOException;
 
+import io.ConfigReader;
+
 /**
  * Create an external instance of R as a thread.
  * 
@@ -26,8 +28,7 @@ public class RExecutor implements Runnable{
 	@Override
 	public void run() {
 		
-		/* TODO */
-		String r_binary_location = "/usr/bin/R";
+		String r_binary_location = ConfigReader.readConfig().get("r_binary");
 		
 		try {
 			
@@ -36,6 +37,12 @@ public class RExecutor implements Runnable{
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
 		}
 		
 	}

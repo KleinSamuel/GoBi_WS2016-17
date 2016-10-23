@@ -5,6 +5,7 @@ import java.util.*;
 
 import debugStuff.DebugMessageFactory;
 import io.AllroundFileWriter;
+import io.ConfigReader;
 import io.TemporaryFile;
 import javafx.util.Pair;
 
@@ -23,8 +24,8 @@ public class LinePlot extends Plot{
 		setYLab(yLab);
 	}
 	
-	public void plot(String filename){
-		RExecutor r = new RExecutor(generateCommand(filename));
+	public void plot(){
+		RExecutor r = new RExecutor(generateCommand(ConfigReader.readConfig().get("output_directory")+this.title+".png"));
 		
 		Thread t = new Thread(r);
 		t.start();
@@ -37,12 +38,13 @@ public class LinePlot extends Plot{
 		} catch (InterruptedException e) {
 			throw new RuntimeException("R did not exit properly!");
 		}
+		
 	}
 	
 	@Override
 	public String generateCommand(String filename) {
 		
-		File tmp = TemporaryFile.createTempFile("/home/sam/");
+		File tmp = TemporaryFile.createTempFile();
 		
 		AllroundFileWriter.writeVector(this.x, tmp);
 		AllroundFileWriter.writeVector(this.y, tmp, true);
@@ -68,7 +70,7 @@ public class LinePlot extends Plot{
 	
 		LinePlot bp = new LinePlot(pair, "Test Title", "x-axis", "y-axis");
 		
-		bp.plot("/home/sam/Plot.png");
+		bp.plot();
 		
 	}
 }
