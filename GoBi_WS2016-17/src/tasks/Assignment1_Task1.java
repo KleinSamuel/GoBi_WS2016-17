@@ -3,9 +3,9 @@ package tasks;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import assignment_1.GenomeAnnotation;
-import assignment_1.ThreadHandler;
 import debugStuff.DebugMessageFactory;
+import gtf.GenomeAnnotation;
+import gtf.ThreadHandler;
 import io.AllroundFileWriter;
 import io.ConfigHelper;
 import io.ConfigReader;

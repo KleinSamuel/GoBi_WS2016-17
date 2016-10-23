@@ -1,4 +1,4 @@
-package assignment_1;
+package gtf;
 
 public class StartCodon {
 

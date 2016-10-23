@@ -1,4 +1,4 @@
-package assignment_1;
+package gtf;
 
 import augmentedTree.Interval;
 
