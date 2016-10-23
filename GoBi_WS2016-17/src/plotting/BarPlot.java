@@ -50,22 +50,12 @@ public class BarPlot extends Plot{
 		command += String.format("png(\"%s\",width=3.25,height=3.25,units=\"in\",res=400,pointsize=4);", filename);
 		command += String.format("x<-scan(\"%s\",nlines=1,skip=0);", tmp);
 		command += String.format("y<-scan(\"%s\",nlines=1,skip=1,what=character());", tmp);
-		command += String.format("barplot(x,names.arg=y);");
+		command += String.format("op<-par(mar=c(10,5,4,2)+0.1);");
+		command += String.format("barplot(x,names.arg=y,col=rainbow(\"%s\"),las=2);", this.pair.getKey().size());
+		command += String.format("par(op);");
 		command += String.format("title(main=\"%s\", xlab=\"%s\", ylab=\"%s\");", super.title, super.xLab, super.yLab);
 		command += "dev.off();";
 		
 		return command;
-	}
-
-	
-	public static void main(String[] args) {
-		
-		Vector<Object> eins = new Vector<>(Arrays.asList(new Double[]{1.0,5.0,4.0,2.0,7.0}));
-		Vector<Object> zwei = new Vector<>(Arrays.asList(new String[]{"eins","zwei","drei","vier","fünf"}));
-		
-		Pair<Vector<Object>, Vector<Object>> pair = new Pair<Vector<Object>, Vector<Object>>(eins, zwei);
-	
-		BarPlot bp = new BarPlot(pair, "Test Barplot", "x-axis", "y-axis");
-		bp.plot();
 	}
 }

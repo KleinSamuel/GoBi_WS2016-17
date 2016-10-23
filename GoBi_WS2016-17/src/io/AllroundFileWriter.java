@@ -24,11 +24,10 @@ public class AllroundFileWriter {
 			
 			if(d instanceof String){
 				convertedVector += "\""+String.valueOf(d)+"\" ";
-			}else if(d instanceof Double){
+			}else{
 				convertedVector += String.valueOf(d)+" ";
 			}
 		}
-		
 		convertedVector = convertedVector.substring(0, convertedVector.length()-1);
 		
 		try {

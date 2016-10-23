@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entry>
+	<biotype>null</biotype>
+	<subentry>
+		<organism>gencode.v10.annotation</organism>
+		<amountGenes>52376</amountGenes>
+		<organism>gencode.v25.annotation</organism>
+		<amountGenes>58035</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>sRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>5</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_LV_gene</biotype>
+	<subentry>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>304</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>scaRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>49</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>3prime_overlapping_ncRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>30</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>ncRNA</biotype>
+	<subentry>
+		<organism>Saccharomyces_cerevisiae.R64-1-1.75</organism>
+		<amountGenes>15</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_V_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>178</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>145</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>2</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>transcribed_unitary_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>60</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_V_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>150</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>108</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>45</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>unitary_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>154</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>misc_RNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>2174</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>2221</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>592</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>sense_overlapping</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>208</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>187</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>10</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>ribozyme</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>8</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_C_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>11</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>9</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>tRNA</biotype>
+	<subentry>
+		<organism>Saccharomyces_cerevisiae.R64-1-1.75</organism>
+		<amountGenes>299</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_J_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>6</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>3</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>protein_coding</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>22810</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>19961</amountGenes>
+		<organism>Saccharomyces_cerevisiae.R64-1-1.75</organism>
+		<amountGenes>6692</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>22740</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_D_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>64</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>37</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>25</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>3prime_overlapping_ncrna</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>24</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>Mt_tRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>20</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>22</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>22</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>15583</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>25</amountGenes>
+		<organism>Saccharomyces_cerevisiae.R64-1-1.75</organism>
+		<amountGenes>21</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>5945</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_J_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>24</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>18</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>88</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_C_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>6</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>6</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>scRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>non_coding</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>3</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>antisense</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>5485</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>5526</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>1476</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_V_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>255</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>193</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>vaultRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_J_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>4</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>4</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>snRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>2067</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1909</amountGenes>
+		<organism>Saccharomyces_cerevisiae.R64-1-1.75</organism>
+		<amountGenes>6</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>1387</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>macro_lncRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>processed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>1</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>10270</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>miRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>3361</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1567</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>2010</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>lincRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>7340</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>7533</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>1795</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>rRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>566</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>549</amountGenes>
+		<organism>Saccharomyces_cerevisiae.R64-1-1.75</organism>
+		<amountGenes>16</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>353</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_D_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>3</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>4</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_V_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>40</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>30</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>Mt_rRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>2</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>2</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>2</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>bidirectional_promoter_lncRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>4</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>snoRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>1549</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>944</amountGenes>
+		<organism>Saccharomyces_cerevisiae.R64-1-1.75</organism>
+		<amountGenes>77</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>1556</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>transcribed_processed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>450</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>transcribed_unprocessed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>735</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TEC</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1048</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_C_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>23</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>14</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>13</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>sense_intronic</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>767</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>908</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>90</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>unprocessed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>2661</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_J_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>82</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>79</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>processed_transcript</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>819</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>515</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>706</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>polymorphic_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh37.75</organism>
+		<amountGenes>53</amountGenes>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>51</amountGenes>
+		<organism>Mus_musculus.GRCm38.75</organism>
+		<amountGenes>15</amountGenes>
+	</subentry>
+</entry>
