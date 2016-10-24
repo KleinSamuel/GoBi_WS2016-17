@@ -62,7 +62,7 @@ public class CDSPart implements GenomicRegion{
 	}
 
 	@Override
-	public boolean isOnForwardStrand() {
+	public boolean isOnNegativeStrand() {
 		return this.strand;
 	}
 

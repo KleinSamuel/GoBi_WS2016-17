@@ -42,14 +42,10 @@ public class ThreadHandler {
 			String line = null;
 			ArrayList<String> currentLines = new ArrayList<>();
 			int countLines = 0;
-			int countLinesGlobal = 0;
 			
 			while((line = br.readLine()) != null){
 				
 				countLines += 1;
-				countLinesGlobal += 1;
-				
-//				printCurrentReadInProgress(countLinesGlobal, amountLines);
 				
 				if(countLines == part){
 					

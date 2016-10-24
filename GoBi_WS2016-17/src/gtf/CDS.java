@@ -48,7 +48,7 @@ public class CDS implements GenomicRegion{
 	}
 
 	@Override
-	public boolean isOnForwardStrand(){
+	public boolean isOnNegativeStrand(){
 		return false;
 	}
 

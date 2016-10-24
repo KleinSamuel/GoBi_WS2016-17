@@ -42,7 +42,7 @@ public class Chromosome implements GenomicRegion{
 	}
 
 	@Override
-	public boolean isOnForwardStrand() {
+	public boolean isOnNegativeStrand() {
 		return false;
 	}
 

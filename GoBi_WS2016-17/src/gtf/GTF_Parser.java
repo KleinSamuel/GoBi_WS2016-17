@@ -44,6 +44,7 @@ public class GTF_Parser implements Runnable {
 		
 		HashMap<String, String> tempMap;
 		String[] a1;
+		Pattern p = Pattern.compile("(.*)? \"(.*)?\"");
 		
 		for(String s : lines){
 			
@@ -69,8 +70,8 @@ public class GTF_Parser implements Runnable {
 			
 			a1 = attribute.split("; ");
 			
+
 			for (int i = 0; i < a1.length; i++) {
-				Pattern p = Pattern.compile("(.*)? \"(.*)?\"");
 				Matcher m = p.matcher(a1[i]);
 				
 				if(m.find()){
@@ -319,7 +320,7 @@ public class GTF_Parser implements Runnable {
 		if(map.containsKey(key)){
 			id = map.get(key);
 		}else{
-			Exception e = new Exception("attributes do not contain "+key);
+			throw new RuntimeException("attributes do not contain "+key);
 		}
 		return id;
 	}

@@ -25,13 +25,7 @@ public class Gene implements GenomicRegion {
 		this.id = id;
 		this.chromosomeID = chromosomeID;
 		this.bioType = biotype;
-		
-		if(strand.charAt(0) == '+'){
-			this.strand = true;
-		}else if(strand.charAt(0) == '-'){
-			this.strand = false;
-		}
-		
+		this.strand = strand.equals("-");
 		this.transcripts = new HashMap<String, Transcript>();
 		this.exons = new HashMap<String, Exon>();
 		this.exonTree = new IntervalTree<Exon>();
@@ -98,7 +92,7 @@ public class Gene implements GenomicRegion {
 	}
 
 	@Override
-	public boolean isOnForwardStrand() {
+	public boolean isOnNegativeStrand() {
 		return this.strand;
 	}
 

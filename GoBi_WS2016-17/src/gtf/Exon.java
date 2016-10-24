@@ -16,12 +16,7 @@ public class Exon implements GenomicRegion {
 		this.stop = stop;
 		this.id = id;
 		this.chromosomeID = chromosomeID;
-		
-		if(strand.charAt(0) == '+'){
-			this.strand = true;
-		}else if(strand.charAt(0) == '-'){
-			this.strand = false;
-		}
+		this.strand = strand.equals("-");
 	}
 	
 	public String getID(){
@@ -71,7 +66,7 @@ public class Exon implements GenomicRegion {
 	}
 
 	@Override
-	public boolean isOnForwardStrand() {
+	public boolean isOnNegativeStrand() {
 		return this.strand;
 	}
 

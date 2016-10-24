@@ -2,6 +2,6 @@ package gtf;
 
 public interface StrandInformation {
 
-	boolean isOnForwardStrand();
+	boolean isOnNegativeStrand();
 	
 }
