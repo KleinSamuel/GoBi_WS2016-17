@@ -1,8 +1,10 @@
 package tasks;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import debugStuff.DebugMessageFactory;
@@ -25,6 +27,8 @@ public class Assignment1 {
 		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"), "\t", new String[]{"#"});
 		
 		HashMap<String, HashMap<String, Integer>> biotypesOrgansimnCount = new HashMap<>();
+		StupidComparator sc = new StupidComparator(biotypesOrgansimnCount);
+		TreeMap<String, HashMap<String, Integer>> biotypesOrgansimnCountSorted = new TreeMap<>(sc);
 		
 		for(Entry<String,String> entry : fileMap.entrySet()){
 			
@@ -41,11 +45,46 @@ public class Assignment1 {
 			
 		}
 		
-		AllroundFileWriter.writeXMLForTask1("/home/k/kleins/Desktop/TestfileGOBI.xml", biotypesOrgansimnCount);
+		biotypesOrgansimnCountSorted.putAll(biotypesOrgansimnCount);
+		
+		for (Entry<String, HashMap<String, Integer>> s : biotypesOrgansimnCountSorted.entrySet()) {
+			
+			System.out.println(s.getKey());
+			
+		}
+		
+		AllroundFileWriter.writeXMLForTask1(ch.getDefaultOutputPath()+"biotypes_genes_organisms.xml", biotypesOrgansimnCountSorted);
 		
 		long end = System.currentTimeMillis();
 		
 		DebugMessageFactory.printInfoDebugMessage(true, "TASK 1 TOOK "+(end-start)+" MILLISECONDS.");
+		
+	}
+	
+	class StupidComparator implements Comparator<String>{
+
+		HashMap<String, HashMap<String, Integer>> base;
+		
+		public StupidComparator(HashMap<String, HashMap<String, Integer>> base) {
+			this.base = base;
+		}
+		
+		public int getTotalCount(HashMap<String, Integer> map){
+			int out = 0;
+			for(Integer i : map.values()){
+				out+=i;
+			}
+			return out;
+		}
+		
+		@Override
+		public int compare(String o1, String o2) {
+			if(getTotalCount(base.get(o1)) >= getTotalCount(base.get(o2))){
+				return -1;
+			}else{
+				return 1;
+			}
+		}
 		
 	}
 	
@@ -55,16 +94,16 @@ public class Assignment1 {
 		ConfigHelper ch = new ConfigHelper();
 		
 		HashMap<String, HashMap<String, Integer>> s = fr.readXMLForTask1(ch.getDefaultOutputPath()+"biotypes_genes_organisms.xml");
+		StupidComparator sc = new StupidComparator(s);
+		TreeMap<String, HashMap<String, Integer>> sorted = new TreeMap<>(sc);
+		
+		sorted.putAll(s);
 		
 		HashMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultOutputPath()+"annot.map");
 		ArrayList<String> pathList = new ArrayList<>();
 		int counter = 1;
 		
-		for(Entry<String, HashMap<String, Integer>> entryMain : s.entrySet()){
-			
-//			if(!entryMain.getKey().equals("protein_coding")){
-//				continue;
-//			}
+		for(Entry<String, HashMap<String, Integer>> entryMain : sorted.entrySet()){
 
 			Vector<Object> values = new Vector<>(entryMain.getValue().values());
 			Vector<Object> descr = new Vector<>();
@@ -87,12 +126,19 @@ public class Assignment1 {
 		AllroundFileWriter.createHTMLforBarplots(ch.getDefaultOutputPath()+"genetypes.html", pathList);
 		
 	}
+	
+	public void task_3(){
+		
+		
+		
+	}
 
 	public static void main(String[] args) {
 		
 		Assignment1 as1 = new Assignment1();
 		
-		as1.task_2();
+//		as1.task_1();
+//		as1.task_2();
 		
 	}
 	

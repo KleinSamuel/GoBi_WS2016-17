@@ -85,6 +85,10 @@ public class GTF_Parser implements Runnable {
 				tempChrID = seqname;
 				tempBiotype = getValueFromAttribute("gene_biotype", tempMap);
 				
+				if(tempBiotype == null){
+					tempBiotype = getValueFromAttribute("gene_type", tempMap);
+				}
+				
 				tmpID_gene = getValueFromAttribute("gene_id", tempMap);
 				currentGene = new Gene(Integer.parseInt(start), Integer.parseInt(start), tmpID_gene, strand, tempChrID, tempBiotype);
 				

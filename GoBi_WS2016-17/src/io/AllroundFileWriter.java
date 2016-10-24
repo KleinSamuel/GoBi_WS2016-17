@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import debugStuff.DebugMessageFactory;
 
@@ -81,7 +82,7 @@ public class AllroundFileWriter {
 		
 	}
 	
-	public static void writeXMLForTask1(String filepath, HashMap<String, HashMap<String, Integer>> map){
+	public static void writeXMLForTask1(String filepath, TreeMap<String, HashMap<String, Integer>> map){
 	
 		try {
 			
@@ -101,7 +102,7 @@ public class AllroundFileWriter {
 				
 				for(Entry<String, Integer> entry2 : entry.getValue().entrySet()){
 					
-					bw.write("\t\t<organims>"+entry2.getKey()+"</organism>");
+					bw.write("\t\t<organism>"+entry2.getKey()+"</organism>");
 					bw.newLine();
 					bw.write("\t\t<amountGenes>"+entry2.getValue()+"</amountGenes>");
 					bw.newLine();

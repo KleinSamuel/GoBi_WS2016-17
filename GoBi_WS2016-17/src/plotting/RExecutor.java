@@ -33,7 +33,10 @@ public class RExecutor implements Runnable{
 		try {
 			
 			@SuppressWarnings("unused")
-			Process rInstance = new ProcessBuilder(r_binary_location, "-e", rCommand).start();
+			Process rInstance = new ProcessBuilder(r_binary_location, "-e", rCommand).inheritIO().start();
+			
+			
+			
 			
 		} catch (IOException e) {
 			e.printStackTrace();

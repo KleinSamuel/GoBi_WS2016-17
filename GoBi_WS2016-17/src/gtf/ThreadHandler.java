@@ -125,25 +125,27 @@ public class ThreadHandler {
 	}
 	
 	
-//	public static void main(String[] args) {
-//		
-//		ThreadHandler th = new ThreadHandler();
-//		
-//		long startTime = System.currentTimeMillis();
-//		
-////		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
-////		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Mus_musculus.GRCm38.75.gtf");
-////		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Homo_sapiens.GRCh37.75.gtf");
+	public static void main(String[] args) {
+		
+		ThreadHandler th = new ThreadHandler();
+		
+		long startTime = System.currentTimeMillis();
+		
+//		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
+		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/gencode.v10.annotation.gtf");
+//		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Homo_sapiens.GRCh37.75.gtf");
 //		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Mus_musculus.GRCm38.75.gtf");
-//		
-//		long endTime = System.currentTimeMillis();
-//		
-//		System.out.println("[NEEDED TIME] "+(endTime-startTime)+" milliseconds");
-//		
-//		System.out.println("Chromosomes:\t"+th.genomeAnnotation.getAmountChromsomes());
-//		System.out.println("Genes:\t\t"+th.genomeAnnotation.getAmountGenes());
-//		System.out.println("Exons:\t\t"+th.genomeAnnotation.getAmountExons());
-//		System.out.println("Transcripte:\t"+th.genomeAnnotation.getAmountTranscripts());
-//		
-//	}
+		
+		long endTime = System.currentTimeMillis();
+		
+		System.out.println("[NEEDED TIME] "+(endTime-startTime)+" milliseconds");
+		
+		System.out.println("Chromosomes:\t"+th.genomeAnnotation.getAmountChromsomes());
+		System.out.println("Genes:\t\t"+th.genomeAnnotation.getAmountGenes());
+		System.out.println("Exons:\t\t"+th.genomeAnnotation.getAmountExons());
+		System.out.println("Transcripte:\t"+th.genomeAnnotation.getAmountTranscripts());
+		
+		System.out.println(th.genomeAnnotation.getAmountGenesPerBiotype().get("protein_coding"));
+		
+	}
 }

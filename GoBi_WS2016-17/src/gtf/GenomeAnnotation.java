@@ -1,10 +1,13 @@
 package gtf;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -106,20 +109,42 @@ public class GenomeAnnotation implements Iterable<GenomicRegion>{
 		return outputList;
 	}
 	
-	public HashMap<String, Integer> getAmountGenesPerBiotype(){
+	public TreeMap<String, Integer> getAmountGenesPerBiotype(){
 		
-		HashMap<String, Integer> outputMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		ValueComparator vlc = new ValueComparator(map);
+		TreeMap<String, Integer> outputMap = new TreeMap<>(vlc);
 		
 		for(Chromosome c : chromosomes.values()){
 			for(Gene g : c.getGenes().values()){
-				if(outputMap.containsKey(g.getBioType())){
-					outputMap.put(g.getBioType(), outputMap.get(g.getBioType())+1);
+				if(map.containsKey(g.getBioType())){
+					map.put(g.getBioType(), map.get(g.getBioType())+1);
 				}else{
-					outputMap.put(g.getBioType(), 1);
+					map.put(g.getBioType(), 1);
 				}
 			}
 		}
+		outputMap.putAll(map);
 		return outputMap;
+	}
+	
+	class ValueComparator implements Comparator<String> {
+
+		Map<String, Integer> base;
+		
+		public ValueComparator(Map<String, Integer> base) {
+			this.base = base;
+		}
+		
+		@Override
+		public int compare(String o1, String o2) {
+			if(base.get(o1) >= base.get(o2)){
+				return -1;
+			}else{
+				return 1;
+			}
+		}
+		
 	}
 
 	@Override
