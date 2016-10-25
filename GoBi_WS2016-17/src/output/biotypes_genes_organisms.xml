@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<entry>
+	<biotype>protein_coding</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>19961</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>processed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>10270</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>lincRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>7533</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>antisense</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>5526</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>unprocessed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>2661</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>misc_RNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>2221</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>snRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1909</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>miRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1567</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TEC</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1048</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>snoRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>944</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>sense_intronic</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>908</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>transcribed_unprocessed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>735</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>rRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>549</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>processed_transcript</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>515</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>transcribed_processed_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>450</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_V_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>193</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>sense_overlapping</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>187</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>unitary_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>154</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_V_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>145</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_V_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>108</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_J_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>79</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>transcribed_unitary_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>60</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>polymorphic_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>51</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>scaRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>49</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_D_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>37</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_V_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>30</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>3prime_overlapping_ncRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>30</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>25</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>Mt_tRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>22</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_J_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>18</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_C_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>14</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_C_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>9</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>ribozyme</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>8</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_C_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>6</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>sRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>5</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>bidirectional_promoter_lncRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>4</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_D_gene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>4</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>TR_J_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>4</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>non_coding</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>3</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_J_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>3</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>Mt_rRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>2</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>scRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>IG_pseudogene</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>macro_lncRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>
+<entry>
+	<biotype>vaultRNA</biotype>
+	<subentry>
+		<organism>Homo_sapiens.GRCh38.86</organism>
+		<amountGenes>1</amountGenes>
+	</subentry>
+</entry>

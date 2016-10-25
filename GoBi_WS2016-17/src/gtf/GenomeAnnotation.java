@@ -30,10 +30,8 @@ public class GenomeAnnotation implements Iterable<GenomicRegion>{
 	
 	public Gene getGene(String id){
 		for(Entry<String, Chromosome> entryChrom : chromosomes.entrySet()){
-			for(Entry<String, Gene> entryGene : entryChrom.getValue().getGenes().entrySet()){
-				if(entryGene.getKey().equals(id)){
-					return entryGene.getValue();
-				}
+			if(entryChrom.getValue().getGenes().containsKey(id)){
+				return entryChrom.getValue().getGenes().get(id);
 			}
 		}
 		return null;
@@ -56,9 +54,7 @@ public class GenomeAnnotation implements Iterable<GenomicRegion>{
 		for(Entry<String, Chromosome> entryChrom : chromosomes.entrySet()){
 			for(Entry<String, Gene> entryGene : entryChrom.getValue().getGenes().entrySet()){
 				for(Entry<String, Transcript> entryTrans : entryGene.getValue().getTranscripts().entrySet()){
-					if(entryTrans.getValue().getCds().getId().equals(id)){
-						return entryTrans.getValue().getCds();
-					}
+					return entryTrans.getValue().getCds();
 				}
 			}
 		}

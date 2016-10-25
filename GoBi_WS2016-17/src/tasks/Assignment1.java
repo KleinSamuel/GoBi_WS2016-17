@@ -47,12 +47,6 @@ public class Assignment1 {
 		
 		biotypesOrgansimnCountSorted.putAll(biotypesOrgansimnCount);
 		
-		for (Entry<String, HashMap<String, Integer>> s : biotypesOrgansimnCountSorted.entrySet()) {
-			
-			System.out.println(s.getKey());
-			
-		}
-		
 		AllroundFileWriter.writeXMLForTask1(ch.getDefaultOutputPath()+"biotypes_genes_organisms.xml", biotypesOrgansimnCountSorted);
 		
 		long end = System.currentTimeMillis();
@@ -99,7 +93,7 @@ public class Assignment1 {
 		
 		sorted.putAll(s);
 		
-		HashMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultOutputPath()+"annot.map");
+		HashMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultConfigPath("annot.map"));
 		ArrayList<String> pathList = new ArrayList<>();
 		int counter = 1;
 		
@@ -137,7 +131,7 @@ public class Assignment1 {
 		
 		Assignment1 as1 = new Assignment1();
 		
-//		as1.task_1();
+		as1.task_1();
 //		as1.task_2();
 		
 	}

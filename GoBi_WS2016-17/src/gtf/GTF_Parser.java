@@ -14,6 +14,7 @@ public class GTF_Parser implements Runnable {
 	private String threadName;
 	private String FILEPATH;
 	private ArrayList<String> lines;
+	private int idCounter = 0;
 	
 	public GTF_Parser(String name, ArrayList<String> lines, GenomeAnnotation genomeAnnotation){
 		this.threadName = name;
@@ -91,7 +92,7 @@ public class GTF_Parser implements Runnable {
 				}
 				
 				tmpID_gene = getValueFromAttribute("gene_id", tempMap);
-				currentGene = new Gene(Integer.parseInt(start), Integer.parseInt(start), tmpID_gene, strand, tempChrID, tempBiotype);
+				currentGene = new Gene(tmpID_gene, Integer.parseInt(start), Integer.parseInt(end), strand, tempBiotype, null);
 				
 				/* chromosome for gene already exists */
 				if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
@@ -106,9 +107,9 @@ public class GTF_Parser implements Runnable {
 						if(g.getStart() == -1){
 							g.setStart(Integer.parseInt(start));
 							g.setStop(Integer.parseInt(end));
-							g.setStrand(strand);
-							g.setChromosomeID(seqname);
+							g.setOnNegativeStrand(strand);
 							g.setBioType(tempBiotype);
+							g.setChromosome(genomeAnnotation.getChromosomeList().get(tempChrID));
 						}
 					}
 					/* gene does not exists */
@@ -125,7 +126,8 @@ public class GTF_Parser implements Runnable {
 			case "transcript":
 				
 				tmpID_trans = getValueFromAttribute("transcript_id", tempMap);
-				currentTranscript = new Transcript(Integer.parseInt(start), Integer.parseInt(end), tmpID_trans, seqname, strand);
+				
+				currentTranscript = new Transcript(tmpID_trans, Integer.parseInt(start), Integer.parseInt(end), strand, null);
 				
 				tempChrID = seqname;
 				tempGeneID = getValueFromAttribute("gene_id", tempMap);
@@ -152,8 +154,8 @@ public class GTF_Parser implements Runnable {
 								if(t.getStart() == -1){
 									t.setStart(Integer.parseInt(start));
 									t.setStop(Integer.parseInt(end));
-									t.setStrand(strand);
-									t.setChromosomeID(tempChrID);
+									t.setOnNegativeStrand(strand);
+									t.setGene(genomeAnnotation.getGene(tempGeneID));
 								}
 							}
 							/* transcript does not exist */
@@ -177,7 +179,12 @@ public class GTF_Parser implements Runnable {
 			case "exon":
 				
 				tmpID_exon = getValueFromAttribute("exon_id", tempMap);
-				currentExon = new Exon(Integer.parseInt(start), Integer.parseInt(end), tmpID_exon, strand, seqname);
+				
+				if(tmpID_exon == null){
+					tmpID_exon = createNewUniqueExonId();
+				}
+				
+				currentExon = new Exon(tmpID_exon, Integer.parseInt(start), Integer.parseInt(end), strand);
 				
 				tempChrID = seqname;
 				tempGeneID = getValueFromAttribute("gene_id", tempMap);
@@ -205,8 +212,6 @@ public class GTF_Parser implements Runnable {
 								if(e.getStart() == -1){
 									e.setStart(Integer.parseInt(start));
 									e.setStop(Integer.parseInt(end));
-									e.setStrand(strand);
-									e.setChromosomeID(tempChrID);
 								}
 								
 							}
@@ -244,7 +249,7 @@ public class GTF_Parser implements Runnable {
 			case "CDS":
 				
 				tmpID_cds = getValueFromAttribute("protein_id", tempMap);
-				currentCDSPart = new CDSPart(Integer.parseInt(start), Integer.parseInt(end), tmpID_cds, seqname);
+				currentCDSPart = new CDSPart(tmpID_cds, Integer.parseInt(start), Integer.parseInt(end), strand);
 				
 				tempChrID = seqname;
 				tempGeneID = getValueFromAttribute("gene_id", tempMap);
@@ -300,11 +305,11 @@ public class GTF_Parser implements Runnable {
 	}
 	
 	private Transcript createDummyTranscript(String transID){
-		return new Transcript(-1, -1, transID, "", ".");
+		return new Transcript(transID, -1, -1, "", null);
 	}
 	
 	private Gene createDummyGene(String geneID){
-		return new Gene(-1, -1, geneID, ".", "", "");
+		return new Gene(geneID, -1, -1, "", "", null);
 	}
 	
 	private Chromosome createDummyChromosome(String chrID){
@@ -319,10 +324,14 @@ public class GTF_Parser implements Runnable {
 		String id = null;
 		if(map.containsKey(key)){
 			id = map.get(key);
-		}else{
-			throw new RuntimeException("attributes do not contain "+key);
 		}
 		return id;
+	}
+	
+	private String createNewUniqueExonId(){
+		String idFormatted = String.valueOf(idCounter++);
+		return "ENSE_"+"000000000".substring(idFormatted.length())+idFormatted+"_"+threadName;
+		
 	}
 	
 	public String toString(){
@@ -350,7 +359,7 @@ public class GTF_Parser implements Runnable {
 					
 					if(entryTrans.getValue().getCds() != null){
 						for(CDSPart entryCDS : entryTrans.getValue().getCds().getParts()){
-							System.out.println("|     |__[cds]  "+entryCDS.getID());
+							System.out.println("|     |__[cds]  "+entryCDS.getId());
 						}
 					}
 				}
