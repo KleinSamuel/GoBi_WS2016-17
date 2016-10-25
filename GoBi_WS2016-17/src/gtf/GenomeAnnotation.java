@@ -1,14 +1,16 @@
 package gtf;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GenomeAnnotation implements Iterable<GenomicRegion>{
@@ -122,6 +124,27 @@ public class GenomeAnnotation implements Iterable<GenomicRegion>{
 		}
 		outputMap.putAll(map);
 		return outputMap;
+	}
+	
+	public HashMap<String, HashSet<Gene>> getGenesForEachBiotype(){
+		
+		HashMap<String, HashSet<Gene>> out = new HashMap<>();
+		
+		for(Chromosome chr : chromosomes.values()){
+			
+			for(Gene g : chr.getGenes().values()){
+				
+				if(out.containsKey(g.getBioType())){
+					out.get(g.getBioType()).add(g);
+				}else{
+					HashSet<Gene> s = new HashSet<>();
+					s.add(g);
+					out.put(g.getBioType(), s);
+				}
+			}
+		}
+		
+		return out;
 	}
 	
 	class ValueComparator implements Comparator<String> {

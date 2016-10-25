@@ -42,6 +42,9 @@ public class ConfigReader {
 					case "temp_directory":
 						configMap.put(tmpArray[0], ch.getDefaultTempPath());
 						break;
+					case "object_directory":
+						configMap.put(tmpArray[0], ch.getDefaultObjectOutputPath());
+						break;
 					}
 					
 				}else{

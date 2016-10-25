@@ -14,3 +14,6 @@ temp_directory	DEFAULT
 # path to R binary
 #r_binary	/usr/bin/R
 r_binary	/home/proj/biosoft/software/R/R-3.3.0/bin/R
+#
+# output directory for objects
+object_directory	DEFAULT

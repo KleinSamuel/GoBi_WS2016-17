@@ -24,4 +24,8 @@ public class ConfigHelper {
 	public String getDefaultTempPath(){
 		return this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5).replace("bin", "src")+"tempFiles/";
 	}
+	
+	public String getDefaultObjectOutputPath(){
+		return this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5).replace("bin", "src")+"objectFiles/";
+	}
 }

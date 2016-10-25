@@ -11,13 +11,16 @@ import javafx.util.Pair;
 
 public class LinePlot extends Plot{
 
-	Vector<Object> x;
-	Vector<Object> y;
+	Vector<Vector<Object>> x;
+	Vector<Vector<Object>> y;
 	
-	public LinePlot(Pair<Vector<Object>,Vector<Object>> pair, String title, String xLab, String yLab){
+	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab){
 		
 		this.x = pair.getKey();
 		this.y = pair.getValue();
+		
+		System.out.println(Arrays.toString(x.toArray()));
+		System.out.println(Arrays.toString(y.toArray()));
 		
 		setTitle(title);
 		setXLab(xLab);
@@ -46,31 +49,30 @@ public class LinePlot extends Plot{
 		
 		File tmp = TemporaryFile.createTempFile();
 		
-		AllroundFileWriter.writeVector(this.x, tmp);
-		AllroundFileWriter.writeVector(this.y, tmp, true);
+		AllroundFileWriter.writeVector(x.get(0), tmp);
+		AllroundFileWriter.writeVector(y.get(0), tmp, true);
+		
+		for (int i = 1; i < x.size(); i++) {
+			AllroundFileWriter.writeVector(x.get(i), tmp, true);
+			AllroundFileWriter.writeVector(y.get(i), tmp, true);
+		}
 		
 		String command = "";
 		command += String.format("png(\"%s\",width=3.25,height=3.25,units=\"in\",res=400,pointsize=4);", filename);
 		command += String.format("x<-scan(\"%s\",nlines=1,skip=0);", tmp);
 		command += String.format("y<-scan(\"%s\",nlines=1,skip=1);", tmp);
-		command += String.format("plot(x,y,ann=F);");
+		command += String.format("plot(x,y,ann=F,type=\"b\");");
+		
+		for (int i = 1; i < x.size(); i++) {
+
+			command += String.format("lines(scan(\"%s\",nlines=1,skip="+i+"),scan(\"%s\",nlines=1,skip="+i+"))", tmp);
+			
+		}
+		
 		command += String.format("title(main=\"%s\", xlab=\"%s\", ylab=\"%s\");", super.title, super.xLab, super.yLab);
 		command += "dev.off();";
 		
 		return command;
-		
-	}
-	
-	public static void main(String[] args) {
-		
-		Vector<Object> eins = new Vector<>(Arrays.asList(new Double[]{1.0,5.0,4.0,2.0,7.0}));
-		Vector<Object> zwei = new Vector<>(Arrays.asList(new Double[]{1.0,5.0,4.0,2.0,7.0}));
-		
-		Pair<Vector<Object>, Vector<Object>> pair = new Pair<Vector<Object>, Vector<Object>>(eins, zwei);
-	
-		LinePlot bp = new LinePlot(pair, "Test Title", "x-axis", "y-axis");
-		
-		bp.plot();
 		
 	}
 }

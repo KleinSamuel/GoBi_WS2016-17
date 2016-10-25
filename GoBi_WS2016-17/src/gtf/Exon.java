@@ -3,7 +3,7 @@ package gtf;
 import java.util.HashSet;
 
 public class Exon extends GenomicRegion {
-	
+
 	private HashSet<Transcript> parentalTranscripts;
 	
 	public Exon(String id, int start, int stop, String strand){
