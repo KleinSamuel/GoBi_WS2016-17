@@ -1,6 +1,7 @@
 package tasks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -92,7 +93,6 @@ public class Assignment1 {
 		public StupidComparator2(HashMap<String, HashMap<Integer, Integer>> base) {
 			this.base = base;
 		}
-		
 		public int getTotalCount(HashMap<Integer, Integer> map){
 			int out = 0;
 			for(Integer i : map.keySet()){
@@ -100,7 +100,6 @@ public class Assignment1 {
 			}
 			return out;
 		}
-		
 		@Override
 		public int compare(String o1, String o2) {
 			if(getTotalCount(base.get(o1)) >= getTotalCount(base.get(o2))){
@@ -109,7 +108,6 @@ public class Assignment1 {
 				return 1;
 			}
 		}
-		
 	}
 	
 	public void task_2(){
@@ -123,7 +121,7 @@ public class Assignment1 {
 		
 		sorted.putAll(s);
 		
-		HashMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultConfigPath("annot.map"));
+		TreeMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultConfigPath("annot.map"));
 		ArrayList<String> pathList = new ArrayList<>();
 		int counter = 1;
 		
@@ -157,9 +155,7 @@ public class Assignment1 {
 		
 		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"), "\t", new String[]{"#"});
 		
-		HashMap<String, HashMap<Integer, Integer>> biotypesGeneTransCount = new HashMap<>();
-		StupidComparator2 sc = new StupidComparator2(biotypesGeneTransCount);
-		TreeMap<String, HashMap<Integer, Integer>> biotypesGeneTransCountSorted = new TreeMap<>(sc);
+		HashMap<String, TreeMap<String, TreeMap<Integer, Integer>>> biotypesGeneTransCount = new HashMap<>();
 		
 		ThreadHandler th;
 		GenomeAnnotation ga;
@@ -172,76 +168,124 @@ public class Assignment1 {
 			
 			HashMap<String, HashSet<Gene>> genesPerBiotype = ga.getGenesForEachBiotype();
 			
-			for(Entry<String, HashSet<Gene>> entry2 : genesPerBiotype.entrySet()){
-			
-				for(Gene g : entry2.getValue()){
+			for(Entry<String, HashSet<Gene>> biotypeGeneEntry : genesPerBiotype.entrySet()){
+				
+				for(Gene g : biotypeGeneEntry.getValue()){
 					
 					int amountTranscripts = g.getTranscripts().size();
 					
-					if(biotypesGeneTransCount.containsKey(entry2.getKey())){
+					/* if biotype exists */
+					if(biotypesGeneTransCount.containsKey(biotypeGeneEntry.getKey())){
 						
-						HashMap<Integer, Integer> tmp = biotypesGeneTransCount.get(entry2.getKey());
+						TreeMap<String, TreeMap<Integer, Integer>> tmp = biotypesGeneTransCount.get(biotypeGeneEntry.getKey());
 						
-						if(tmp.containsKey(amountTranscripts)){
-							tmp.put(amountTranscripts, tmp.get(amountTranscripts)+1);
-						}else{
-							tmp.put(amountTranscripts,1);
+						/* if file exists */
+						if(tmp.containsKey(entry.getKey())){
+							TreeMap<Integer, Integer> tmp2 = tmp.get(entry.getKey());
+							
+							if(tmp2.containsKey(amountTranscripts)){
+								tmp2.put(amountTranscripts, tmp2.get(amountTranscripts)+1);
+							}else{
+								tmp2.put(amountTranscripts, 1);
+							}
 						}
-					}else{
-						HashMap<Integer, Integer> tmpMap = new HashMap<>();
-						tmpMap.put(amountTranscripts, 1);
-						biotypesGeneTransCount.put(entry2.getKey(), tmpMap);
+						/* if file does not exist */
+						else{
+							
+							TreeMap<Integer, Integer> tmpMap = new TreeMap<>();
+							tmpMap.put(amountTranscripts, 1);
+							
+							tmp.put(entry.getKey(), tmpMap);
+						}
 					}
-					
+					/* if biotype does not exist create new entry */
+					else{
+						TreeMap<Integer, Integer> tmpMap = new TreeMap<>();
+						tmpMap.put(amountTranscripts, 1);
+						
+						TreeMap<String, TreeMap<Integer, Integer>> tmpMap2 = new TreeMap<>();
+						tmpMap2.put(entry.getKey(), tmpMap);
+						
+						biotypesGeneTransCount.put(biotypeGeneEntry.getKey(), tmpMap2);
+					}
 				}
-			
 			}
-			
 		}
 		
-		biotypesGeneTransCountSorted.putAll(biotypesGeneTransCount);
+		TreeMap<String, TreeMap<Integer, Integer>> treeMap;
 		
-		TreeMap<Integer, Integer> treeMap;
+		TreeMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultConfigPath("annot.map"));
 		
-		for(Entry<String, HashMap<Integer, Integer>> s : biotypesGeneTransCountSorted.entrySet()){
+		for(Entry<String, TreeMap<String, TreeMap<Integer, Integer>>> s : biotypesGeneTransCount.entrySet()){
 			
-			treeMap = new TreeMap<>(new Comparator<Integer>() {
-
-				@Override
-				public int compare(Integer o1, Integer o2) {
-					if(o1 >= o2){
-						return 1;
-					}else{
-						return -1;
-					}
-				}
-			});
+			treeMap = new TreeMap<>();
 			treeMap.putAll(s.getValue());
+			
+			int maxX = 0;
+			int maxY = 0;
 			
 			if(!s.getKey().equals("protein_coding")){
 				continue;
 			}
 			
-			Vector<Object> vector1 = new Vector<>();
-			Vector<Object> vector2 = new Vector<>();
+			Vector<Vector<Object>> vectorOfVectors1 = new Vector<>();
+			Vector<Vector<Object>> vectorOfVectors2 = new Vector<>();
 			
-			int counter = 0;
+			Vector<Object> legendLabels = new Vector<>();
 			
-			for(Entry<Integer, Integer> s2 : treeMap.entrySet()){
+			for(Entry<String, String> annot : annotMap.entrySet()){
 				
-				if(s2.getKey() <= 1){
+				TreeMap<Integer, Integer> values = treeMap.get(annot.getKey());
+				
+				int counter = 0;
+				
+				Vector<Object> vTMP1 = new Vector<>();
+				Vector<Object> vTMP2 = new Vector<>();
+				
+				if(values == null){
+					
+					vTMP1.add(0);
+					vTMP2.add(0);
+					
+					legendLabels.add(annot.getValue());
+					
+					vectorOfVectors1.add(vTMP1);
+					vectorOfVectors2.add(vTMP2);
+					
 					continue;
 				}
 				
-				vector1.add(s2.getKey());
+				for(Entry<Integer, Integer> s2 : values.entrySet()){
+						
+					if(s2.getKey() <= 1){
+						continue;
+					}
+					
+					maxX = Math.max(maxX, s2.getKey());
+					
+					vTMP1.add(s2.getKey());
+					
+					counter += s2.getValue();
+					
+					maxY = Math.max(maxY, counter);
+					
+					vTMP2.add(counter);
+					
+				}
 				
-				counter+=s2.getValue();
+				System.out.println(annot.getKey()+" : "+counter);
 				
-				vector2.add(counter);
+				legendLabels.add(annot.getValue());
+				
+				vectorOfVectors1.add(vTMP1);
+				vectorOfVectors2.add(vTMP2);
 			}
 			
-//			LinePlot lp = new LinePlot(new Pair<Vector<Object>, Vector<Object>>(vector1, vector2), "CUM ON MY FACE", "num tr/genes", "num genes");
-//			lp.plot();
+			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), s.getKey(), "num tr/genes", "num genes", maxX, maxY);
+			
+			lp.addLegendVector(legendLabels);
+			
+			lp.plot();
 			
 		}
 		

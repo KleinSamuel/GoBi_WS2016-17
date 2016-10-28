@@ -30,7 +30,10 @@ public class AllroundFileWriter {
 				convertedVector += String.valueOf(d)+" ";
 			}
 		}
-		convertedVector = convertedVector.substring(0, convertedVector.length()-1);
+		
+		if(convertedVector.length() > 0){
+			convertedVector = convertedVector.substring(0, convertedVector.length()-1);
+		}
 		
 		try {
 			

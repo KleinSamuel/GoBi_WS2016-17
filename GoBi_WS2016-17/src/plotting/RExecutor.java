@@ -36,8 +36,6 @@ public class RExecutor implements Runnable{
 			Process rInstance = new ProcessBuilder(r_binary_location, "-e", rCommand).start();
 			
 			
-			
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
