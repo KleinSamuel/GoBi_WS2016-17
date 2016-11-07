@@ -1,0 +1,6 @@
+Saccharomyces_cerevisiae.R64-1-1.75.gtf	/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf
+Mus_musculus.GRCm38.75.gtf	/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Mus_musculus.GRCm38.75.gtf
+Homo_sapiens.GRCh37.75.gtf	/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Homo_sapiens.GRCh37.75.gtf
+Homo_sapiens.GRCh38.86.gtf	/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Homo_sapiens.GRCh38.86.gtf
+gencode.v10.annotation.gtf	/home/proj/biosoft/praktikum/genprakt-ws16/gtf/gencode.v10.annotation.gtf
+gencode.v25.annotation.gtf	/home/proj/biosoft/praktikum/genprakt-ws16/gtf/gencode.v25.annotation.gtf

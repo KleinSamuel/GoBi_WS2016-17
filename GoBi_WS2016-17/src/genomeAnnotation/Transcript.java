@@ -1,19 +1,34 @@
 package genomeAnnotation;
 
-import java.util.HashMap;
 import java.util.TreeSet;
+
+import util.Interval;
 
 public class Transcript extends GenomicRegion {
 
 	private Gene gene;
 	private TreeSet<Exon> exons;
-	private HashMap<String, CDS> cdss;
+	private CDS cds;
 
 	public Transcript(int start, int stop, String id, boolean onNegativeStrand, Gene g) {
 		super(start, stop, id, onNegativeStrand);
 		gene = g;
-		cdss = new HashMap<>();
 		exons = new TreeSet<>();
+		cds = null;
+	}
+
+	public String getCCDS_id() {
+		if (cds != null)
+			return cds.getId();
+		return null;
+	}
+
+	public CDS getCds() {
+		return cds;
+	}
+
+	public boolean hasCDS() {
+		return cds != null;
 	}
 
 	public void addExon(Exon e) {
@@ -21,8 +36,27 @@ public class Transcript extends GenomicRegion {
 		e.add(this);
 	}
 
-	public void addCDS(CDS cds) {
-		cdss.put(cds.getId(), cds);
+	public TreeSet<Exon> getExons() {
+		return exons;
+	}
+
+	public Gene getParentalGene() {
+		return gene;
+	}
+
+	public void createCDS(CDS cds) {
+		this.cds = cds;
+	}
+
+	public void addCDSPart(CDSPart cdsPart) {
+		cds.addCDSPart(cdsPart);
+	}
+
+	public int calculateExonicLength() {
+		int sum = 0;
+		for (Exon e : exons)
+			sum += e.getLength();
+		return sum;
 	}
 
 }

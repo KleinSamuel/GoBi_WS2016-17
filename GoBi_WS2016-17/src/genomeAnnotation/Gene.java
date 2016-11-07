@@ -7,6 +7,7 @@ import augmentedTree.IntervalTree;
 
 public class Gene extends GenomicRegion {
 
+	private Chromosome chromosome;
 	private String biotype, name;
 	private HashMap<String, Transcript> transcripts;
 	private HashMap<String, Exon> exons;
@@ -15,7 +16,8 @@ public class Gene extends GenomicRegion {
 
 	private IntervalTree<Intron> intronsOnPositiveStrand = null, intronsOnNegativeStrand = null;
 
-	public Gene(int start, int stop, String id, boolean onNegativeStrand, String biotype, String name) {
+	public Gene(int start, int stop, String id, boolean onNegativeStrand, String biotype, String name,
+			Chromosome parent) {
 		super(start, stop, id, onNegativeStrand);
 		transcripts = new HashMap<>();
 		transcriptsOnNegativeStrand = new IntervalTree<>();
@@ -27,6 +29,7 @@ public class Gene extends GenomicRegion {
 		exonsOnBothStrands = new IntervalTree<>();
 		this.biotype = biotype;
 		this.name = name;
+		chromosome = parent;
 	}
 
 	public void addTranscript(Transcript tr) {
@@ -54,6 +57,18 @@ public class Gene extends GenomicRegion {
 		return transcripts.get(id);
 	}
 
+	public Exon getExon(String id) {
+		return exons.get(id);
+	}
+
+	public IntervalTree<Transcript> getAllTranscriptsSorted() {
+		return transcriptsOnBothStrands;
+	}
+
+	public Chromosome getChromosome() {
+		return chromosome;
+	}
+
 	public IntervalTree<Intron> getIntrons(boolean onNegativeStrand) {
 		if (onNegativeStrand) {
 			if (intronsOnNegativeStrand == null)
@@ -64,6 +79,10 @@ public class Gene extends GenomicRegion {
 				calcIntrons(exonsOnPositiveStrand, intronsOnPositiveStrand, onNegativeStrand);
 			return intronsOnPositiveStrand;
 		}
+	}
+
+	public IntervalTree<Exon> getAllExonsSorted() {
+		return exonsOnBothStrands;
 	}
 
 	public void calcIntrons(IntervalTree<Exon> exons, IntervalTree<Intron> introns, boolean onNegativeStrand) {
@@ -89,6 +108,24 @@ public class Gene extends GenomicRegion {
 
 	public String getBiotype() {
 		return biotype;
+	}
+
+	public int getLongestTranscriptLength() {
+		Transcript longestTranscript = null;
+		int longestLength = -1, currentLength = -1;
+		for (Transcript tr : transcriptsOnBothStrands) {
+			if (longestTranscript == null) {
+				longestTranscript = tr;
+				longestLength = longestTranscript.calculateExonicLength();
+			} else {
+				currentLength = tr.calculateExonicLength();
+				if (currentLength > longestLength) {
+					longestLength = currentLength;
+					longestTranscript = tr;
+				}
+			}
+		}
+		return longestLength;
 	}
 
 }

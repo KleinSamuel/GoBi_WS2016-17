@@ -1,0 +1,6 @@
+h.ens.75	Homo_sapiens.GRCh37.75.gtf
+h.ens.86	Homo_sapiens.GRCh38.86.gtf
+m.ens.75	Mus_musculus.GRCm38.75.gtf
+h.gc.10	gencode.v10.annotation.gtf
+h.gc.25	gencode.v25.annotation.gtf
+y.ens.75	Saccharomyces_cerevisiae.R64-1-1.75.gtf

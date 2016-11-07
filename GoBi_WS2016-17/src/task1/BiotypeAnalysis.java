@@ -14,7 +14,7 @@ public class BiotypeAnalysis {
 		String biotype = null;
 		Integer biotypeCount = null;
 
-		for (Chromosome c : ga.getChromosomes()) {
+		for (Chromosome c : ga.getChromosomes().values()) {
 			for (Iterator<Gene> it = c.iterator(); it.hasNext();) {
 				biotype = it.next().getBiotype();
 				biotypeCount = genesPerBiotype.get(biotype);

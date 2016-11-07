@@ -44,4 +44,8 @@ public class Chromosome {
 		return genesOnBothStrands.iterator();
 	}
 
+	public IntervalTree<Gene> getAllGenesSorted() {
+		return genesOnBothStrands;
+	}
+
 }

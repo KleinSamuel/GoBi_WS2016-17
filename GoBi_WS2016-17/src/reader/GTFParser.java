@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import genomeAnnotation.CDS;
+import genomeAnnotation.CDSPart;
 import genomeAnnotation.Chromosome;
 import genomeAnnotation.Exon;
 import genomeAnnotation.Gene;
@@ -25,10 +26,9 @@ public class GTFParser {
 		Gene g = null;
 		Transcript t = null;
 		Exon e = null;
-		CDS cds = null;
 		boolean onNegativeStrand = false;
 
-		String line = null, exonId = null;
+		String line = null, exonId = null, tempBiotype = null;
 		String[] split = null, tempAttrArr = null;
 		Pattern p1 = Pattern.compile("\"; | \"");
 		Pattern p2 = Pattern.compile("\t");
@@ -66,9 +66,14 @@ public class GTFParser {
 
 				switch (split[2]) {
 				case "gene":
+					tempBiotype = tempAttributes.get("gene_biotype");
+
+					if (tempBiotype == null) {
+						tempBiotype = tempAttributes.get("gene_type");
+					}
 					g = new Gene(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1,
-							tempAttributes.get("gene_id"), onNegativeStrand, tempAttributes.get("biotype"),
-							tempAttributes.get("gene_name"));
+							tempAttributes.get("gene_id"), onNegativeStrand, tempBiotype,
+							tempAttributes.get("gene_name"), c);
 					c.addGene(g);
 					break;
 				case "transcript":
@@ -80,15 +85,19 @@ public class GTFParser {
 					exonId = tempAttributes.get("exon_id");
 					if (exonId == null)
 						exonId = generateNextExonId();
-					e = new Exon(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1, exonId,
-							onNegativeStrand);
-					g.addExon(e);
+					e = g.getExon(exonId);
+					if (e == null) {
+						e = new Exon(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1, exonId,
+								onNegativeStrand);
+						g.addExon(e);
+					}
 					t.addExon(e);
 					break;
 				case "CDS":
-					cds = new CDS(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1,
-							tempAttributes.get("protein_id"), onNegativeStrand);
-					t.addCDS(cds);
+					if (!t.hasCDS())
+						t.createCDS(new CDS(-1, -1, tempAttributes.get("ccds_id"), tempAttributes.get("protein_id"),
+								onNegativeStrand));
+					t.addCDSPart(new CDSPart(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1));
 					break;
 				}
 			}

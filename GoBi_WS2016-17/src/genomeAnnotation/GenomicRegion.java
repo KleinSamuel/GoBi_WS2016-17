@@ -22,6 +22,12 @@ public abstract class GenomicRegion implements augmentedTree.Interval, Comparabl
 		return onNegativeStrand;
 	}
 
+	public String getStrand() {
+		if (isOnNegativeStrand())
+			return "-";
+		return "+";
+	}
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();
@@ -47,6 +53,23 @@ public abstract class GenomicRegion implements augmentedTree.Interval, Comparabl
 			return Integer.compare(start, o.getStart());
 		else
 			return Integer.compare(stop, o.getStop());
+	}
+
+	@Override
+	public boolean equals(Object arg0) {
+		return this.id.equals(((GenomicRegion) arg0).getId());
+	}
+
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	public void setStop(int stop) {
+		this.stop = stop;
+	}
+
+	public void setOnNegativeStrand(boolean onNegativeStrand) {
+		this.onNegativeStrand = onNegativeStrand;
 	}
 
 }
