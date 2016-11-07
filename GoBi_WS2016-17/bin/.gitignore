@@ -1,8 +1,4 @@
-/config/
-/gtf/
 /io/
-/output/
-/plotting/
 /tasks/
-/tempFiles/
-/objectFiles/
+/output/
+/crawling/

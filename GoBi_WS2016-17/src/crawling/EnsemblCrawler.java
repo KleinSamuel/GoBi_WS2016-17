@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import debugStuff.DebugMessageFactory;
+
 /**
  * Used to crawl some information from the ensembl website
  * 
@@ -32,16 +34,20 @@ public class EnsemblCrawler {
 	 * @param geneID
 	 * @return String 
 	 */
-	public String getGeneInfo(String geneID){
+	public String[] getGeneInfo(String geneID){
+		
+		DebugMessageFactory.printInfoDebugMessage(true, "Started crawling...");
 		
 		String geneName = "";
         String fromTo = "";
         int numTrans = 0;
         int numProts = 0;
 		
+        URL url = null;
+        
 		try {
 			
-		URL url = new URL(baseURL+geneID);
+		url = new URL(baseURL+geneID);
 		
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 
@@ -88,6 +94,8 @@ public class EnsemblCrawler {
 		
 		numProts = numProts/2;
 		
-		return geneName+" "+geneID+"("+fromTo+") num transcripts: "+numTrans+" num proteins: "+numProts;
+		DebugMessageFactory.printInfoDebugMessage(true, "Finished crawling from "+url.toString());
+		
+		return new String[]{url.toString(), geneName+" "+geneID+"("+fromTo+") num transcripts: "+numTrans+" num proteins: "+numProts};
 	}
 }

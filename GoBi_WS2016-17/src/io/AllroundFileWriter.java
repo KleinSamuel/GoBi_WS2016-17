@@ -54,7 +54,7 @@ public class AllroundFileWriter {
 		}
 	}
 	
-	public static void createHTMLforBarplots(String filepath, ArrayList<String> plotPaths){
+	public static void createHTMLforPlots(String filepath, ArrayList<String> plotPaths, ArrayList<ArrayList<String[]>> info){
 		
 		try {
 			
@@ -64,6 +64,8 @@ public class AllroundFileWriter {
 			bw.write("<html>\n");
 			bw.write("<body>\n");
 			
+			int counter = 0;
+			
 			for(String fp : plotPaths){
 				
 				bw.write("<figure>\n");
@@ -71,6 +73,19 @@ public class AllroundFileWriter {
 				bw.write("<img src=\""+fp+".png\" width=\"1000\" height=\"1000\">\n");
 				
 				bw.write("</figure>\n");
+				
+				if(info != null){
+					bw.write("<ul>\n");
+					
+					for (String[] list : info.get(counter)) {
+						bw.write("<li>\n");
+						bw.write("<a href=\""+list[0]+"\">"+list[1]+"</a>\n");
+						bw.write("</li>\n");
+					}
+					
+					bw.write("</ul>\n");
+				}
+				counter++;
 			}
 			
 			bw.write("</body>\n");
@@ -82,7 +97,6 @@ public class AllroundFileWriter {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public static void writeXMLForTask1(String filepath, TreeMap<String, HashMap<String, Integer>> map){
