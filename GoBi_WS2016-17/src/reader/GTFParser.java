@@ -22,6 +22,8 @@ public class GTFParser {
 	public static GenomeAnnotation readGtfFile(String name, String gtfFilePath) {
 		GenomeAnnotation ga = new GenomeAnnotation(name);
 
+		System.out.println("Started reading gtf-file: " + ga.getName());
+
 		Chromosome c = null;
 		Gene g = null;
 		Transcript t = null;
@@ -30,7 +32,7 @@ public class GTFParser {
 
 		String line = null, exonId = null, tempBiotype = null;
 		String[] split = null, tempAttrArr = null;
-		Pattern p1 = Pattern.compile("\"; | \"");
+		// Pattern p1 = Pattern.compile("\"; | \"");
 		Pattern p2 = Pattern.compile("\t");
 		HashSet<String> annotatedRegions = new HashSet<>();
 		annotatedRegions.add("CDS");
@@ -45,8 +47,8 @@ public class GTFParser {
 				if (line.startsWith("#"))
 					continue;
 
-				split = p2.split(line);
-
+				// split = p2.split(line);
+				split = line.split("\t");
 				if (!annotatedRegions.contains(split[2]))
 					continue;
 
@@ -57,9 +59,13 @@ public class GTFParser {
 					c = new Chromosome(split[0]);
 				}
 				tempAttributes = new HashMap<>();
-				tempAttrArr = p1.split(split[8].substring(0, split[8].length() - 2));
+				split[8] = split[8].replace("\"", "").replace(";", "");
+				// tempAttrArr = p1.split(split[8].substring(0,
+				// split[8].length() - 2));
+				tempAttrArr = split[8].split(" ");
 				for (int i = 0; i < tempAttrArr.length; i++) {
-					tempAttributes.put(tempAttrArr[i], tempAttrArr[++i]);
+					if (i + 1 < tempAttrArr.length)
+						tempAttributes.put(tempAttrArr[i], tempAttrArr[++i]);
 				}
 
 				onNegativeStrand = split[6].equals("-");

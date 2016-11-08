@@ -21,16 +21,19 @@ public class UnionTranscript {
 		Interval currentCombinedExon = null;
 		Exon next = null;
 		Iterator<Exon> it = g.getAllExonsSorted().iterator();
-		next = it.next();
-		if (next == null)
+		if (it.hasNext())
+			next = it.next();
+		else
 			return;
 		currentCombinedExon = new Interval(next.getStart(), next.getStop());
-		while ((next = it.next()) != null) {
-			if (next.getStart() > currentCombinedExon.getStop()) {
+		while (it.hasNext()) {
+			next = it.next();
+			if (next.getStart() > currentCombinedExon.getStop() + 1) {
 				combinedExons.add(currentCombinedExon);
 				currentCombinedExon = new Interval(next.getStart(), next.getStop());
 			} else {
-				currentCombinedExon.setStart(next.getStop());
+				if (next.getStop() > currentCombinedExon.getStop())
+					currentCombinedExon.setStop(next.getStop());
 			}
 		}
 		if (currentCombinedExon != null)

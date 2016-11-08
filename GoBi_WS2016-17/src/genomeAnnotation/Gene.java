@@ -110,6 +110,14 @@ public class Gene extends GenomicRegion {
 		return biotype;
 	}
 
+	private Transcript longestTr = null;
+
+	public Transcript getLongestTr() {
+		if (longestTr == null)
+			getLongestTranscriptLength();
+		return longestTr;
+	}
+
 	public int getLongestTranscriptLength() {
 		Transcript longestTranscript = null;
 		int longestLength = -1, currentLength = -1;
@@ -125,6 +133,7 @@ public class Gene extends GenomicRegion {
 				}
 			}
 		}
+		longestTr = longestTranscript;
 		return longestLength;
 	}
 

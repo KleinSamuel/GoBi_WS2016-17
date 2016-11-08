@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/home/proj/biosoft/software/R/R-3.3.0/bin/Rscript
 
 args = commandArgs(TRUE)
 

@@ -18,6 +18,7 @@ public class GenomeAnnotation {
 
 	public void addChromosome(Chromosome c) {
 		chromosomes.put(c.getID(), c);
+		chromosomesInFileOrder.add(c);
 	}
 
 	public Chromosome getChromosome(String id) {

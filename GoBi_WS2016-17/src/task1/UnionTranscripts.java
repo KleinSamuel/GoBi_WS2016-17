@@ -16,16 +16,19 @@ public class UnionTranscripts {
 
 	private GenomeAnnotation ga;
 	private File outputDirectory;
+	private String outputFilePath;
 
 	public UnionTranscripts(GenomeAnnotation ga, String outputDirectory) {
 		this.ga = ga;
 		this.outputDirectory = new File(outputDirectory);
 		if (!this.outputDirectory.exists()) {
-			System.out.println("directory does not exist! dir: " + this.outputDirectory.getAbsolutePath());
+			System.out.println(
+					"UnionTranscripts: directory does not exist! dir: " + this.outputDirectory.getAbsolutePath());
 			System.exit(1);
 		}
-		if (!this.outputDirectory.isFile()) {
-			System.out.println("dir is a file not a directory! file: " + this.outputDirectory.getAbsolutePath());
+		if (this.outputDirectory.isFile()) {
+			System.out.println(
+					"UnionTranscripts: dir is a file not a directory! file: " + this.outputDirectory.getAbsolutePath());
 			System.exit(1);
 		}
 
@@ -38,11 +41,15 @@ public class UnionTranscripts {
 		Gene g = null;
 		UnionTranscript unionTr = null;
 		Double d;
+		double longestTr, unionTrLength;
 		Integer occurences;
-		while ((g = allGenesInGa.next()) != null) {
+		while (allGenesInGa.hasNext()) {
+			g = allGenesInGa.next();
 			unionTr = new UnionTranscript(g);
 			// prozentual auf eine nachkommastelle --> max size = 1000
-			d = ((double) g.getLongestTranscriptLength() / unionTr.getExonicLength()) * 1000;
+			longestTr = g.getLongestTranscriptLength();
+			unionTrLength = unionTr.getExonicLength();
+			d = (longestTr / unionTrLength) * 1000;
 			d = d.intValue() / 10d;
 			occurences = occurencesOfProportion.get(d);
 			if (occurences == null)
@@ -57,8 +64,8 @@ public class UnionTranscripts {
 		TreeMap<Double, Integer> sortedDistribution = new TreeMap<>();
 		sortedDistribution.putAll(occurenceDistribution);
 		try {
-			BufferedWriter bw = new BufferedWriter(
-					new FileWriter(outputDirectory + "/" + ga.getName() + "_unionTrDist.tsv"));
+			outputFilePath = outputDirectory + "/" + ga.getName() + "_unionTrDist.tsv";
+			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath));
 			for (Entry<Double, Integer> e : sortedDistribution.entrySet())
 				bw.write(e.getKey() + "\t");
 			bw.write("\n");
@@ -66,10 +73,14 @@ public class UnionTranscripts {
 				bw.write(e.getValue() + "\t");
 			bw.close();
 		} catch (Exception e) {
-			System.out.println("Error while writing unionTranscript distributionFile");
+			System.out.println("Error while writing unionTranscriptDistributionFile");
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	public String getOutputFile() {
+		return outputFilePath;
 	}
 
 }
