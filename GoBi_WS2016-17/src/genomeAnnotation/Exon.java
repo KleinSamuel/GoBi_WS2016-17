@@ -15,5 +15,9 @@ public class Exon extends GenomicRegion {
 	public void add(Transcript parent) {
 		parentalTranscripts.add(parent);
 	}
+	
+	public HashSet<Transcript> getParentalTranscripts(){
+		return parentalTranscripts;
+	}
 
 }

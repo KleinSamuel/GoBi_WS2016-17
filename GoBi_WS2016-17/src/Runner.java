@@ -6,6 +6,7 @@ import plotR.RScriptCaller;
 import reader.AnnotationMapper;
 import reader.AnnotationMapper.AnnotationMapItem;
 import reader.GTFParser;
+import task1.OverlappingGenes;
 import task1.UnionTranscripts;
 
 public class Runner {
@@ -60,6 +61,8 @@ public class Runner {
 			new RScriptCaller(ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()
 					.substring(5).replace("Runner.jar", "") + "UnionTranscriptPlotter.R", unionTrs.getOutputFile())
 							.execRScript();
+			new OverlappingGenes(ga, ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()
+					.substring(5).replace("Runner.jar", "") + "output/").writeOverlappingGenesToFile();
 		}
 
 	}

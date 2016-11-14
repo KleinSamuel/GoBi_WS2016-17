@@ -96,7 +96,9 @@ public class Gene extends GenomicRegion {
 		}
 		while (exonIt.hasNext()) {
 			next = exonIt.next();
-			introns.add(new Intron(current.getStart() + 1, next.getStop() - 1, "", onNegativeStrand));
+			// check that they are not directly one after the other
+			if (current.getStop() < next.getStart() - 1)
+				introns.add(new Intron(current.getStop() + 1, next.getStart() - 1, "", onNegativeStrand));
 			current = next;
 		}
 		if (current != null) {

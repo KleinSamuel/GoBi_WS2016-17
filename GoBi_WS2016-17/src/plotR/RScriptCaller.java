@@ -34,9 +34,8 @@ public class RScriptCaller {
 	public void execRScript() {
 		try {
 			@SuppressWarnings("unused")
-			Process proc = new ProcessBuilder(
-					pathToR + " " + scriptName + " " + inputFileName + " " + inputFileName.replace("tsv", "png"))
-							.start();
+			Process proc = new ProcessBuilder(pathToR, scriptName, inputFileName, inputFileName.replace("tsv", "png"))
+					.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);

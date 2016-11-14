@@ -2,8 +2,6 @@ package genomeAnnotation;
 
 import java.util.TreeSet;
 
-import util.Interval;
-
 public class Transcript extends GenomicRegion {
 
 	private Gene gene;

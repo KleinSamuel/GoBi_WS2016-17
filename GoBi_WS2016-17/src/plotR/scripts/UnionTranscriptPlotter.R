@@ -1,14 +1,14 @@
 #!/home/proj/biosoft/software/R/R-3.3.0/bin/Rscript
 
 args = commandArgs(TRUE)
+print(args[2])
+data <- matrix(scan(args[1]), ncol = 2)
 
-x <- read.csv(file = args[0], head = FALSE, sep = "\t", nrows = 1)
-y <- read.csv(file = args[0], head = FALSE, sep = "\t", nrows = 1, skip = 1)
+data[,2] <- cumsum(data[,2])
+print(data)
 
-z <- cumsum(y)
+png(args[2])
 
-png(args[1])
-
-plot(x, z, type = "l")
+plot(data, type = "l", xlab = "proportion", ylab = "#occurences of certain proportion", title = "cumulative distribution of longest transcripts length divided by union transcript length")
 
 dev.off()
