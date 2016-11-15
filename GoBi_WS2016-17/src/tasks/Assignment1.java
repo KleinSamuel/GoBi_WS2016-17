@@ -1,15 +1,21 @@
 package tasks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import crawling.EnsemblCrawler;
 import debugStuff.DebugMessageFactory;
+import gtf.Chromosome;
 import gtf.Gene;
 import gtf.GenomeAnnotation;
 import gtf.ThreadHandler;
@@ -33,7 +39,7 @@ public class Assignment1 {
 		HashMap<String, HashMap<String, Integer>> biotypesOrgansimnCount = new HashMap<>();
 		StupidComparator sc = new StupidComparator(biotypesOrgansimnCount);
 		TreeMap<String, HashMap<String, Integer>> biotypesOrgansimnCountSorted = new TreeMap<>(sc);
-
+		
 		ThreadHandler th;
 		GenomeAnnotation ga;
 
@@ -49,7 +55,6 @@ public class Assignment1 {
 				}
 				biotypesOrgansimnCount.get(entry2.getKey()).put(entry.getKey(), entry2.getValue());	
 			}
-
 		}
 
 		biotypesOrgansimnCountSorted.putAll(biotypesOrgansimnCount);
@@ -187,8 +192,7 @@ public class Assignment1 {
 		ConfigHelper ch = new ConfigHelper();
 		EnsemblCrawler crawler = new EnsemblCrawler();
 
-		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"),
-				"\t", new String[] { "#" });
+		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"),"\t", new String[] { "#" });
 
 		HashMap<String, TreeMap<String, TreeMap<Integer, Integer>>> biotypesGeneTransCount = new HashMap<>();
 
@@ -327,17 +331,13 @@ public class Assignment1 {
 
 				}
 
-				System.out.println(annot.getKey() + " : " + counter);
-
 				legendLabels.add(annot.getValue());
 
 				vectorOfVectors1.add(vTMP1);
 				vectorOfVectors2.add(vTMP2);
 			}
 
-			LinePlot lp = new LinePlot(
-					new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2),
-					s.getKey(), "num tr/genes", "num genes", maxX, maxY);
+			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), s.getKey(), "num tr/genes", "num genes", maxX, maxY);
 
 			ArrayList<String[]> tmp = new ArrayList<>();
 
@@ -372,14 +372,228 @@ public class Assignment1 {
 		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "NumTransPerBiotype.html", pathList,infoList);
 
 	}
+	
+	public void task_7(){
+		
+		ConfigHelper ch = new ConfigHelper();
+
+		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"), "\t", new String[] {"#"});
+		
+		ThreadHandler th;
+		GenomeAnnotation gaGC10 = null, gaGC25 = null;
+
+		for (Entry<String, String> entry : fileMap.entrySet()) {
+
+			if(entry.getKey().equals("gencode.v10.annotation.gtf")){
+				th = new ThreadHandler();
+				th.startThreads(entry.getValue());
+				gaGC10 = th.getGenomeAnnotation();
+			}else if(entry.getKey().equals("gencode.v25.annotation.gtf")){
+				th = new ThreadHandler();
+				th.startThreads(entry.getValue());
+				gaGC25 = th.getGenomeAnnotation();
+			}else{
+				continue;
+			}
+		}
+		
+		/* check if one annotation is null */
+		if((gaGC10 == null) || (gaGC25 == null)){
+			DebugMessageFactory.printErrorDebugMessage(true, "GenomeAnnotation was null.");
+			System.exit(1);
+		}
+		
+		/* holds number of genes which have mapped to another chromosome */
+		int genesChanged = 0;
+		int genesNotChanged = 0;
+		
+		
+		/* holds for every chromosome a map of genes with the corresponding difference */
+		HashMap<String, HashMap<String, Integer>> geneDistance = new HashMap<>();
+		
+		HashMap<String, Object[]> geneLength = new HashMap<>();
+		
+		for (Entry<String, Chromosome> chromosomeEntry : gaGC10.getChromosomeList().entrySet()) {
+			
+			ArrayList<String> differentGenes = new ArrayList<>(chromosomeEntry.getValue().getGenes().keySet().stream().map(s -> s.substring(0, s.lastIndexOf("."))).collect(Collectors.toSet()));
+			
+			HashMap<String, Integer> tmp = new HashMap<>();
+			ArrayList<Integer> tmpGeneLength = new ArrayList<>();
+			
+			/* check if same chromosome in both annotations */
+			if(gaGC25.getChromosomeList().keySet().contains(chromosomeEntry.getKey())){
+				
+				Chromosome tmpChrom = gaGC25.getChromosomeList().get(chromosomeEntry.getKey());
+				
+				Set<String> geneSet = tmpChrom.getGenes().keySet().stream().map(s -> s.substring(0, s.lastIndexOf("."))).collect(Collectors.toSet());
+				
+				/* get all genes on chromosome */
+				for (String geneId : geneSet){
+					
+					/* check if gene on both chromosomes */
+					if(differentGenes.contains(geneId)){
+						differentGenes.remove(geneId);
+						
+						Gene g1 = getGeneWithRegex(geneId, chromosomeEntry.getValue().getGenes());
+						Gene g2 = getGeneWithRegex(geneId, tmpChrom.getGenes());
+						
+						int startDiff = Math.abs(g1.getStart() - g2.getStart());
+						int endDiff = Math.abs(g1.getStop() - g2.getStop());
+						
+						tmp.put(geneId, Math.min(startDiff, endDiff));
+						
+						tmpGeneLength.add(Math.abs((g1.getStop() + 1 - g1.getStart()) - (g2.getStop() + 1 - g2.getStart())));
+						
+						genesNotChanged++;
+					}
+				}
+
+			}else{
+				DebugMessageFactory.printInfoDebugMessage(true, "Chromosome "+chromosomeEntry.getKey()+" is not contained in gencode.v25.");
+				continue;
+			}
+			genesChanged += differentGenes.size();
+			
+			geneDistance.put(chromosomeEntry.getKey(), tmp);
+			geneLength.put(chromosomeEntry.getKey(), tmpGeneLength.stream().sorted().toArray());
+		}
+		
+		System.out.println("GENES CHANGED : "+genesChanged);
+		System.out.println("GENES NOT CHANGED : "+genesNotChanged);
+		
+		for (Entry<String, HashMap<String, Integer>> entry : geneDistance.entrySet()){
+			
+			System.out.println(entry.getKey());
+			
+			Object[] array = entry.getValue().values().stream().sorted().toArray();
+			
+			System.out.println("ARRAY:");
+			System.out.println(Arrays.toString(array));
+			
+			Pair<Vector<Object>, Vector<Object>> tmp = cumulativeSum(array);
+			Vector<Vector<Object>> vectorOfVectors1 = new Vector<>();
+			Vector<Vector<Object>> vectorOfVectors2 = new Vector<>();
+			
+			vectorOfVectors1.add(tmp.getKey());
+			vectorOfVectors2.add(tmp.getValue());
+			
+			int minX = (int)tmp.getKey().get(0);
+			int minY = (int)tmp.getValue().get(0);
+			int maxX = (int)tmp.getKey().get(tmp.getKey().size()-1);
+			int maxY = (int)tmp.getValue().get(tmp.getValue().size()-1);
+			
+			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), ""+entry.getKey(), "XLAB", "YLAB", minX, minY, maxX, maxY);
+			
+			lp.plot();
+			
+		}
+		
+//		for (Entry<String, Object[]> entry : geneLength.entrySet()){
+//			
+////			System.out.println(entry.getKey()+" : "+Arrays.toString(entry.getValue()));
+//			
+//			Vector<Vector<Object>> vectorOfVectors1 = new Vector<>();
+//			Vector<Vector<Object>> vectorOfVectors2 = new Vector<>();
+//
+//			Vector<Object> v1 = new Vector<>();
+//			Vector<Object> v2 = new Vector<>();
+//			
+//			
+//			int counter = 0;
+//			int counter2 = 0;
+//			
+//			for (int i = 0; i < entry.getValue().length-1; i++) {
+//				
+//				System.out.print((int)entry.getValue()[i]);
+//				v1.add((int)entry.getValue()[i]);
+//				counter2 = 0;
+//				
+//				while((int)entry.getValue()[i] == (int)entry.getValue()[i+1]){
+//					
+//					counter2++;
+//					i++;
+//				}
+//				
+//				counter += counter2;
+//				v2.add(counter);
+//				
+//				System.out.println("\t\t"+counter);
+//			}
+//			
+//			vectorOfVectors1.add(v1);
+//			vectorOfVectors2.add(v2);
+//			
+//			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), ""+entry.getKey(), "XLAB", "YLAB", (int)v1.get(v1.size()-1), (int)v2.get(v2.size()-1));
+//			
+//			lp.plot();
+//			
+//		}
+		
+	}
+	
+	/**
+	 * Return a Gene from the given HashMap<String, Gene>.
+	 * 
+	 * @param id String substring of a key in the HashMap
+	 * @param map HashMap<String, Gene>
+	 * @return Gene
+	 */
+	public static Gene getGeneWithRegex(String id, HashMap<String, Gene> map){
+		
+		for (Entry<String, Gene> s : map.entrySet()){
+			if(s.getKey().substring(0, id.length()).equals(id)){
+				return s.getValue();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Compute cumulative sum from an array
+	 * First vector contains unique values
+	 * Second vector contains cumulative sum
+	 * 
+	 * @param array
+	 * @return Pair<Vector<Object>, Vector<Object>> pair of vectors.
+	 */
+	public static Pair<Vector<Object>, Vector<Object>> cumulativeSum(Object[] array){
+		
+		Vector<Object> first = new Vector<>();
+		Vector<Object> second = new Vector<>();
+		
+		TreeMap<Integer, Integer> mapTMP = new TreeMap<>();
+		
+		for (int i = 0; i < array.length; i++) {
+			if(mapTMP.containsKey((int)array[i])){
+				mapTMP.put((int)array[i], mapTMP.get((int)array[i])+1);
+			}else{
+				mapTMP.put((int)array[i], 1);
+			}
+		}
+		
+		first.addAll(mapTMP.keySet());
+		
+		int counter = 0;
+		for(Integer i : mapTMP.values()){
+			counter += i;
+			second.add(counter);
+		}
+		
+		System.out.println("CUM SUM:");
+		System.out.println(Arrays.toString(first.toArray()));
+		System.out.println(Arrays.toString(second.toArray()));
+		
+		return new Pair<Vector<Object>, Vector<Object>>(first, second);
+	}
 
 	public static void main(String[] args) {
 
 		Assignment1 as1 = new Assignment1();
 
 //		as1.task_1();
-		as1.task_2();
+//		as1.task_2();
 //		as1.task_3();
+		as1.task_7();
 
 	}
 

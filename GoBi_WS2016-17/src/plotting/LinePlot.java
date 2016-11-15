@@ -17,6 +17,9 @@ public class LinePlot extends Plot{
 	Vector<Object> legendLabels;
 	
 	int maxX, maxY;
+	int minX = 0, minY = 0;
+	
+	public boolean logScaleXAxis = false;
 	
 	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int maxX, int maxY){
 		
@@ -35,6 +38,14 @@ public class LinePlot extends Plot{
 		for (int i = 0; i < x.size(); i++) {
 			legendLabels.add(String.valueOf(i));
 		}
+	}
+	
+	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int minX, int minY, int maxX, int maxY){
+		
+		this(pair, title, xLab, yLab, maxX, maxY);
+		
+		this.minX = minX;
+		this.minY = minY;
 	}
 	
 	public void plot(){
@@ -77,7 +88,8 @@ public class LinePlot extends Plot{
 		command += String.format("png(\"%s\",width=3.25,height=3.25,units=\"in\",res=400,pointsize=4);", filename);
 		command += String.format("x<-scan(\"%s\",nlines=1,skip=0);", tmp);
 		command += String.format("y<-scan(\"%s\",nlines=1,skip=1);", tmp);
-		command += String.format("plot(x,y,ann=F,type=\"l\",xlim=range(0:"+maxX+"),ylim=range(0:"+maxY+"),col=1);");
+		
+		command += String.format("plot(x,y,ann=F,type=\"l\",xlim=range("+minX+":"+maxX+"),ylim=range("+minY+":"+maxY+"),col=1);");
 		
 		int counter = 2;
 		
