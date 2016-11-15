@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,6 +61,30 @@ public class AllroundFileReader {
 		
 		return mainMap;
 		
+	}
+	
+	public static HashSet<String> readSimpleFile(String filepath){
+		
+		HashSet<String> out = new HashSet<>();
+		
+		try {
+			
+			BufferedReader br = new BufferedReader(new FileReader(filepath));
+			
+			String line = null;
+			
+			while((line = br.readLine()) != null){
+				out.add(line);
+			}
+			
+			br.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		
+		return out;
 	}
 	
 	public static TreeMap<String, String> readAnnotation(String filepath){

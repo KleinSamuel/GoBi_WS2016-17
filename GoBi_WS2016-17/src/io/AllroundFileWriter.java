@@ -6,9 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import debugStuff.DebugMessageFactory;
 
@@ -52,6 +53,28 @@ public class AllroundFileWriter {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void writeSimpleFile(String filepath, HashSet<String> set){
+		
+		try {
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(filepath));
+			
+			for(String s : set){
+				bw.write(s);
+				bw.newLine();
+			}
+			
+			bw.flush();
+			bw.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		DebugMessageFactory.printNormalDebugMessage(true, "File written.");
+		
 	}
 	
 	public static void createHTMLforPlots(String filepath, ArrayList<String> plotPaths, ArrayList<ArrayList<String[]>> info){

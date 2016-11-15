@@ -1,21 +1,14 @@
 package tasks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedSet;
-
-import crawling.EnsemblCrawler;
-
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.Vector;
 
+import crawling.EnsemblCrawler;
 import debugStuff.DebugMessageFactory;
 import gtf.Gene;
 import gtf.GenomeAnnotation;
@@ -24,10 +17,8 @@ import io.AllroundFileReader;
 import io.AllroundFileWriter;
 import io.ConfigHelper;
 import io.ConfigReader;
-import javafx.scene.AmbientLight;
 import javafx.util.Pair;
 import plotting.BarPlot;
-import plotting.CumDistPlot;
 import plotting.LinePlot;
 
 public class Assignment1 {
@@ -37,8 +28,7 @@ public class Assignment1 {
 
 		ConfigHelper ch = new ConfigHelper();
 
-		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"),
-				"\t", new String[] { "#" });
+		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"), "\t", new String[] {"#"});
 
 		HashMap<String, HashMap<String, Integer>> biotypesOrgansimnCount = new HashMap<>();
 		StupidComparator sc = new StupidComparator(biotypesOrgansimnCount);
@@ -57,16 +47,15 @@ public class Assignment1 {
 				if (!biotypesOrgansimnCount.containsKey(entry2.getKey())) {
 					biotypesOrgansimnCount.put(entry2.getKey(), new HashMap<String, Integer>());
 				}
-				biotypesOrgansimnCount.get(entry2.getKey()).put(entry.getKey(), entry2.getValue());
+				biotypesOrgansimnCount.get(entry2.getKey()).put(entry.getKey(), entry2.getValue());	
 			}
 
 		}
 
 		biotypesOrgansimnCountSorted.putAll(biotypesOrgansimnCount);
 
-		AllroundFileWriter.writeXMLForTask1(ch.getDefaultOutputPath() + "biotypes_genes_organisms.xml",
-				biotypesOrgansimnCountSorted);
-
+		AllroundFileWriter.writeXMLForTask1(ch.getDefaultOutputPath() + "biotypes_genes_organisms.xml", biotypesOrgansimnCountSorted);
+		
 		long end = System.currentTimeMillis();
 
 		DebugMessageFactory.printInfoDebugMessage(true, "TASK 1 TOOK " + (end - start) + " MILLISECONDS.");
@@ -124,13 +113,15 @@ public class Assignment1 {
 		}
 	}
 
+	/**
+	 * Create a barplot for every biotype containing all given gtf files as x-axis and the number of genes as y-axis
+	 */
 	public void task_2() {
 
 		AllroundFileReader fr = new AllroundFileReader();
 		ConfigHelper ch = new ConfigHelper();
 
-		HashMap<String, HashMap<String, Integer>> s = fr
-				.readXMLForTask1(ch.getDefaultOutputPath() + "biotypes_genes_organisms.xml");
+		HashMap<String, HashMap<String, Integer>> s = fr.readXMLForTask1(ch.getDefaultOutputPath() + "biotypes_genes_organisms.xml");
 		StupidComparator sc = new StupidComparator(s);
 		TreeMap<String, HashMap<String, Integer>> sorted = new TreeMap<>(sc);
 
@@ -138,6 +129,7 @@ public class Assignment1 {
 
 		TreeMap<String, String> annotMap = AllroundFileReader.readAnnotation(ch.getDefaultConfigPath("annot.map"));
 		ArrayList<String> pathList = new ArrayList<>();
+		
 		int counter = 1;
 
 		for (Entry<String, HashMap<String, Integer>> entryMain : sorted.entrySet()) {
@@ -146,7 +138,15 @@ public class Assignment1 {
 			Vector<Object> descr = new Vector<>();
 
 			for (Entry<String, Integer> entrySub : entryMain.getValue().entrySet()) {
-				descr.add(annotMap.get(entrySub.getKey() + ".gtf"));
+				descr.add(annotMap.get(entrySub.getKey()));
+			}
+			
+			/* add a bar for every file which does not contain any genes for this biotype */
+			for(String string : annotMap.values()){
+				if(!descr.contains(string)){
+					descr.add(string);
+					values.add(0);
+				}
 			}
 
 			Pair<Vector<Object>, Vector<Object>> tmpVector = new Pair<>(values, descr);
@@ -377,9 +377,9 @@ public class Assignment1 {
 
 		Assignment1 as1 = new Assignment1();
 
-		// as1.task_1();
-		// as1.task_2();
-		as1.task_3();
+//		as1.task_1();
+		as1.task_2();
+//		as1.task_3();
 
 	}
 
