@@ -13,6 +13,8 @@ import debugStuff.DebugMessageFactory;
 /**
  * Used to crawl some information from the ensembl website
  * 
+ * TODO: Find other ways because this is slow as FUCK!!!!
+ * 
  * @author Samuel Klein
  */
 public class EnsemblCrawler {
@@ -22,7 +24,11 @@ public class EnsemblCrawler {
 	 * 
 	 * Sample gene id : ENSG00000104529
 	 */
-	private final String baseURL = "http://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=";
+	private static final String baseURL = "http://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=";
+	
+	public static String getUrlForGeneID(String geneID){
+		return baseURL+geneID;
+	}
 	
 	/**
 	 * Get information for Assignment 1 Task 3

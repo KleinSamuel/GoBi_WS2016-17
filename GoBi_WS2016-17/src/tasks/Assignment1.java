@@ -19,6 +19,7 @@ import gtf.Chromosome;
 import gtf.Gene;
 import gtf.GenomeAnnotation;
 import gtf.ThreadHandler;
+import gtf.Transcript;
 import io.AllroundFileReader;
 import io.AllroundFileWriter;
 import io.ConfigHelper;
@@ -170,15 +171,15 @@ public class Assignment1 {
 	}
 
 	
-	class TreeMapByValueSorter implements Comparator<String> {
-		HashMap<String, Integer> base;
+	class TreeMapByValueSorter implements Comparator<Gene> {
+		HashMap<Gene, Integer> base;
 
-		public TreeMapByValueSorter(HashMap<String, Integer> base) {
+		public TreeMapByValueSorter(HashMap<Gene, Integer> base) {
 			this.base = base;
 		}
 
 		@Override
-		public int compare(String o1, String o2) {
+		public int compare(Gene o1, Gene o2) {
 			if (base.get(o1) >= base.get(o2)) {
 				return -1;
 			} else {
@@ -190,13 +191,14 @@ public class Assignment1 {
 	public void task_3() {
 
 		ConfigHelper ch = new ConfigHelper();
+		
 		EnsemblCrawler crawler = new EnsemblCrawler();
 
 		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"),"\t", new String[] { "#" });
 
 		HashMap<String, TreeMap<String, TreeMap<Integer, Integer>>> biotypesGeneTransCount = new HashMap<>();
 
-		HashMap<String, HashMap<String, Integer>> amountMap = new HashMap<>();
+		HashMap<String, HashMap<Gene, Integer>> amountMap = new HashMap<>();
 
 		ThreadHandler th;
 		GenomeAnnotation ga;
@@ -254,12 +256,12 @@ public class Assignment1 {
 					/* add do amount list */
 					if (amountMap.containsKey(biotypeGeneEntry.getKey())) {
 
-						amountMap.get(biotypeGeneEntry.getKey()).put(g.getId(), g.getTranscripts().size());
+						amountMap.get(biotypeGeneEntry.getKey()).put(g, g.getTranscripts().size());
 
 					} else {
 
-						HashMap<String, Integer> tmp = new HashMap<>();
-						tmp.put(g.getId(), g.getTranscripts().size());
+						HashMap<Gene, Integer> tmp = new HashMap<>();
+						tmp.put(g, g.getTranscripts().size());
 						amountMap.put(biotypeGeneEntry.getKey(), tmp);
 
 					}
@@ -282,9 +284,9 @@ public class Assignment1 {
 			int maxX = 0;
 			int maxY = 0;
 
-			 if(!s.getKey().equals("protein_coding")){
-				 continue;
-			 }
+//			 if(!s.getKey().equals("protein_coding")){
+//				 continue;
+//			 }
 
 			Vector<Vector<Object>> vectorOfVectors1 = new Vector<>();
 			Vector<Vector<Object>> vectorOfVectors2 = new Vector<>();
@@ -345,17 +347,33 @@ public class Assignment1 {
 
 			TreeMapByValueSorter tvs = new TreeMapByValueSorter(amountMap.get(s.getKey()));
 			
-			TreeMap<String, Integer> tmpMap = new TreeMap<>(tvs);
+			TreeMap<Gene, Integer> tmpMap = new TreeMap<>(tvs);
 			
 			tmpMap.putAll(amountMap.get(s.getKey()));
 
-			for (Entry<String, Integer> e : tmpMap.entrySet()) {
+			for (Entry<Gene, Integer> e : tmpMap.entrySet()) {
 
 				if (cnt == 11) {
 					break;
 				}
-
-				tmp.add(crawler.getGeneInfo(e.getKey()));
+				
+				int nProts = 0;
+				
+				for(Transcript t : e.getKey().getTranscripts().values()){
+					nProts += t.getCds().getParts().size() > 0 ? 1 : 0;
+				}
+				
+				String symbol = e.getKey().getSymbol();
+				String id = e.getKey().getId();
+				String chrId = e.getKey().getChromosomeID();
+				String strandSymbol = e.getKey().isOnNegativeStrand() ? "-" : "+";
+				String biotype = s.getKey();
+				String startEnd = e.getKey().getStart()+"-"+e.getKey().getStop();
+				String numTrans = "num transcripts: "+e.getKey().getTranscripts().size();
+				String numProts = "num proteins: "+nProts;
+				
+				tmp.add(new String[]{EnsemblCrawler.getUrlForGeneID(id), symbol+" "+id+" ("+chrId+""+strandSymbol+" "+biotype+" "+startEnd+") "+numTrans+" "+numProts});
+//				tmp.add(crawler.getGeneInfo(e.getKey().getId()));
 
 				cnt++;
 			}
@@ -592,8 +610,8 @@ public class Assignment1 {
 
 //		as1.task_1();
 //		as1.task_2();
-//		as1.task_3();
-		as1.task_7();
+		as1.task_3();
+//		as1.task_7();
 
 	}
 

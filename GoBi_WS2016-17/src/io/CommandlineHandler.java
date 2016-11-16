@@ -20,6 +20,9 @@ public class CommandlineHandler {
 		s += "\t\t| | |_ | |  | |  _ < | |\n"; 
 		s += "\t\t| |__| | |__| | |_) || |_\n";
 		s += "\t\t \\_____|\\____/|____/_____|\n\n";
+		s += "___________________________________________________________\n\n";
+		s += "by\tSAMUEL KLEIN\t     and\tDENNIS POST\n";
+		s += "___________________________________________________________\n";
 		s += "###########################################################\n";
 		s += "FLAGS\t\tHINTS\n\n";
 		s += "-i x\t\tPrint information about specific task x.\n\n";
@@ -54,6 +57,7 @@ public class CommandlineHandler {
 			break;
 		case 2:
 			s = info2();
+			
 			break;
 		case 3:
 			s = info3();
@@ -82,11 +86,35 @@ public class CommandlineHandler {
 	}
 	
 	public static String info2(){
-		return null;
+		String s = "";
+		
+		s += "Task 2 (Compare number of annotated genes):\n\n";
+		s += "You find 6 GTF files, and a file named annot.map in\n";
+		s += "/home/proj/biosoft/praktikum/genprakt/assignment/a1/data.\n";
+		s += "Use your parser from Task 1 to compare the number of annotated genes per biotype in the different\n";
+		s += "GTF files. Write a table to a file named genetypes.txt in your solution directory containing for\n";
+		s += "every biotype and every gtf-name (first column in annot.map) the number of annotated genes per\n";
+		s += "biotype in the corresponding gtf. The biotypes should be ordered by their total occurrence in all GTF files.\n";
+		s += "In addition, create barplots for each biotype and add them to a html file genetypes.html in this order.\n";
+		
+		return s;
 	}
 	
 	public static String info3(){
-		return null;
+		String s = "";
+		
+		s += "Task 3 (Compare number of transcripts in annotated genes):\n\n";
+		s += "Extract the number of transcripts per gene using the same files as in Task 2. Create an html\n";
+		s += "file showing the cumulative distributions of the number of transcripts for each biotype in the different\n";
+		s += "GTF files. Write the biotypes sorted by the total number of genes having multiple transcripts.\n";
+		s += "The GTF file with the key h.ens.86 refers to the current ENSEMBL annotation. Supply for every\n";
+		s += "biotype a list of information (see below) and a link to the gene on the current ENSEMBL website\n";
+		s += "for 10 genes with the most transcripts in this GTF.\n";
+		s += "Provide the information: id, symbol, biotype, chromosome, strand, start, end, number of transcripts,\n";
+		s += "number of CDS-s. The url for a given gene on the ENSEMBL website is given by:\n";
+		s += "http://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=<geneid>\n";
+		
+		return s;
 	}
 	
 	public static String info4(){
@@ -124,6 +152,29 @@ public class CommandlineHandler {
 		}else if(args.length%2 != 0){
 			System.out.println(createError());
 		}else{
+			
+			switch (parseArguments(args).get("-i")) {
+			case "1":
+				
+				System.exit(0);
+				break;
+			case "2":
+				System.out.println(printInfo(2));
+				System.exit(0);
+				break;
+			case "3":
+				
+				System.exit(0);
+				break;
+			case "7":
+				
+				System.exit(0);
+				break;
+				
+			default:
+				System.out.println("FAIL");
+				break;
+			}
 			
 			Assignment1 as = new Assignment1();
 			

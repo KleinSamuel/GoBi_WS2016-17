@@ -92,7 +92,7 @@ public class GTF_Parser implements Runnable {
 				}
 				
 				tmpID_gene = getValueFromAttribute("gene_id", tempMap);
-				currentGene = new Gene(tmpID_gene, Integer.parseInt(start), Integer.parseInt(end), strand, tempBiotype, null);
+				currentGene = new Gene(tmpID_gene, getValueFromAttribute("gene_name", tempMap), Integer.parseInt(start), Integer.parseInt(end), strand, tempBiotype, null, tempChrID);
 				
 				/* chromosome for gene already exists */
 				if(genomeAnnotation.getChromosomeList().containsKey(tempChrID)){
@@ -110,6 +110,8 @@ public class GTF_Parser implements Runnable {
 							g.setOnNegativeStrand(strand);
 							g.setBioType(tempBiotype);
 							g.setChromosome(genomeAnnotation.getChromosomeList().get(tempChrID));
+							g.setSymbol(getValueFromAttribute("gene_name", tempMap));
+							g.setChromosomeID(tempChrID);
 						}
 					}
 					/* gene does not exists */
@@ -309,7 +311,7 @@ public class GTF_Parser implements Runnable {
 	}
 	
 	private Gene createDummyGene(String geneID){
-		return new Gene(geneID, -1, -1, "", "", null);
+		return new Gene(geneID, "", -1, -1, "", "", null, "");
 	}
 	
 	private Chromosome createDummyChromosome(String chrID){
