@@ -19,15 +19,27 @@ public class LinePlot extends Plot{
 	int maxX, maxY;
 	int minX = 0, minY = 0;
 	
-	public boolean logScaleXAxis = false;
+	public boolean showLegend = true;
 	
-	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int maxX, int maxY){
-		
-		this.x = pair.getKey();
-		this.y = pair.getValue();
+	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int maxX, int maxY, boolean logScaleX){
 		
 		this.maxX = maxX;
 		this.maxY = maxY;
+		
+		if(logScaleX){
+			this.x = logScale(pair.getKey());
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		}else{
+			this.x = pair.getKey();
+		}
+		
+		this.y = pair.getValue();
 		
 		setTitle(title);
 		setXLab(xLab);
@@ -40,9 +52,28 @@ public class LinePlot extends Plot{
 		}
 	}
 	
-	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int minX, int minY, int maxX, int maxY){
+	public Vector<Vector<Object>> logScale(Vector<Vector<Object>> in){
 		
-		this(pair, title, xLab, yLab, maxX, maxY);
+		Vector<Vector<Object>> tmp = new Vector<>();
+		double max = 0;
+		
+		for(Vector<Object> v : in){
+			Vector<Object> tmp2 = new Vector<>();
+			for(Object v2 : v){
+				double x = Math.log10((double)((int)v2+1.0));
+				tmp2.add(x);
+				max = Math.max(max, x);
+			}
+			tmp.add(tmp2);
+		}
+		
+		this.maxX = (int)(max+1);
+		return tmp;
+	}
+	
+	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int minX, int minY, int maxX, int maxY, boolean logScaleX){
+		
+		this(pair, title, xLab, yLab, maxX, maxY, logScaleX);
 		
 		this.minX = minX;
 		this.minY = minY;
@@ -103,7 +134,9 @@ public class LinePlot extends Plot{
 		}
 		
 		command += String.format("ll<-scan(\"%s\",nlines=1,skip="+(counter)+",what=character());", tmp);
-		command += String.format("legend(\"bottomright\", legend=ll, col=1:"+x.size()+", lty=c(1:1));");
+		if(showLegend){
+			command += String.format("legend(\"bottomright\", legend=ll, col=1:"+x.size()+", lty=c(1:1));");
+		}
 		command += String.format("title(main=\"%s\", xlab=\"%s\", ylab=\"%s\");", super.title, super.xLab, super.yLab);
 		command += "dev.off();";
 		

@@ -1,8 +1,6 @@
 package tasks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +9,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import crawling.EnsemblCrawler;
 import debugStuff.DebugMessageFactory;
@@ -317,7 +314,7 @@ public class Assignment1 {
 
 				for (Entry<Integer, Integer> s2 : values.entrySet()) {
 
-					if (s2.getKey() <= 1) {
+					if (s2.getKey() < 1) {
 						continue;
 					}
 
@@ -339,7 +336,7 @@ public class Assignment1 {
 				vectorOfVectors2.add(vTMP2);
 			}
 
-			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), s.getKey(), "num tr/genes", "num genes", maxX, maxY);
+			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), s.getKey(), "num tr/genes", "num genes", maxX, maxY, false);
 
 			ArrayList<String[]> tmp = new ArrayList<>();
 
@@ -431,6 +428,36 @@ public class Assignment1 {
 		
 		HashMap<String, Object[]> geneLength = new HashMap<>();
 		
+		/* check if gene is unique or in both files */
+		HashSet<String> genesOnBoth = new HashSet<>();
+		HashSet<String> genesUnique = new HashSet<>();
+		
+		int file1 = 0;
+		int file2 = 0;
+		
+		for(Chromosome c : gaGC10.getChromosomeList().values()){
+			genesOnBoth.addAll(c.getGenes().keySet().stream().map(s -> s.substring(0, s.lastIndexOf("."))).collect(Collectors.toSet()));
+		}
+		
+		file1 = genesOnBoth.size();
+		
+		for(Chromosome c : gaGC25.getChromosomeList().values()){
+			for(String s : c.getGenes().keySet().stream().map(s -> s.substring(0, s.lastIndexOf("."))).collect(Collectors.toList())){
+				if(!genesOnBoth.contains(s)){
+					genesOnBoth.remove(s);
+					genesUnique.add(s);
+				}
+				file2++;
+			}
+		}
+			
+		System.out.println("ON BOTH: "+genesOnBoth.size());
+		System.out.println("UNIQUE: "+genesUnique.size());
+		System.out.println("FILE1: "+file1);
+		System.out.println("FILE2: "+file2);
+		
+		HashSet<String> changed = new HashSet<>();
+		
 		for (Entry<String, Chromosome> chromosomeEntry : gaGC10.getChromosomeList().entrySet()) {
 			
 			ArrayList<String> differentGenes = new ArrayList<>(chromosomeEntry.getValue().getGenes().keySet().stream().map(s -> s.substring(0, s.lastIndexOf("."))).collect(Collectors.toSet()));
@@ -463,6 +490,17 @@ public class Assignment1 {
 						tmpGeneLength.add(Math.abs((g1.getStop() + 1 - g1.getStart()) - (g2.getStop() + 1 - g2.getStart())));
 						
 						genesNotChanged++;
+					}else{
+						if(genesOnBoth.contains(geneId)){
+							changed.add(geneId);
+						}
+					}
+					
+				}
+				
+				for(String s : differentGenes){
+					if(genesOnBoth.contains(s)){
+						changed.add(s);
 					}
 				}
 
@@ -470,41 +508,39 @@ public class Assignment1 {
 				DebugMessageFactory.printInfoDebugMessage(true, "Chromosome "+chromosomeEntry.getKey()+" is not contained in gencode.v25.");
 				continue;
 			}
-			genesChanged += differentGenes.size();
 			
 			geneDistance.put(chromosomeEntry.getKey(), tmp);
 			geneLength.put(chromosomeEntry.getKey(), tmpGeneLength.stream().sorted().toArray());
 		}
 		
-		System.out.println("GENES CHANGED : "+genesChanged);
+		System.out.println("GENES CHANGED : "+changed.size());
 		System.out.println("GENES NOT CHANGED : "+genesNotChanged);
 		
-		for (Entry<String, HashMap<String, Integer>> entry : geneDistance.entrySet()){
-			
-			System.out.println(entry.getKey());
-			
-			Object[] array = entry.getValue().values().stream().sorted().toArray();
-			
-			System.out.println("ARRAY:");
-			System.out.println(Arrays.toString(array));
-			
-			Pair<Vector<Object>, Vector<Object>> tmp = cumulativeSum(array);
-			Vector<Vector<Object>> vectorOfVectors1 = new Vector<>();
-			Vector<Vector<Object>> vectorOfVectors2 = new Vector<>();
-			
-			vectorOfVectors1.add(tmp.getKey());
-			vectorOfVectors2.add(tmp.getValue());
-			
-			int minX = (int)tmp.getKey().get(0);
-			int minY = (int)tmp.getValue().get(0);
-			int maxX = (int)tmp.getKey().get(tmp.getKey().size()-1);
-			int maxY = (int)tmp.getValue().get(tmp.getValue().size()-1);
-			
-			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), ""+entry.getKey(), "XLAB", "YLAB", minX, minY, maxX, maxY);
-			
-			lp.plot();
-			
-		}
+		ConfigHelper ch2 = new ConfigHelper();
+		
+		AllroundFileWriter.writeSimpleFile(ch2.getDefaultOutputPath()+"unique.txt", genesUnique);
+		
+//		for (Entry<String, HashMap<String, Integer>> entry : geneDistance.entrySet()){
+//			
+//			Object[] array = entry.getValue().values().stream().sorted().toArray();
+//			
+//			Pair<Vector<Object>, Vector<Object>> tmp = cumulativeSum(array);
+//			Vector<Vector<Object>> vectorOfVectors1 = new Vector<>();
+//			Vector<Vector<Object>> vectorOfVectors2 = new Vector<>();
+//			
+//			vectorOfVectors1.add(tmp.getKey());
+//			vectorOfVectors2.add(tmp.getValue());
+//			
+//			int minX = (int)tmp.getKey().get(0);
+//			int minY = (int)tmp.getValue().get(0);
+//			int maxX = (int)tmp.getKey().get(tmp.getKey().size()-1);
+//			int maxY = (int)tmp.getValue().get(tmp.getValue().size()-1);
+//			
+//			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), ""+entry.getKey(), "Chromosomale distance (log10)", "Amount genes", minX, minY, maxX, maxY, true);
+//			lp.showLegend = false;
+//			lp.plot();
+//			
+//		}
 		
 //		for (Entry<String, Object[]> entry : geneLength.entrySet()){
 //			
@@ -522,7 +558,6 @@ public class Assignment1 {
 //			
 //			for (int i = 0; i < entry.getValue().length-1; i++) {
 //				
-//				System.out.print((int)entry.getValue()[i]);
 //				v1.add((int)entry.getValue()[i]);
 //				counter2 = 0;
 //				
@@ -534,14 +569,12 @@ public class Assignment1 {
 //				
 //				counter += counter2;
 //				v2.add(counter);
-//				
-//				System.out.println("\t\t"+counter);
 //			}
 //			
 //			vectorOfVectors1.add(v1);
 //			vectorOfVectors2.add(v2);
 //			
-//			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), ""+entry.getKey(), "XLAB", "YLAB", (int)v1.get(v1.size()-1), (int)v2.get(v2.size()-1));
+//			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), ""+entry.getKey(), "XLAB", "YLAB", (int)v1.get(v1.size()-1), (int)v2.get(v2.size()-1), true);
 //			
 //			lp.plot();
 //			
@@ -597,10 +630,6 @@ public class Assignment1 {
 			second.add(counter);
 		}
 		
-		System.out.println("CUM SUM:");
-		System.out.println(Arrays.toString(first.toArray()));
-		System.out.println(Arrays.toString(second.toArray()));
-		
 		return new Pair<Vector<Object>, Vector<Object>>(first, second);
 	}
 
@@ -610,8 +639,8 @@ public class Assignment1 {
 
 //		as1.task_1();
 //		as1.task_2();
-		as1.task_3();
-//		as1.task_7();
+//		as1.task_3();
+		as1.task_7();
 
 	}
 
