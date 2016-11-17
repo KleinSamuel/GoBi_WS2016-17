@@ -4,7 +4,8 @@
 args = commandArgs(TRUE)
 biotype1 = args[3]
 biotype2 = args[4]
-data = read.table(args[1], header = FALSE)
+data = read.table(args[1], header = FALSE, fill = TRUE)
+data[is.na(data)] = 0
 same = as.numeric(data[1,])
 sameVal = cumsum(as.numeric(data[2,]))
 diff = as.numeric(data[3,])
