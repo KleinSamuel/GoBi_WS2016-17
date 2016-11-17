@@ -116,10 +116,6 @@ public class Task_3 {
 			int maxX = 0;
 			int maxY = 0;
 
-//			 if(!s.getKey().equals("protein_coding")){
-//				 continue;
-//			 }
-
 			Vector<Vector<Object>> vectorOfVectors1 = new Vector<>();
 			Vector<Vector<Object>> vectorOfVectors2 = new Vector<>();
 

@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import debugStuff.DebugMessageFactory;
+import io.ConfigReader;
 
 /**
  * Used to crawl some information from the ensembl website
@@ -100,7 +101,7 @@ public class EnsemblCrawler {
 		
 		numProts = numProts/2;
 		
-		DebugMessageFactory.printInfoDebugMessage(true, "Finished crawling from "+url.toString());
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Finished crawling from "+url.toString());
 		
 		return new String[]{url.toString(), geneName+" "+geneID+"("+fromTo+") num transcripts: "+numTrans+" num proteins: "+numProts};
 	}

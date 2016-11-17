@@ -74,7 +74,7 @@ public class AllroundFileWriter {
 			e.printStackTrace();
 		}
 		
-		DebugMessageFactory.printNormalDebugMessage(true, "File written.");
+		DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "File written.");
 		
 	}
 	
@@ -165,7 +165,7 @@ public class AllroundFileWriter {
 			bw.flush();
 			bw.close();
 			
-			DebugMessageFactory.printNormalDebugMessage(true, "FILE SUCCESSFULLY WRITTEN TO "+filepath);
+			DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "FILE SUCCESSFULLY WRITTEN TO "+filepath);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

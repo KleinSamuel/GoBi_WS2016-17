@@ -28,9 +28,9 @@ public class BarPlot extends Plot{
 		
 		try {
 			
-			DebugMessageFactory.printNormalDebugMessage(true, "Wait for R to plot..");
+			DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "Wait for R to plot..");
 			t.join();
-			DebugMessageFactory.printNormalDebugMessage(true, "R thread terminated.");
+			DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "R thread terminated.");
 			
 		} catch (InterruptedException e) {
 			throw new RuntimeException("R did not exit properly!");

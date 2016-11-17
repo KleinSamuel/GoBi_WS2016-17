@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import debugStuff.DebugMessageFactory;
+import io.ConfigReader;
 
 public class ThreadHandler {
 
@@ -29,7 +30,7 @@ public class ThreadHandler {
 	
 	public void startThreads(String filepath){
 		
-		DebugMessageFactory.printInfoDebugMessage(true, "PARSING FILE : "+filepath);
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "PARSING FILE : "+filepath);
 		
 		try {
 			
@@ -82,7 +83,7 @@ public class ThreadHandler {
 		double currentProgress = (double)currentByte/amountBytes*100;
 		double roundedProgress = Math.round(currentProgress*100.0)/100.0;
 		
-		DebugMessageFactory.printInfoDebugMessage(true, "READ IN PROGRESS: "+roundedProgress+" %");
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "READ IN PROGRESS: "+roundedProgress+" %");
 	}
 	
 	public static int countLines(String filename) throws IOException {
@@ -119,29 +120,4 @@ public class ThreadHandler {
 	public GenomeAnnotation getGenomeAnnotation(){
 		return this.genomeAnnotation;
 	}
-	
-	
-//	public static void main(String[] args) {
-//		
-//		ThreadHandler th = new ThreadHandler();
-//		
-//		long startTime = System.currentTimeMillis();
-//		
-////		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Saccharomyces_cerevisiae.R64-1-1.75.gtf");
-//		th.startThreads("/home/proj/biosoft/praktikum/genprakt-ws16/gtf/gencode.v10.annotation.gtf");
-////		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Homo_sapiens.GRCh37.75.gtf");
-////		th.startThreads("/usr/local/storage/GOBI/gtf/gtf/Mus_musculus.GRCm38.75.gtf");
-//		
-//		long endTime = System.currentTimeMillis();
-//		
-//		System.out.println("[NEEDED TIME] "+(endTime-startTime)+" milliseconds");
-//		
-//		System.out.println("Chromosomes:\t"+th.genomeAnnotation.getAmountChromsomes());
-//		System.out.println("Genes:\t\t"+th.genomeAnnotation.getAmountGenes());
-//		System.out.println("Exons:\t\t"+th.genomeAnnotation.getAmountExons());
-//		System.out.println("Transcripte:\t"+th.genomeAnnotation.getAmountTranscripts());
-//		
-//		System.out.println(th.genomeAnnotation.getAmountGenesPerBiotype().get("protein_coding"));
-//		
-//	}
 }

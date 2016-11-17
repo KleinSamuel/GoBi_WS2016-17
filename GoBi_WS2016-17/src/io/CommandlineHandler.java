@@ -30,6 +30,7 @@ public class CommandlineHandler {
 		s += "-t 5\t\tExecute task #5.\n";
 		s += "-t 6\t\tExecute task #6.\n";
 		s += "-t 7\t\tExecute task #7.\n\n";
+		s += "-q\t\tQuiet mode (no print statements)\n\n";
 		s += "###########################################################\n";
 		s += "\nYOU NEED THESE DIRECTORIES NEXT TO THE JAR-FILE:\n\n";
 		s += "-config\n";
@@ -173,6 +174,8 @@ public class CommandlineHandler {
 		}else{
 			
 			HashMap<String, String> argsNew = parseArguments(args);
+			
+			ConfigReader.DEBUG_MODE = argsNew.containsKey("-q") ? false : true;
 			
 			if(argsNew.containsKey("-i")){
 				switch (parseArguments(args).get("-i")) {

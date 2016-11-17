@@ -14,6 +14,8 @@ import java.util.HashMap;
  */
 public class ConfigReader {
 	
+	public static boolean DEBUG_MODE = true;
+	
 	public static HashMap<String, String> readConfig(){
 		
 		ConfigHelper ch = new ConfigHelper();

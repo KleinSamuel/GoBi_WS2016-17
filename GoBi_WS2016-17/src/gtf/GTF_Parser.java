@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import debugStuff.DebugMessageFactory;
+import io.ConfigReader;
 
 public class GTF_Parser implements Runnable {
 		
@@ -373,11 +374,11 @@ public class GTF_Parser implements Runnable {
 	@Override
 	public void run() {
 		
-		DebugMessageFactory.printInfoDebugMessage(true, "Thread #"+this.threadName+" started.");
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Thread #"+this.threadName+" started.");
 		
 		this.readFile(this.FILEPATH);
 		
-		DebugMessageFactory.printInfoDebugMessage(true, "Thread #"+this.threadName+" finished.");
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Thread #"+this.threadName+" finished.");
 	}
 
 }

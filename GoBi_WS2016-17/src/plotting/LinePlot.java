@@ -89,9 +89,9 @@ public class LinePlot extends Plot{
 		t.start();
 		
 		try {
-			DebugMessageFactory.printNormalDebugMessage(true, "Wait for R to plot..");
+			DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "Wait for R to plot..");
 			t.join();
-			DebugMessageFactory.printNormalDebugMessage(true, "("+this.filename+".png) R thread terminated.");
+			DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "("+this.filename+".png) R thread terminated.");
 			
 		} catch (InterruptedException e) {
 			throw new RuntimeException("R did not exit properly!");
