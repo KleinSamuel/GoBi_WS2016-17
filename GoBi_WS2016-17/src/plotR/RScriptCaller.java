@@ -53,6 +53,8 @@ public class RScriptCaller {
 				this.arguments.set(1, this.arguments.get(1).replace("bin", ""));
 			}else{
 				this.arguments.set(1, this.arguments.get(1).replace("UnionTranscriptPlotter.R", "/UnionTranscriptPlotter.R"));
+				this.arguments.set(1, this.arguments.get(1).replace("ExonSkippingPlotter.R", "/ExonSkippingPlotter.R"));
+				this.arguments.set(1, this.arguments.get(1).replace("OverlapPlotter.R", "/OverlapPlotter.R"));
 			}
 			
 			System.out.println(Arrays.toString(this.arguments.toArray()));
@@ -61,7 +63,7 @@ public class RScriptCaller {
 			// Process proc = new ProcessBuilder(pathToR, scriptName,
 			// inputFileName, inputFileName.replace("tsv", "jpg"),
 			// args).start();
-			Process proc = new ProcessBuilder(arguments).inheritIO().start();
+			Process proc = new ProcessBuilder(arguments).start();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
