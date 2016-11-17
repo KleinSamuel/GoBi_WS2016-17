@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Main class for every read in shit
- * 
- * TODO: find a way to read in configuration file just one time but stay static
+ * Main class for every config read in shit
  * 
  * @author Samuel Klein
  */

@@ -1,14 +1,10 @@
 package io;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import tasks.Assignment1;
 
 public class CommandlineHandler {
-
-	public static ArrayList<String> flags = new ArrayList<String>(Arrays.asList(new String[]{"t"}));
 	
 	public static String createInfo(){
 		String s = "";
@@ -33,8 +29,14 @@ public class CommandlineHandler {
 		s += "-t 5\t\tExecute task #5.\n";
 		s += "-t 6\t\tExecute task #6.\n";
 		s += "-t 7\t\tExecute task #7.\n\n";
-		s += "-o \"path\"\tOutputdirectory, if not set the default \n\t\tdirectory will be used.\n\n";
-		s += "-f \"path\"\tPath to directory with gtf files.\n";
+		s += "###########################################################\n";
+		s += "\nYOU NEED A THESE DIRECTORIES NEXT TO THE JAR-FILE:\n\n";
+		s += "-config\n";
+		s += "\t\tannot.map\n";
+		s += "\t\tconfiguration.txt\n";
+		s += "\t\tgtf-paths.txt\n";
+		s += "-output\n";
+		s += "-tempfiles\n\n";
 		s += "###########################################################\n";
 		
 		return s;
@@ -88,7 +90,7 @@ public class CommandlineHandler {
 	public static String info2(){
 		String s = "";
 		
-		s += "Task 2 (Compare number of annotated genes):\n\n";
+		s += "\nTask 2 (Compare number of annotated genes):\n\n";
 		s += "You find 6 GTF files, and a file named annot.map in\n";
 		s += "/home/proj/biosoft/praktikum/genprakt/assignment/a1/data.\n";
 		s += "Use your parser from Task 1 to compare the number of annotated genes per biotype in the different\n";
@@ -103,7 +105,7 @@ public class CommandlineHandler {
 	public static String info3(){
 		String s = "";
 		
-		s += "Task 3 (Compare number of transcripts in annotated genes):\n\n";
+		s += "\nTask 3 (Compare number of transcripts in annotated genes):\n\n";
 		s += "Extract the number of transcripts per gene using the same files as in Task 2. Create an html\n";
 		s += "file showing the cumulative distributions of the number of transcripts for each biotype in the different\n";
 		s += "GTF files. Write the biotypes sorted by the total number of genes having multiple transcripts.\n";
@@ -118,19 +120,35 @@ public class CommandlineHandler {
 	}
 	
 	public static String info4(){
-		return null;
+		String s = "";
+		
+		s += "INFO NOT AVAILABLE YET.";
+		
+		return s;
 	}
 	
 	public static String info5(){
-		return null;
+		String s = "";
+		
+		s += "INFO NOT AVAILABLE YET.";
+		
+		return s;
 	}
 	
 	public static String info6(){
-		return null;
+		String s = "";
+		
+		s += "INFO NOT AVAILABLE YET.";
+		
+		return s;
 	}
 	
 	public static String info7(){
-		return null;
+		String s = "";
+		
+		s += "INFO NOT AVAILABLE YET.";
+		
+		return s;
 	}
 	
 	public static HashMap<String, String> parseArguments(String[] args){
@@ -153,47 +171,51 @@ public class CommandlineHandler {
 			System.out.println(createError());
 		}else{
 			
-			switch (parseArguments(args).get("-i")) {
-			case "1":
+			HashMap<String, String> argsNew = parseArguments(args);
+			
+			if(argsNew.containsKey("-i")){
+				switch (parseArguments(args).get("-i")) {
+				case "1":
+					
+					break;
+				case "2":
+					System.out.println(printInfo(2));
+					break;
+				case "3":
+					
+					break;
+				case "7":
+					
+					break;
+					
+				default:
+					System.out.println("FAIL");
+					break;
+				}
 				
 				System.exit(0);
-				break;
-			case "2":
-				System.out.println(printInfo(2));
-				System.exit(0);
-				break;
-			case "3":
-				
-				System.exit(0);
-				break;
-			case "7":
-				
-				System.exit(0);
-				break;
-				
-			default:
-				System.out.println("FAIL");
-				break;
 			}
 			
 			Assignment1 as = new Assignment1();
 			
-			switch (parseArguments(args).get("-t")) {
-			case "1":
-				as.task_1();
-				break;
-			case "2":
-				as.task_2();
-				break;
-			case "3":
-				as.task_3();
-				break;
-			case "7":
-				as.task_7();
-				break;
-				
-			default:
-				break;
+			if(argsNew.containsKey("-t")){
+				switch (parseArguments(args).get("-t")) {
+				case "1":
+					as.task_1();
+					break;
+				case "2":
+					as.task_2();
+					break;
+				case "3":
+					as.task_3();
+					break;
+				case "7":
+					as.task_7();
+					break;
+					
+				default:
+					break;
+				}
 			}
 			
 		}
