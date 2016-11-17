@@ -4,6 +4,9 @@ import java.util.HashMap;
 
 import assignment_1.Task_2;
 import assignment_1.Task_3;
+import assignment_1.Task_4;
+import assignment_1.Task_5;
+import assignment_1.Task_6;
 import assignment_1.Task_7;
 
 public class CommandlineHandler {
@@ -61,7 +64,6 @@ public class CommandlineHandler {
 			break;
 		case 2:
 			s = info2();
-			
 			break;
 		case 3:
 			s = info3();
@@ -91,7 +93,6 @@ public class CommandlineHandler {
 	
 	public static String info2(){
 		String s = "";
-		
 		s += "\nTask 2 (Compare number of annotated genes):\n\n";
 		s += "You find 6 GTF files, and a file named annot.map in\n";
 		s += "/home/proj/biosoft/praktikum/genprakt/assignment/a1/data.\n";
@@ -100,13 +101,11 @@ public class CommandlineHandler {
 		s += "every biotype and every gtf-name (first column in annot.map) the number of annotated genes per\n";
 		s += "biotype in the corresponding gtf. The biotypes should be ordered by their total occurrence in all GTF files.\n";
 		s += "In addition, create barplots for each biotype and add them to a html file genetypes.html in this order.\n";
-		
 		return s;
 	}
 	
 	public static String info3(){
 		String s = "";
-		
 		s += "\nTask 3 (Compare number of transcripts in annotated genes):\n\n";
 		s += "Extract the number of transcripts per gene using the same files as in Task 2. Create an html\n";
 		s += "file showing the cumulative distributions of the number of transcripts for each biotype in the different\n";
@@ -117,38 +116,64 @@ public class CommandlineHandler {
 		s += "Provide the information: id, symbol, biotype, chromosome, strand, start, end, number of transcripts,\n";
 		s += "number of CDS-s. The url for a given gene on the ENSEMBL website is given by:\n";
 		s += "http://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=<geneid>\n";
-		
 		return s;
 	}
 	
 	public static String info4(){
 		String s = "";
-		
-		s += "INFO NOT AVAILABLE YET.";
-		
+		s += "\nTask 4 (Compare number of overlapping genes):\n\n";
+		s += "Extract the list of pairs of overlapping genes for every input GTF file. As genes may be located on\n";
+		s += "the plus or minus strand, there are three different types of overlap: (i) overlapping genes disregarding\n";
+		s += "their strands, (ii) overlapping genes on the same strand, (iii) overlapping genes on different strands.\n";
+		s += "Write overlapping gene pairs of all three types into the file ${gtfname}.overlaps.tsv into your\n";
+		s += "solution directory (for each of the gtf files. These tab separated files must have the header: geneid1,\n";
+		s += "geneid2, strand1, strand2, biotype1, biotype2, num overlapping bases.\n";
+		s += "Create an html file showing the cumulative distribution of overlapping genes for all three overlap\n";
+		s += "types per biotype-pairs, showing the biotype-pairs ordered (descending) by their total number (over\n";
+		s += "all GTF files) of overlapping genes.\n";
+		s += "Similar to Task 3 add a list to the html output for each biotype pair with the ten most overlapping\n";
+		s += "genes in the current ENSEMBL version with links to the corresponding genes.\n";
 		return s;
 	}
 	
 	public static String info5(){
 		String s = "";
-		
-		s += "INFO NOT AVAILABLE YET.";
-		
+		s += "\nTask 5 (Analyze the transcribed lengths of genes):\n\n";
+		s += "Implement a method that calculates for a gene the “union transcript” i.e. the genomic region vector\n";
+		s += "that covers all transcripts annotated by the gene (and nothing more).\n";
+		s += "Calculate for every gene the proportion “length of longest transcript”/“length of union transcript”\n";
+		s += "in every gtf, plot their cumulative distributions and collect those plots in the html file\n";
+		s += "transcript_lengths.html.\n";
 		return s;
 	}
 	
 	public static String info6(){
 		String s = "";
-		
-		s += "INFO NOT AVAILABLE YET.";
-		
+		s += "\nTask 6 (Analyze exon skippings):\n\n";
+		s += "One form of alternative splicing is exon skipping. An exon-skipping splicing event is a tuple (gene,\n";
+		s += "intron-start, intron-end) and is defined by (at least) two transcripts: wildtype (WT) and spliced\n";
+		s += "variant (SV) of the same gene, and an intron in SV with start and end corresponding to an exon\n";
+		s += "end and exon start in WT, respectively, and the SV-intron spans at least one exon in WT.\n";
+		s += "For any exon-skip event there may be several WT-s and several SV-s, and there may be several\n";
+		s += "sets of skipped exons (see figure below; this is one exon-skipping event).\n";
 		return s;
 	}
 	
 	public static String info7(){
 		String s = "";
 		
-		s += "INFO NOT AVAILABLE YET.";
+		s += "\nTask 7 (Compare genome versions):\n\n";
+		s += "While the human genome was 90% completed already in the year 2000 and announced to be complete\n";
+		s += "in 2003, there are still regularly changes both in the overall assembly and the gene annotation.\n";
+		s += "The GTF-s with key h.gc.10 and h.gc.23 are based on different assemblies provided by GENCODE.\n";
+		s += "Compare the set of genes annotated in both versions (gene id up to the dot):\n";
+		s += "• For how many genes has the chromosome been changed?\n";
+		s += "• For all others, create a cumulative plot on the absolute chromosomal distance (minimum of\n";
+		s += "start / end differences) of the genes (chrdist.jpg)\n";
+		s += "• Create a cumulative plot on the gene length differences (glengthdiff.jpg)\n";
+		s += "• Create a cumulative plot for the distribution of differences of the number of annotated transcripts\n";
+		s += "/ CDS-s (two curves) (andiff.jpg)\n";
+		s += "Collect these plots in the html file genome_versions.html.\n";
 		
 		return s;
 	}
@@ -183,10 +208,19 @@ public class CommandlineHandler {
 					System.out.println(printInfo(2));
 					break;
 				case "3":
-					
+					System.out.println(printInfo(3));
+					break;
+				case "4":
+					System.out.println(printInfo(4));
+					break;
+				case "5":
+					System.out.println(printInfo(5));
+					break;
+				case "6":
+					System.out.println(printInfo(6));
 					break;
 				case "7":
-					
+					System.out.println(printInfo(7));
 					break;
 					
 				default:
@@ -197,7 +231,6 @@ public class CommandlineHandler {
 				System.exit(0);
 			}
 			
-			
 			if(argsNew.containsKey("-t")){
 				switch (parseArguments(args).get("-t")) {
 				case "2":
@@ -205,6 +238,15 @@ public class CommandlineHandler {
 					break;
 				case "3":
 					new Task_3().execute_task_3();
+					break;
+				case "4":
+					new Task_4().execute_task_4();
+					break;
+				case "5":
+					new Task_5().execute_task_5();
+					break;
+				case "6":
+					new Task_6().execute_task_6();
 					break;
 				case "7":
 					new Task_7().execute_task_7();
