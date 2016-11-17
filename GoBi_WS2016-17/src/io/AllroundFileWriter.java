@@ -92,11 +92,12 @@ public class AllroundFileWriter {
 			
 			for(String fp : plotPaths){
 				
+				System.out.println(fp);
+				
 				bw.write("<figure>\n");
 				
-				String base64 = Base64Factory.encodeByteArray64(Base64Factory.imageToByteArray(fp+".png"));
-				
 				if(includeBase64){
+					String base64 = Base64Factory.encodeByteArray64(Base64Factory.imageToByteArray(fp+".png"));
 					bw.write("<img width=\"1000\" height=\"1000\" src=\"data:image/png;base64,"+base64+"\">\n");
 				}else{
 					bw.write("<img src=\""+fp+".png\" width=\"1000\" height=\"1000\">\n");

@@ -1,6 +1,7 @@
 package plotR;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ public class RScriptCaller {
 
 	private String pathToR = "/home/proj/biosoft/software/R/R-3.3.0/bin/Rscript";
 	private String outputDir = this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()
-			.substring(5)/* .replace("bin", "src") */ + "output/";
+			.substring(5)/*.replace("bin", "")*/ + "output/";
 	private String inputFileName, scriptName;
 	private List<String> arguments;
 
@@ -47,10 +48,14 @@ public class RScriptCaller {
 
 	public void execRScript() {
 		try {
+			
+			this.arguments.set(1, this.arguments.get(1).replace("bin", ""));
 			@SuppressWarnings("unused")
 			// Process proc = new ProcessBuilder(pathToR, scriptName,
 			// inputFileName, inputFileName.replace("tsv", "jpg"),
 			// args).start();
+			
+			
 			Process proc = new ProcessBuilder(arguments).start();
 		} catch (IOException e) {
 			e.printStackTrace();

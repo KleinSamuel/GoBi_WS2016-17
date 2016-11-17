@@ -20,8 +20,7 @@ public class Task_5 {
 
 		ConfigHelper ch = new ConfigHelper();
 
-		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"),
-				"\t", new String[] { "#" });
+		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"), "\t", new String[] { "#" });
 
 		GenomeAnnotation ga;
 		OverlappingGenes og;
@@ -40,12 +39,10 @@ public class Task_5 {
 			LinkedList<String> arguments = new LinkedList<>();
 			arguments.add(unionTrs.getOutputFile().replace(".tsv", ".png"));
 			pngPaths.add(unionTrs.getOutputFile().replace(".tsv", ""));
-			new RScriptCaller(ch.getPathToDirOutsideOfJar() + "UnionTranscriptPlotter.R", unionTrs.getOutputFile(),
-					arguments).execRScript();
+			new RScriptCaller(ch.getPathToDirOutsideOfJar() + "UnionTranscriptPlotter.R", unionTrs.getOutputFile(), arguments).execRScript();
 		}
 
-		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "transcript_lengths.html", pngPaths, null,
-				true);
+		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "transcript_lengths.html", pngPaths, null, false);
 
 	}
 	

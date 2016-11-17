@@ -26,21 +26,21 @@ public class ConfigHelper {
 	 * @return String path to configuration package
 	 */
 	public String getDefaultConfigPath(String filename){
-//		return this.getClass().getClassLoader().getResource("config/"+filename).toExternalForm().substring(5);
-		return getPathToDirOutsideOfJar()+"/config/"+filename;
+		return this.getClass().getClassLoader().getResource("config/"+filename).toExternalForm().substring(5);
+//		return getPathToDirOutsideOfJar()+"/config/"+filename;
 	}
 	
 	/**
 	 * @return String path to default output directory which is the output package
 	 */
 	public String getDefaultOutputPath(){
-//		return this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5).replace("bin", "src")+"output/";
-		return getPathToDirOutsideOfJar()+"/output/";
+		return this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5).replace("bin", "src")+"output/";
+//		return getPathToDirOutsideOfJar()+"/output/";
 	}
 	
 	public String getDefaultTempPath(){
-//		return this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5).replace("bin", "src")+"tempFiles/";
-		return getPathToDirOutsideOfJar()+"/tempfiles/";
+		return this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5).replace("bin", "src")+"tempFiles/";
+//		return getPathToDirOutsideOfJar()+"/tempfiles/";
 	}
 	
 	public String getDefaultObjectOutputPath(){
