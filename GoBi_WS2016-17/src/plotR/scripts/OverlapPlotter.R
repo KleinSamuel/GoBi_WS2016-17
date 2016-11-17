@@ -1,17 +1,32 @@
 #!/home/proj/biosoft/software/R/R-3.3.0/bin/Rscript
-# 
+# args[1] = input, args[2] = outputFile, args[3] = biotypePair
 
 args = commandArgs(TRUE)
 biotype = args[3]
-data = read.table(args[1], header = FALSE)
-data[is.na(data)] = 0
-data = data[,-1]
-same = as.numeric(data[1,])
-sameVal = cumsum(as.numeric(data[2,]))
-diff = as.numeric(data[3,])
-diffVal = cumsum(as.numeric(data[4,]))
-disregard = as.numeric(data[5,])
-disregardVal = cumsum(as.numeric(data[6,]))
+#data = read.table(args[1], header = FALSE, fill = TRUE)
+#data[is.na(data)] = 0
+#data = data[,-1]
+same = as.numeric(scan(args[1], nlines = 1, blank.lines.skip = TRUE, what = "int"))
+sameVal = cumsum(as.numeric(scan(args[1], nlines = 1, blank.lines.skip = TRUE, what = "int", skip = 1)))
+if(length(same)>1){
+same = same[-1]
+sameVal = sameVal[-1]
+}
+
+diff = as.numeric(scan(args[1], nlines = 1, blank.lines.skip = TRUE, what = "int", skip = 3))
+diffVal = cumsum(as.numeric(scan(args[1], nlines = 1, blank.lines.skip = TRUE, what = "int", skip = 4)))
+if(length(diff)>1){
+diff = diff[-1]
+diffVal = diffVal[-1]
+}
+
+disregard = as.numeric(scan(args[1], nlines = 1, blank.lines.skip = TRUE, what = "int", skip = 6))
+disregardVal = cumsum(as.numeric(scan(args[1], nlines = 1, blank.lines.skip = TRUE, what = "int", skip = 7)))
+if(length(disregard)>1){
+disregard = disregard[-1]
+disregardVal = disregardVal[-1]
+}
+
 maxX = max(same, diff, disregard)
 maxY = max(sameVal, diffVal, disregardVal)
 
