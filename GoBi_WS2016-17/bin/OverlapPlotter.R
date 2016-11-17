@@ -30,7 +30,7 @@ disregardVal = disregardVal[-1]
 maxX = max(same, diff, disregard)
 maxY = max(sameVal, diffVal, disregardVal)
 
-jpeg(args[2])
+png(args[2])
 
 plot(same, sameVal, type = "l", xlim = c(0, maxX), ylim = c(0, maxY), col = "red", main=biotype, xlab = "#overlapping genes", ylab = "#genes with x overlapping genes(cumulative)")
 lines(diff, diffVal, col = "blue")

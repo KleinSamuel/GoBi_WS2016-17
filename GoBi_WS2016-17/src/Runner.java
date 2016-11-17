@@ -1,6 +1,10 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 import genomeAnnotation.Chromosome;
+import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
 import plotR.RScriptCaller;
 import reader.AnnotationMapper;

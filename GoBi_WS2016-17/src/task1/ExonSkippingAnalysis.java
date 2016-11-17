@@ -84,21 +84,41 @@ public class ExonSkippingAnalysis {
 		}
 	}
 
+	public LinkedList<Gene> getTopTenExon() {
+		return maxSkippedExons;
+	}
+
+	public LinkedList<Gene> getTopTenBases() {
+		return maxSkippedBases;
+	}
+
+	public int getTotalMaxExonSkipped(Gene g) {
+		return totalMaxExonSkipped.get(g);
+	}
+
+	public int getTotalMaxBasesSkipped(Gene g) {
+		return totalMaxBasesSkipped.get(g);
+	}
+
 	public String getTopTenExonSkippingText() {
 		StringBuilder sb = new StringBuilder();
 		for (Gene g : maxSkippedExons) {
 			sb.append(g.getInfoLine()[2] + " maxSkippedExons: " + totalMaxExonSkipped.get(g) + " maxSkippedBases: "
 					+ totalMaxBasesSkipped.get(g) + "\n");
 		}
+		if (sb.length() > 0)
+			sb.deleteCharAt(sb.length());
 		return sb.toString();
 	}
 
 	public String getTopTenBasesSkippingText() {
 		StringBuilder sb = new StringBuilder();
 		for (Gene g : maxSkippedBases) {
-			sb.append(g.getInfoLine() + " maxSkippedExons: " + totalMaxExonSkipped.get(g) + " maxSkippedBases: "
+			sb.append(g.getInfoLine()[2] + " maxSkippedExons: " + totalMaxExonSkipped.get(g) + " maxSkippedBases: "
 					+ totalMaxBasesSkipped.get(g) + "\n");
 		}
+		if (sb.length() > 0)
+			sb.deleteCharAt(sb.length());
 		return sb.toString();
 	}
 

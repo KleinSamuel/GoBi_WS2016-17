@@ -42,7 +42,7 @@ public class OverlappingGenes {
 	}
 
 	public void writeOverlappingGenesToFile() {
-		File outputFile = new File(outputDirectory + "/" + ga.getName() + "_overlapping_genes.txt");
+		File outputFile = new File(outputDirectory + "/" + ga.getName() + ".overlaps.tsv");
 		System.out.println("calculating gene overlaps");
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
@@ -141,7 +141,7 @@ public class OverlappingGenes {
 
 	}
 
-	public void writeOverlapsPerBiotypeToFile() {
+	public void writeOverlapsPerBiotypeToFile(String pathToJarDir) {
 		THashMap<Integer, Integer> countsToWrite;
 		TreeMap<Integer, Integer> countsSortedAndFilled;
 		File next = null;
@@ -170,9 +170,7 @@ public class OverlappingGenes {
 				LinkedList<String> args = new LinkedList<>();
 				args.add(next.getAbsolutePath().replace(".overlapStats", "_overlapStats.png"));
 				args.add(e1.getKey());
-				new RScriptCaller(ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()
-						.substring(5).replace("Runner.jar", "") + "OverlapPlotter.R", next.getAbsolutePath(), args)
-								.execRScript();
+				new RScriptCaller(pathToJarDir + "OverlapPlotter.R", next.getAbsolutePath(), args).execRScript();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
