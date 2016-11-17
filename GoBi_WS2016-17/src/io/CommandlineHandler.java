@@ -2,6 +2,9 @@ package io;
 
 import java.util.HashMap;
 
+import assignment_1.Task_2;
+import assignment_1.Task_3;
+import assignment_1.Task_7;
 import tasks.Assignment1;
 
 public class CommandlineHandler {
@@ -22,7 +25,6 @@ public class CommandlineHandler {
 		s += "###########################################################\n";
 		s += "FLAGS\t\tHINTS\n\n";
 		s += "-i x\t\tPrint information about specific task x.\n\n";
-		s += "-t 1\t\tExecute task #1.\n";
 		s += "-t 2\t\tExecute task #2.\n";
 		s += "-t 3\t\tExecute task #3.\n";
 		s += "-t 4\t\tExecute task #4.\n";
@@ -175,9 +177,6 @@ public class CommandlineHandler {
 			
 			if(argsNew.containsKey("-i")){
 				switch (parseArguments(args).get("-i")) {
-				case "1":
-					
-					break;
 				case "2":
 					System.out.println(printInfo(2));
 					break;
@@ -189,31 +188,28 @@ public class CommandlineHandler {
 					break;
 					
 				default:
-					System.out.println("FAIL");
+					System.out.println("THERE IS NO SUCH TASK.");
 					break;
 				}
 				
 				System.exit(0);
 			}
 			
-			Assignment1 as = new Assignment1();
 			
 			if(argsNew.containsKey("-t")){
 				switch (parseArguments(args).get("-t")) {
-				case "1":
-					as.task_1();
-					break;
 				case "2":
-					as.task_2();
+					new Task_2().execute_task_2();
 					break;
 				case "3":
-					as.task_3();
+					new Task_3().execute_task_3();
 					break;
 				case "7":
-					as.task_7();
+					new Task_7().execute_task_7();
 					break;
 					
 				default:
+					System.out.println("THERE IS NO SUCH TASK.");
 					break;
 				}
 			}
