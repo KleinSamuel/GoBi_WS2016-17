@@ -143,4 +143,14 @@ public class Gene extends GenomicRegion {
 		return name;
 	}
 
+	public String[] getInfoLine() {
+		int numProts = 0;
+		for (Transcript t : transcriptsOnBothStrands)
+			if (t.hasCDS())
+				numProts++;
+		return new String[] { "http://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=<" + getId() + ">",
+				name + " " + getId() + "(" + chromosome.getID() + getStrand() + " " + biotype + " " + getStart() + "-"
+						+ getStop() + ") num transcripts: " + transcripts.size() + " num proteins: " + numProts };
+	}
+
 }

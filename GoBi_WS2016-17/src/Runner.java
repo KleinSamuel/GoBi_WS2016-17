@@ -26,23 +26,27 @@ public class Runner {
 			for (Chromosome c : ga.getChromosomes().values())
 				System.out.println("chromosome " + c.getID() + "\t#genes: " + c.getGenes().size());
 
-			UnionTranscripts unionTrs = new UnionTranscripts(ga, ga.getClass().getProtectionDomain().getCodeSource()
-					.getLocation().toExternalForm().substring(5).replace("Runner.jar", "") + "output/");
-
-			unionTrs.writeOccurencesToFile(unionTrs.calculateUnionTranscriptDistribution());
-			System.out.println("plotting unionTranscriptDistribution");
-
+			// UnionTranscripts unionTrs = new UnionTranscripts(ga,
+			// ga.getClass().getProtectionDomain().getCodeSource()
+			// .getLocation().toExternalForm().substring(5).replace("Runner.jar",
+			// "") + "output/");
+			//
+			// unionTrs.writeOccurencesToFile(unionTrs.calculateUnionTranscriptDistribution());
+			// System.out.println("plotting unionTranscriptDistribution");
+			//
 			LinkedList<String> arguments = new LinkedList<>();
-			arguments.add(unionTrs.getOutputFile().replace(".tsv", ".png"));
-			new RScriptCaller(
-					ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5)
-							.replace("Runner.jar", "") + "UnionTranscriptPlotter.R",
-					unionTrs.getOutputFile(), arguments).execRScript();
-
-			OverlappingGenes og = new OverlappingGenes(ga, ga.getClass().getProtectionDomain().getCodeSource()
-					.getLocation().toExternalForm().substring(5).replace("Runner.jar", "") + "output/");
-			og.writeOverlappingGenesToFile();
-			og.writeOverlapsPerBiotypeToFile();
+			// arguments.add(unionTrs.getOutputFile().replace(".tsv", ".png"));
+			// new RScriptCaller(
+			// ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5)
+			// .replace("Runner.jar", "") + "UnionTranscriptPlotter.R",
+			// unionTrs.getOutputFile(), arguments).execRScript();
+			//
+			// OverlappingGenes og = new OverlappingGenes(ga,
+			// ga.getClass().getProtectionDomain().getCodeSource()
+			// .getLocation().toExternalForm().substring(5).replace("Runner.jar",
+			// "") + "output/");
+			// og.writeOverlappingGenesToFile();
+			// og.writeOverlapsPerBiotypeToFile();
 
 			ExonSkippingAnalysis esa = new ExonSkippingAnalysis(ga, ga.getClass().getProtectionDomain().getCodeSource()
 					.getLocation().toExternalForm().substring(5).replace("Runner.jar", "") + "output/");
@@ -54,6 +58,8 @@ public class Runner {
 					ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5)
 							.replace("Runner.jar", "") + "ExonSkippingPlotter.R",
 					esa.getOutputFile().getAbsolutePath(), arguments).execRScript();
+			System.out.println(esa.getTopTenExonSkippingText());
+			System.out.println(esa.getTopTenBasesSkippingText());
 		}
 
 	}

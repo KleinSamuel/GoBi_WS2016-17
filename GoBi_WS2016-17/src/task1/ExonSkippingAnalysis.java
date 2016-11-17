@@ -3,6 +3,7 @@ package task1;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -16,12 +17,14 @@ import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Intron;
 import genomeAnnotation.Transcript;
 import gnu.trove.map.hash.THashMap;
+import util.TopTen;
 
 public class ExonSkippingAnalysis {
 
 	private GenomeAnnotation ga;
 	private String outputDirectory;
 	private File outputFile;
+	private LinkedList<Gene> maxSkippedExons, maxSkippedBases;
 
 	public ExonSkippingAnalysis(GenomeAnnotation ga, String outputDir) {
 		this.ga = ga;
@@ -40,10 +43,12 @@ public class ExonSkippingAnalysis {
 	public File getOutputFile() {
 		return outputFile;
 	}
-	
-	public String getOutputDir(){
+
+	public String getOutputDir() {
 		return outputDirectory;
 	}
+
+	private HashMap<Gene, Integer> totalMaxExonSkipped = new HashMap<>(), totalMaxBasesSkipped = new HashMap<>();
 
 	public void analyseExonSkippings() {
 		outputFile = new File(outputDirectory + "/" + ga.getName() + "_exon_skipping_events.txt");
@@ -53,18 +58,48 @@ public class ExonSkippingAnalysis {
 			bw.write(getHeaderLine() + "\n");
 			for (Chromosome c : ga.getChromosomesInFileOrder()) {
 				for (Gene g : c.getAllGenesSorted()) {
-					for (ExonSkippingEvent ese : analyseGene(g)) {
+					LinkedList<ExonSkippingEvent> eses = analyseGene(g);
+					for (ExonSkippingEvent ese : eses) {
 						bw.write(getNextLine(ese) + "\n");
+						Integer total = totalMaxExonSkipped.get(g);
+						if (total == null)
+							totalMaxExonSkipped.put(g, ese.getMaxSkippedExons());
+						else
+							totalMaxExonSkipped.put(g, total + ese.getMaxSkippedExons());
+						total = totalMaxBasesSkipped.get(g);
+						if (total == null)
+							totalMaxBasesSkipped.put(g, ese.getMaxSkippedBases());
+						else
+							totalMaxBasesSkipped.put(g, total + ese.getMaxSkippedBases());
 					}
 				}
 			}
 			bw.close();
-
 			System.out.println("finished");
+			maxSkippedExons = new TopTen<Gene>(totalMaxExonSkipped).getTopTen();
+			maxSkippedBases = new TopTen<Gene>(totalMaxBasesSkipped).getTopTen();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	public String getTopTenExonSkippingText() {
+		StringBuilder sb = new StringBuilder();
+		for (Gene g : maxSkippedExons) {
+			sb.append(g.getInfoLine()[2] + " maxSkippedExons: " + totalMaxExonSkipped.get(g) + " maxSkippedBases: "
+					+ totalMaxBasesSkipped.get(g) + "\n");
+		}
+		return sb.toString();
+	}
+
+	public String getTopTenBasesSkippingText() {
+		StringBuilder sb = new StringBuilder();
+		for (Gene g : maxSkippedBases) {
+			sb.append(g.getInfoLine() + " maxSkippedExons: " + totalMaxExonSkipped.get(g) + " maxSkippedBases: "
+					+ totalMaxBasesSkipped.get(g) + "\n");
+		}
+		return sb.toString();
 	}
 
 	// calculate all different introns in the transcripts and check if it is in

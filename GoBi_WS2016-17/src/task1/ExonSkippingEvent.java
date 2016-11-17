@@ -76,6 +76,14 @@ public class ExonSkippingEvent {
 		return sb.toString();
 	}
 
+	public int getMaxSkippedExons() {
+		return maxSkippedExons;
+	}
+
+	public int getMaxSkippedBases() {
+		return maxSkippedBases;
+	}
+
 	public String getMinMaxSkippingInfo() {
 		if (maxSkippedBases < 0 || minSkippedBases < 0 || maxSkippedExons < 0 || minSkippedExons < 0)
 			calculateMinMaxSkippingInfo();
