@@ -169,8 +169,7 @@ public class OverlappingGenes {
 				bw.close();
 				LinkedList<String> args = new LinkedList<>();
 				args.add(next.getAbsolutePath().replace(".overlapStats", "_overlapStats.jpg"));
-				args.add(e1.getKey().split("_")[0]);
-				args.add(e1.getKey().split("_")[1]);
+				args.add(e1.getKey());
 				new RScriptCaller(ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()
 						.substring(5).replace("Runner.jar", "") + "OverlapPlotter.R", next.getAbsolutePath(), args)
 								.execRScript();
