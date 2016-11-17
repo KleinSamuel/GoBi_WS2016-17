@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -141,10 +142,11 @@ public class OverlappingGenes {
 
 	}
 
-	public void writeOverlapsPerBiotypeToFile(String pathToJarDir) {
+	public ArrayList<String> writeOverlapsPerBiotypeToFile(String pathToJarDir) {
 		THashMap<Integer, Integer> countsToWrite;
 		TreeMap<Integer, Integer> countsSortedAndFilled;
 		File next = null;
+		ArrayList<String> plotPaths = new ArrayList<>();
 		for (Entry<String, THashMap<Integer, THashMap<Integer, Integer>>> e1 : overlapsPerBiotype.entrySet()) {
 			next = new File(outputDirectory + "/tmp/" + ga.getName() + "/");
 			next.mkdirs();
@@ -170,12 +172,15 @@ public class OverlappingGenes {
 				LinkedList<String> args = new LinkedList<>();
 				args.add(next.getAbsolutePath().replace(".overlapStats", "_overlapStats.png"));
 				args.add(e1.getKey());
+				plotPaths.add(next.getAbsolutePath().replace(".overlapStats", "_overlapStats"));
 				new RScriptCaller(pathToJarDir + "OverlapPlotter.R", next.getAbsolutePath(), args).execRScript();
+				return plotPaths;
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
 		}
+		return plotPaths;
 
 	}
 
