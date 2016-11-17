@@ -28,6 +28,7 @@ public class Task_3 {
 
 		HashMap<String, String> fileMap = ConfigReader.readFilepathConfig(ch.getDefaultConfigPath("gtf-paths.txt"),"\t", new String[] { "#" });
 
+		/* biotype - file - amount transcripts - amount genes having this many transcripts */
 		HashMap<String, TreeMap<String, TreeMap<Integer, Integer>>> biotypesGeneTransCount = new HashMap<>();
 
 		HashMap<String, HashMap<Gene, Integer>> amountMap = new HashMap<>();
@@ -107,11 +108,38 @@ public class Task_3 {
 
 		ArrayList<String> pathList = new ArrayList<>();
 		ArrayList<ArrayList<String[]>> infoList = new ArrayList<>();
-
+		
+		HashMap<String, Integer> biotypesUnSorted = new HashMap<>();
+		
+		int current = 0;
+		
+		/* get amount genes with multiple transcripts */
 		for (Entry<String, TreeMap<String, TreeMap<Integer, Integer>>> s : biotypesGeneTransCount.entrySet()) {
+			current = 0;
+			for(Entry<String, TreeMap<Integer, Integer>> entry : s.getValue().entrySet()){
+				for(Entry<Integer, Integer> i : entry.getValue().entrySet()){
+					if(i.getKey() > 1){
+						current += i.getValue();
+					}
+				}
+			}
+			biotypesUnSorted.put(s.getKey(), current);
+		}
+		
+		TreeMapByValueSorterStringInteger tms = new TreeMapByValueSorterStringInteger(biotypesUnSorted);
+		
+		TreeMap<String, Integer> biotypesSorted = new TreeMap<>(tms);
+		biotypesSorted.putAll(biotypesUnSorted);
+		
 
+//		for (Entry<String, TreeMap<String, TreeMap<Integer, Integer>>> s : biotypesGeneTransCount.entrySet()) {
+
+		for (String biot : biotypesSorted.keySet()){
+			
+			TreeMap<String, TreeMap<Integer, Integer>> s = biotypesGeneTransCount.get(biot);
+			
 			treeMap = new TreeMap<>();
-			treeMap.putAll(s.getValue());
+			treeMap.putAll(s);
 
 			int maxX = 0;
 			int maxY = 0;
@@ -167,17 +195,17 @@ public class Task_3 {
 				vectorOfVectors2.add(vTMP2);
 			}
 
-			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), s.getKey(), "num tr/genes", "num genes", maxX, maxY, false);
+			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), biot, "num tr/genes", "num genes", maxX, maxY, false);
 
 			ArrayList<String[]> tmp = new ArrayList<>();
 
 			int cnt = 0;
 
-			TreeMapByValueSorter tvs = new TreeMapByValueSorter(amountMap.get(s.getKey()));
+			TreeMapByValueSorterGeneInteger tvs = new TreeMapByValueSorterGeneInteger(amountMap.get(biot));
 			
 			TreeMap<Gene, Integer> tmpMap = new TreeMap<>(tvs);
 			
-			tmpMap.putAll(amountMap.get(s.getKey()));
+			tmpMap.putAll(amountMap.get(biot));
 
 			for (Entry<Gene, Integer> e : tmpMap.entrySet()) {
 
@@ -195,18 +223,17 @@ public class Task_3 {
 				String id = e.getKey().getId();
 				String chrId = e.getKey().getChromosomeID();
 				String strandSymbol = e.getKey().isOnNegativeStrand() ? "-" : "+";
-				String biotype = s.getKey();
+				String biotype = biot;
 				String startEnd = e.getKey().getStart()+"-"+e.getKey().getStop();
 				String numTrans = "num transcripts: "+e.getKey().getTranscripts().size();
 				String numProts = "num proteins: "+nProts;
 				
 				tmp.add(new String[]{EnsemblCrawler.getUrlForGeneID(id), symbol+" "+id+" ("+chrId+""+strandSymbol+" "+biotype+" "+startEnd+") "+numTrans+" "+numProts});
-//				tmp.add(crawler.getGeneInfo(e.getKey().getId()));
 
 				cnt++;
 			}
 
-			pathList.add(ch.getDefaultOutputPath() + "" + s.getKey());
+			pathList.add(ch.getDefaultOutputPath() + "" + biot);
 			infoList.add(tmp);
 
 			lp.addLegendVector(legendLabels);
@@ -219,15 +246,32 @@ public class Task_3 {
 
 	}
 	
-	class TreeMapByValueSorter implements Comparator<Gene> {
+	class TreeMapByValueSorterGeneInteger implements Comparator<Gene> {
 		HashMap<Gene, Integer> base;
 
-		public TreeMapByValueSorter(HashMap<Gene, Integer> base) {
+		public TreeMapByValueSorterGeneInteger(HashMap<Gene, Integer> base) {
 			this.base = base;
 		}
 
 		@Override
 		public int compare(Gene o1, Gene o2) {
+			if (base.get(o1) >= base.get(o2)) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+	}
+	
+	class TreeMapByValueSorterStringInteger implements Comparator<String> {
+		HashMap<String, Integer> base;
+
+		public TreeMapByValueSorterStringInteger(HashMap<String, Integer> base) {
+			this.base = base;
+		}
+
+		@Override
+		public int compare(String o1, String o2) {
 			if (base.get(o1) >= base.get(o2)) {
 				return -1;
 			} else {
