@@ -92,8 +92,6 @@ public class AllroundFileWriter {
 			
 			for(String fp : plotPaths){
 				
-				System.out.println(fp);
-				
 				bw.write("<figure>\n");
 				
 				if(includeBase64){

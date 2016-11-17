@@ -49,14 +49,19 @@ public class RScriptCaller {
 	public void execRScript() {
 		try {
 			
-			this.arguments.set(1, this.arguments.get(1).replace("bin", ""));
+			if(this.arguments.get(1).contains("bin")){
+				this.arguments.set(1, this.arguments.get(1).replace("bin", ""));
+			}else{
+				this.arguments.set(1, this.arguments.get(1).replace("UnionTranscriptPlotter.R", "/UnionTranscriptPlotter.R"));
+			}
+			
+			System.out.println(Arrays.toString(this.arguments.toArray()));
+			
 			@SuppressWarnings("unused")
 			// Process proc = new ProcessBuilder(pathToR, scriptName,
 			// inputFileName, inputFileName.replace("tsv", "jpg"),
 			// args).start();
-			
-			
-			Process proc = new ProcessBuilder(arguments).start();
+			Process proc = new ProcessBuilder(arguments).inheritIO().start();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);

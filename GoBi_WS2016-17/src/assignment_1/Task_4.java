@@ -1,9 +1,11 @@
 package assignment_1;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import genomeAnnotation.GenomeAnnotation;
+import io.AllroundFileWriter;
 import io.ConfigHelper;
 import io.ConfigReader;
 import reader.GTFParser;
@@ -25,7 +27,9 @@ public class Task_4 {
 			ga = GTFParser.readGtfFile(entry.getKey(), entry.getValue());
 			og = new OverlappingGenes(ga, ch.getDefaultOutputPath());
 			og.writeOverlappingGenesToFile();
-			og.writeOverlapsPerBiotypeToFile(ch.getPathToDirOutsideOfJar());
+			ArrayList<String> plotPaths = og.writeOverlapsPerBiotypeToFile(ch.getPathToDirOutsideOfJar());
+
+			AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + ga.getName()+"_overlaps.html", plotPaths, null, true);
 		}
 	}
 	
