@@ -70,6 +70,13 @@ public class GTFParser {
 
 				onNegativeStrand = split[6].equals("-");
 
+				int start = Integer.parseInt(split[3]) - 1, stop = Integer.parseInt(split[4]) - 1;
+				if (start > stop) {
+					int tmpStart = start;
+					start = stop;
+					stop = tmpStart;
+				}
+
 				switch (split[2]) {
 				case "gene":
 					tempBiotype = tempAttributes.get("gene_biotype");
@@ -77,14 +84,12 @@ public class GTFParser {
 					if (tempBiotype == null) {
 						tempBiotype = tempAttributes.get("gene_type");
 					}
-					g = new Gene(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1,
-							tempAttributes.get("gene_id"), onNegativeStrand, tempBiotype,
+					g = new Gene(start, stop, tempAttributes.get("gene_id"), onNegativeStrand, tempBiotype,
 							tempAttributes.get("gene_name"), c);
 					c.addGene(g);
 					break;
 				case "transcript":
-					t = new Transcript(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1,
-							tempAttributes.get("transcript_id"), onNegativeStrand, g);
+					t = new Transcript(start, stop, tempAttributes.get("transcript_id"), onNegativeStrand, g);
 					g.addTranscript(t);
 					break;
 				case "exon":
@@ -93,8 +98,7 @@ public class GTFParser {
 						exonId = generateNextExonId();
 					e = g.getExon(exonId);
 					if (e == null) {
-						e = new Exon(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1, exonId,
-								onNegativeStrand);
+						e = new Exon(start, stop, exonId, onNegativeStrand);
 						g.addExon(e);
 					}
 					t.addExon(e);
@@ -103,7 +107,7 @@ public class GTFParser {
 					if (!t.hasCDS())
 						t.createCDS(new CDS(-1, -1, tempAttributes.get("ccds_id"), tempAttributes.get("protein_id"),
 								onNegativeStrand));
-					t.addCDSPart(new CDSPart(Integer.parseInt(split[3]) - 1, Integer.parseInt(split[4]) - 1));
+					t.addCDSPart(new CDSPart(start, stop));
 					break;
 				}
 			}
