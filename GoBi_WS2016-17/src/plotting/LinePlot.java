@@ -52,6 +52,14 @@ public class LinePlot extends Plot{
 		}
 	}
 	
+	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int minX, int minY, int maxX, int maxY, boolean logScaleX){
+		
+		this(pair, title, xLab, yLab, maxX, maxY, logScaleX);
+		
+		this.minX = minX;
+		this.minY = minY;
+	}
+	
 	public Vector<Vector<Object>> logScale(Vector<Vector<Object>> in){
 		
 		Vector<Vector<Object>> tmp = new Vector<>();
@@ -69,14 +77,6 @@ public class LinePlot extends Plot{
 		
 		this.maxX = (int)(max+1);
 		return tmp;
-	}
-	
-	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int minX, int minY, int maxX, int maxY, boolean logScaleX){
-		
-		this(pair, title, xLab, yLab, maxX, maxY, logScaleX);
-		
-		this.minX = minX;
-		this.minY = minY;
 	}
 	
 	public void plot(){
