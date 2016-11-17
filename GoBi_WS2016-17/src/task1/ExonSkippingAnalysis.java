@@ -3,7 +3,6 @@ package task1;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -16,6 +15,7 @@ import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Intron;
 import genomeAnnotation.Transcript;
+import gnu.trove.map.hash.THashMap;
 
 public class ExonSkippingAnalysis {
 
@@ -39,6 +39,10 @@ public class ExonSkippingAnalysis {
 
 	public File getOutputFile() {
 		return outputFile;
+	}
+	
+	public String getOutputDir(){
+		return outputDirectory;
 	}
 
 	public void analyseExonSkippings() {
@@ -70,10 +74,10 @@ public class ExonSkippingAnalysis {
 		LinkedList<ExonSkippingEvent> events = new LinkedList<>();
 
 		// get all transcripts with a cds, calc their introns and store them
-		// unique in hashMap, remember parental transcripts
+		// unique in THashMap, remember parental transcripts
 		IntervalTree<Intron> allIntrons = null;
-		HashMap<Integer, HashMap<Integer, HashSet<Transcript>>> uniqueIntronStartStops = new HashMap<>();
-		HashMap<Integer, HashSet<Transcript>> stops = null;
+		THashMap<Integer, THashMap<Integer, HashSet<Transcript>>> uniqueIntronStartStops = new THashMap<>();
+		THashMap<Integer, HashSet<Transcript>> stops = null;
 		HashSet<Transcript> transcripts = null;
 		for (Transcript t : g.getAllTranscriptsSorted()) {
 			if (t.hasCDS()) {
@@ -81,7 +85,7 @@ public class ExonSkippingAnalysis {
 				for (Intron intron : allIntrons) {
 					stops = uniqueIntronStartStops.get(intron.getStart());
 					if (stops == null) {
-						stops = new HashMap<>();
+						stops = new THashMap<>();
 						uniqueIntronStartStops.put(intron.getStart(), stops);
 					}
 					transcripts = stops.get(intron.getStop());
@@ -94,7 +98,7 @@ public class ExonSkippingAnalysis {
 			}
 		}
 		TreeSet<ExonSkippingIntron> uniqueIntrons = new TreeSet<>();
-		for (Entry<Integer, HashMap<Integer, HashSet<Transcript>>> e : uniqueIntronStartStops.entrySet()) {
+		for (Entry<Integer, THashMap<Integer, HashSet<Transcript>>> e : uniqueIntronStartStops.entrySet()) {
 			for (Entry<Integer, HashSet<Transcript>> stop : e.getValue().entrySet())
 				uniqueIntrons.add(new ExonSkippingIntron(e.getKey(), stop.getKey(), stop.getValue()));
 		}

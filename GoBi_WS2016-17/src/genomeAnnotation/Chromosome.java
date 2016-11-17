@@ -1,19 +1,19 @@
 package genomeAnnotation;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
 import augmentedTree.IntervalTree;
+import gnu.trove.map.hash.THashMap;
 
 public class Chromosome {
 
 	private String id;
-	private HashMap<String, Gene> genes;
+	private THashMap<String, Gene> genes;
 	private IntervalTree<Gene> genesOnPositiveStrand, genesOnNegativeStrand, genesOnBothStrands;
 
 	public Chromosome(String id) {
 		this.id = id;
-		genes = new HashMap<>();
+		genes = new THashMap<>();
 		genesOnPositiveStrand = new IntervalTree<>();
 		genesOnNegativeStrand = new IntervalTree<>();
 		genesOnBothStrands = new IntervalTree<>();
@@ -32,7 +32,7 @@ public class Chromosome {
 		return genes.get(id);
 	}
 
-	public HashMap<String, Gene> getGenes() {
+	public THashMap<String, Gene> getGenes() {
 		return genes;
 	}
 

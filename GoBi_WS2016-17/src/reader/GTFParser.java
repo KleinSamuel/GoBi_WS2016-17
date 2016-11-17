@@ -3,7 +3,6 @@ package reader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
@@ -14,6 +13,7 @@ import genomeAnnotation.Exon;
 import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Transcript;
+import gnu.trove.map.hash.THashMap;
 
 public class GTFParser {
 
@@ -39,7 +39,7 @@ public class GTFParser {
 		annotatedRegions.add("gene");
 		annotatedRegions.add("transcript");
 		annotatedRegions.add("exon");
-		HashMap<String, String> tempAttributes = null;
+		THashMap<String, String> tempAttributes = null;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(new File(gtfFilePath)));
 			while ((line = br.readLine()) != null) {
@@ -58,7 +58,7 @@ public class GTFParser {
 					ga.addChromosome(c);
 					c = new Chromosome(split[0]);
 				}
-				tempAttributes = new HashMap<>();
+				tempAttributes = new THashMap<>();
 				split[8] = split[8].replace("\"", "").replace(";", "");
 				// tempAttrArr = p1.split(split[8].substring(0,
 				// split[8].length() - 2));

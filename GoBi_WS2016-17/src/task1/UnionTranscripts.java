@@ -3,13 +3,13 @@ package task1;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
+import gnu.trove.map.hash.THashMap;
 import util.UnionTranscript;
 
 public class UnionTranscripts {
@@ -34,8 +34,8 @@ public class UnionTranscripts {
 
 	}
 
-	public HashMap<Double, Integer> calculateUnionTranscriptDistribution() {
-		HashMap<Double, Integer> occurencesOfProportion = new HashMap<>();
+	public THashMap<Double, Integer> calculateUnionTranscriptDistribution() {
+		THashMap<Double, Integer> occurencesOfProportion = new THashMap<>();
 
 		Iterator<Gene> allGenesInGa = ga.iterator();
 		Gene g = null;
@@ -60,7 +60,7 @@ public class UnionTranscripts {
 		return occurencesOfProportion;
 	}
 
-	public void writeOccurencesToFile(HashMap<Double, Integer> occurenceDistribution) {
+	public void writeOccurencesToFile(THashMap<Double, Integer> occurenceDistribution) {
 		TreeMap<Double, Integer> sortedDistribution = new TreeMap<>();
 		sortedDistribution.putAll(occurenceDistribution);
 		try {

@@ -1,8 +1,9 @@
 package reader;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+
+import gnu.trove.map.hash.THashMap;
 
 public class AnnotationMapper {
 
@@ -10,8 +11,8 @@ public class AnnotationMapper {
 
 	public AnnotationMapper(String annotMapPath, String GTFpathsFilePath) {
 		items = new LinkedList<>();
-		HashMap<String, String> annotMap = new TSVFileReader().readSimpleTSVFile(annotMapPath, "\t", true);
-		HashMap<String, String> gtfPaths = new TSVFileReader().readSimpleTSVFile(GTFpathsFilePath, "\t", false);
+		THashMap<String, String> annotMap = new TSVFileReader().readSimpleTSVFile(annotMapPath, "\t", true);
+		THashMap<String, String> gtfPaths = new TSVFileReader().readSimpleTSVFile(GTFpathsFilePath, "\t", false);
 
 		String fullPath;
 		for (Entry<String, String> annotEntry : annotMap.entrySet()) {

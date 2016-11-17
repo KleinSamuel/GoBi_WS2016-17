@@ -1,18 +1,19 @@
 package genomeAnnotation;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import gnu.trove.map.hash.THashMap;
 
 public class GenomeAnnotation {
 
 	private String name;
 	private LinkedList<Chromosome> chromosomesInFileOrder;
-	private HashMap<String, Chromosome> chromosomes;
+	private THashMap<String, Chromosome> chromosomes;
 
 	public GenomeAnnotation(String name) {
 		this.name = name;
-		chromosomes = new HashMap<>();
+		chromosomes = new THashMap<>();
 		chromosomesInFileOrder = new LinkedList<>();
 	}
 
@@ -25,7 +26,7 @@ public class GenomeAnnotation {
 		return chromosomes.get(id);
 	}
 
-	public HashMap<String, Chromosome> getChromosomes() {
+	public THashMap<String, Chromosome> getChromosomes() {
 		return chromosomes;
 	}
 

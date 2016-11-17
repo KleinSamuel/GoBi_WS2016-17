@@ -4,12 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
+
+import gnu.trove.map.hash.THashMap;
 
 public class TSVFileReader {
 
-	public HashMap<String, String> readSimpleTSVFile(String filePath, String separator, boolean valueKey) {
-		HashMap<String, String> ret = new HashMap<>();
+	public THashMap<String, String> readSimpleTSVFile(String filePath, String separator, boolean valueKey) {
+		THashMap<String, String> ret = new THashMap<>();
 		try {
 			String line = null;
 			String[] split = null;

@@ -1,17 +1,8 @@
 package reader;
 
-import java.security.Security;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import genomeAnnotation.Chromosome;
-import genomeAnnotation.Exon;
-import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
-import genomeAnnotation.Transcript;
 
 public class ThreadedReader implements Runnable {
 
@@ -47,7 +38,7 @@ public class ThreadedReader implements Runnable {
 	// String tempChrID, tempGeneID, tempTranscriptID, tempExonID, tempCDSID,
 	// tempBiotype;
 	//
-	// HashMap<String, String> tempMap;
+	// THashMap<String, String> tempMap;
 	// String[] tempAttrArr;
 	// Pattern p1 = Pattern.compile("\"; | \"");
 	// Pattern p2 = Pattern.compile("\t");
@@ -72,7 +63,7 @@ public class ThreadedReader implements Runnable {
 	// frame = tempArray[7];
 	// attribute = tempArray[8];
 	//
-	// tempMap = new HashMap<String, String>();
+	// tempMap = new THashMap<String, String>();
 	//
 	// tempAttrArr = p1.split(attribute.substring(0, attribute.length() - 2));
 	// for (int i = 0; i < tempAttrArr.length; i++) {
@@ -198,7 +189,7 @@ public class ThreadedReader implements Runnable {
 	// // schwachsinn! return map.get(key) macht dasselbe, da brauchts die
 	// methode
 	// // nicht
-	// private String getValueFromAttribute(String key, HashMap<String, String>
+	// private String getValueFromAttribute(String key, THashMap<String, String>
 	// map) {
 	// String id = null;
 	// if (map.containsKey(key)) {
