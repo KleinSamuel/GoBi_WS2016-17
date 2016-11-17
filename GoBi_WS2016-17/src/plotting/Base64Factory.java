@@ -7,7 +7,7 @@ import java.util.Base64;
 import org.apache.commons.io.FileUtils;
 
 /**
- * Create base64 String from image to integrate it into HTML file.
+ * Create base64 encoded String from image to integrate it into HTML file.
  * 
  * @author Samuel Klein
  *
