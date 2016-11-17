@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import debugStuff.DebugMessageFactory;
+import plotting.Base64Factory;
 
 public class AllroundFileWriter {
 	
@@ -77,7 +78,7 @@ public class AllroundFileWriter {
 		
 	}
 	
-	public static void createHTMLforPlots(String filepath, ArrayList<String> plotPaths, ArrayList<ArrayList<String[]>> info){
+	public static void createHTMLforPlots(String filepath, ArrayList<String> plotPaths, ArrayList<ArrayList<String[]>> info, boolean includeBase64){
 		
 		try {
 			
@@ -93,7 +94,13 @@ public class AllroundFileWriter {
 				
 				bw.write("<figure>\n");
 				
-				bw.write("<img src=\""+fp+".png\" width=\"1000\" height=\"1000\">\n");
+				String base64 = Base64Factory.encodeByteArray64(Base64Factory.imageToByteArray(fp+".png"));
+				
+				if(includeBase64){
+					bw.write("<img width=\"1000\" height=\"1000\" src=\"data:image/gif;base64,"+base64+"\">\n");
+				}else{
+					bw.write("<img src=\""+fp+".png\" width=\"1000\" height=\"1000\">\n");
+				}
 				
 				bw.write("</figure>\n");
 				

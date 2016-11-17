@@ -21,6 +21,8 @@ public class LinePlot extends Plot{
 	
 	public boolean showLegend = true;
 	
+	public String filename;
+	
 	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int maxX, int maxY, boolean logScaleX){
 		
 		this.maxX = maxX;
@@ -42,7 +44,8 @@ public class LinePlot extends Plot{
 		this.y = pair.getValue();
 		
 		setTitle(title);
-		setXLab(xLab);
+		filename = title;
+		setXLab(logScaleX ? xLab+" (log10)" : xLab);
 		setYLab(yLab);
 		
 		legendLabels = new Vector<>();
@@ -80,7 +83,7 @@ public class LinePlot extends Plot{
 	}
 	
 	public void plot(){
-		RExecutor r = new RExecutor(generateCommand(ConfigReader.readConfig().get("output_directory")+this.title+".png"));
+		RExecutor r = new RExecutor(generateCommand(ConfigReader.readConfig().get("output_directory")+this.filename+".png"));
 		
 		Thread t = new Thread(r);
 		t.start();
@@ -88,7 +91,7 @@ public class LinePlot extends Plot{
 		try {
 			DebugMessageFactory.printNormalDebugMessage(true, "Wait for R to plot..");
 			t.join();
-			DebugMessageFactory.printNormalDebugMessage(true, "R thread terminated.");
+			DebugMessageFactory.printNormalDebugMessage(true, "("+this.filename+".png) R thread terminated.");
 			
 		} catch (InterruptedException e) {
 			throw new RuntimeException("R did not exit properly!");

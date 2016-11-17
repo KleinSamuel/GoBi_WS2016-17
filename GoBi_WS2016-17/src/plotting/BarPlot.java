@@ -1,7 +1,6 @@
 package plotting;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Vector;
 
 import debugStuff.DebugMessageFactory;

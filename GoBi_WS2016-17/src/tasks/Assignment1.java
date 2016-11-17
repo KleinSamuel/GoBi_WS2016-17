@@ -163,7 +163,7 @@ public class Assignment1 {
 			counter++;
 		}
 
-		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "genetypes.html", pathList, null);
+		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "genetypes.html", pathList, null, false);
 
 	}
 
@@ -382,7 +382,7 @@ public class Assignment1 {
 
 		}
 
-		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "NumTransPerBiotype.html", pathList,infoList);
+		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "NumTransPerBiotype.html", pathList,infoList, false);
 
 	}
 	
@@ -416,11 +416,17 @@ public class Assignment1 {
 			System.exit(1);
 		}
 		
+		/* holds paths for plot to add the to HTML */
+		ArrayList<String> pathList = new ArrayList<>();
+		
 		/* holds for every chromosome a map of genes with the corresponding difference */
 		HashMap<String, HashMap<String, Integer>> geneDistance = new HashMap<>();
 		
 		/* HashMap for the gene length */
 		HashMap<String, Object[]> geneLength = new HashMap<>();
+		
+		ArrayList<Integer> transcriptDifference = new ArrayList<>();
+		ArrayList<Integer> cdsDifference = new ArrayList<>();
 		
 		/* check if gene is unique or in both files */
 		HashSet<String> genesFile1 = new HashSet<>();
@@ -473,12 +479,27 @@ public class Assignment1 {
 						
 						tmpGeneLength.add(Math.abs((g1.getStop() + 1 - g1.getStart()) - (g2.getStop() + 1 - g2.getStart())));
 						
+						/* compute transcript difference */
+						transcriptDifference.add(Math.abs(g1.getTranscripts().size()-g2.getTranscripts().size()));
+						
+						int g1CDS = 0;
+						int g2CDS = 0;
+						
+						/* compute cds difference */
+						for(Transcript t : g1.getTranscripts().values()){
+							g1CDS += t.getCds().getParts().size();
+						}
+						for(Transcript t : g2.getTranscripts().values()){
+							g2CDS += t.getCds().getParts().size();
+						}
+						
+						cdsDifference.add(Math.abs(g1CDS-g2CDS));
+						
 					}else{
 						if(genesOnBoth.contains(geneId)){
 							changed.add(geneId);
 						}
 					}
-					
 				}
 				
 				for(String s : differentGenes){
@@ -496,8 +517,8 @@ public class Assignment1 {
 			geneLength.put(chromosomeEntry.getKey(), tmpGeneLength.stream().sorted().toArray());
 		}
 		
-		System.out.println("GENES CHANGED : "+changed.size());
-		System.out.println("GENES NOT CHANGED : "+(genesOnBoth.size()-changed.size()));
+//		System.out.println("GENES CHANGED : "+changed.size());
+//		System.out.println("GENES NOT CHANGED : "+(genesOnBoth.size()-changed.size()));
 		
 		/* SECOND SUBTASK */
 		
@@ -521,53 +542,82 @@ public class Assignment1 {
 		int maxY = (int)tmp.getValue().get(tmp.getValue().size()-1);
 		
 		
-		LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), "Chromsomale_Distance", "distance (log10)", "Amount genes", minX, minY, maxX, maxY, true);
+		LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), "Chromsomal Distance", "distance", "Amount genes", minX, minY, maxX, maxY, true);
 		lp.showLegend = false;
+		lp.filename = "chrdist";
 		lp.plot();
+		
+		pathList.add(ch.getDefaultOutputPath()+lp.filename);
 		
 		/* THIRD SUBTASK */
 		
+		vectorOfVectors1 = new Vector<>();
+		vectorOfVectors2 = new Vector<>();
+		
+		tmpList = new ArrayList<>();
+		
 		for (Entry<String, Object[]> entry : geneLength.entrySet()){
-			
-			vectorOfVectors1 = new Vector<>();
-			vectorOfVectors2 = new Vector<>();
-
-			Vector<Object> v1 = new Vector<>();
-			Vector<Object> v2 = new Vector<>();
-			
-			int counter = 0;
-			int counter2 = 0;
-			
-			for (int i = 0; i < entry.getValue().length-1; i++) {
-				
-				v1.add((int)entry.getValue()[i]);
-				counter2 = 0;
-				
-				while((int)entry.getValue()[i] == (int)entry.getValue()[i+1]){
-					
-					counter2++;
-					i++;
-				}
-				
-				counter += counter2;
-				v2.add(counter);
+			for(Object i : entry.getValue()){
+				tmpList.add((int)i);
 			}
-			
-			vectorOfVectors1.add(v1);
-			vectorOfVectors2.add(v2);
-			
-			minX = (int)v1.get(0);
-			minY = (int)v2.get(0);
-			
-			lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), ""+entry.getKey(), "XLAB", "YLAB", minX, minY, (int)v1.get(v1.size()-1), (int)v2.get(v2.size()-1), true);
-			lp.showLegend = false;
-			lp.plot();
 		}
+		
+		tmp = cumulativeSum(tmpList.stream().sorted().toArray());
+		
+		vectorOfVectors1.add(tmp.getKey());
+		vectorOfVectors2.add(tmp.getValue());
+		
+		minX = (int)tmp.getKey().get(0);
+		minY = (int)tmp.getValue().get(0);
+		maxX = (int)tmp.getKey().get(tmp.getKey().size()-1);
+		maxY = (int)tmp.getValue().get(tmp.getValue().size()-1);
+		
+		lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), "Gene Length Differences", "length difference in bp", "amount genes", minX, minY, maxX, maxY, true);
+		lp.showLegend = false;
+		lp.filename = "glengthdiff";
+		lp.plot();
+		
+		pathList.add(ch.getDefaultOutputPath()+lp.filename);
 		
 		/* FOURTH SUBTASK */
 		
+		tmp = cumulativeSum(transcriptDifference.stream().sorted().collect(Collectors.toList()).toArray());
 		
+		minX = (int)tmp.getKey().get(0);
+		minY = (int)tmp.getValue().get(0);
+		maxX = (int)tmp.getKey().get(tmp.getKey().size()-1);
+		maxY = (int)tmp.getValue().get(tmp.getValue().size()-1);
 		
+		vectorOfVectors1 = new Vector<>();
+		vectorOfVectors2 = new Vector<>();
+		
+		vectorOfVectors1.add(tmp.getKey());
+		vectorOfVectors2.add(tmp.getValue());
+		
+		tmp = cumulativeSum(cdsDifference.stream().sorted().collect(Collectors.toList()).toArray());
+		
+		vectorOfVectors1.add(tmp.getKey());
+		vectorOfVectors2.add(tmp.getValue());
+		
+		minX = Math.min(minX, (int)tmp.getKey().get(0));
+		minY = Math.min(minY, (int)tmp.getValue().get(0));
+		maxX = Math.max(maxX, (int)tmp.getKey().get(tmp.getKey().size()-1));
+		maxY = Math.max(maxY, (int)tmp.getValue().get(tmp.getValue().size()-1));
+		
+		Vector<Object> labels = new Vector<>();
+		
+		labels.add("transcript");
+		labels.add("cds");
+		
+		lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), "difference #transcripts and #cds", "difference", "amount genes", minX, minY, maxX, maxY, true);
+		lp.filename = "andiff";
+		lp.showLegend = true;
+		lp.addLegendVector(labels);
+		lp.plot();
+		
+		pathList.add(ch.getDefaultOutputPath()+lp.filename);
+		
+		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath()+"genome_versions.html", pathList, null, true);
 	}
 	
 	/**
