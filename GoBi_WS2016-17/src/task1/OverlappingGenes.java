@@ -115,7 +115,8 @@ public class OverlappingGenes {
 
 		}
 		// put into main count map
-		for (Entry<String, THashMap<Integer, Integer>> e1 : numberOfOverlappingGenesPerBiotypePerStrandcomp.entrySet()) {
+		for (Entry<String, THashMap<Integer, Integer>> e1 : numberOfOverlappingGenesPerBiotypePerStrandcomp
+				.entrySet()) {
 			biotypeCombi = g.getBiotype() + "_" + e1.getKey();
 			inBiotypePair = overlapsPerBiotype.get(biotypeCombi);
 			if (inBiotypePair == null) {
