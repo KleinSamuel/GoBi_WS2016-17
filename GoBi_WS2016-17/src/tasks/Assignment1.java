@@ -163,7 +163,7 @@ public class Assignment1 {
 			counter++;
 		}
 
-		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "genetypes.html", pathList, null, false);
+		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "genetypes.html", pathList, null, true);
 
 	}
 
@@ -382,7 +382,7 @@ public class Assignment1 {
 
 		}
 
-		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "NumTransPerBiotype.html", pathList,infoList, false);
+		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "NumTransPerBiotype.html", pathList, infoList, true);
 
 	}
 	

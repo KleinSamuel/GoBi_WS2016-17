@@ -97,7 +97,7 @@ public class AllroundFileWriter {
 				String base64 = Base64Factory.encodeByteArray64(Base64Factory.imageToByteArray(fp+".png"));
 				
 				if(includeBase64){
-					bw.write("<img width=\"1000\" height=\"1000\" src=\"data:image/gif;base64,"+base64+"\">\n");
+					bw.write("<img width=\"1000\" height=\"1000\" src=\"data:image/png;base64,"+base64+"\">\n");
 				}else{
 					bw.write("<img src=\""+fp+".png\" width=\"1000\" height=\"1000\">\n");
 				}
