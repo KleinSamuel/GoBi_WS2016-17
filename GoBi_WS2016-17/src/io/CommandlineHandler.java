@@ -35,13 +35,15 @@ public class CommandlineHandler {
 		s += "-t 7\t\tExecute task #7.\n\n";
 		s += "-q\t\tQuiet mode (no print statements)\n\n";
 		s += "###########################################################\n";
-		s += "\nYOU NEED THESE DIRECTORIES NEXT TO THE JAR-FILE:\n\n";
-		s += "-config\n";
+		s += "\nTHESE DIRECTORIES NEED TO BE NEXT TO THE JAR-FILE:\n\n";
+		s += "config\n";
 		s += "\t\tannot.map\n";
 		s += "\t\tconfiguration.txt\n";
 		s += "\t\tgtf-paths.txt\n";
-		s += "-output\n";
-		s += "-tempfiles\n\n";
+		s += "output\n";
+		s += "tempfiles\n\n";
+		s += "\nTHESE FILES NEED TO BE NEXT TO THE JAR-FILE:\n\n";
+		s += "ExonSkippingPlotter.R\nOverlapPlotter.R\nUnionTranscriptPlotter.R\n";
 		s += "###########################################################\n";
 		
 		return s;
