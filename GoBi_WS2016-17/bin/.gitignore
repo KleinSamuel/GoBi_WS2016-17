@@ -1,8 +1,4 @@
-/tasks/
-/gtf/
-/output/
-/plotting/
-/io/
-/tempFiles/
+/reader/
 /assignment_1/
-/crawling/
+/task1/
+/util/
