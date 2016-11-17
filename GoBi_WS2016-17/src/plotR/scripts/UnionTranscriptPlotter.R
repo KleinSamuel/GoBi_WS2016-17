@@ -9,6 +9,6 @@ print(data)
 
 png(args[2])
 
-plot(data, type = "l", xlab = "proportion", ylab = "#occurences of certain proportion", main = "cumulative distribution of longest transcripts length divided by union transcript length")
+plot(data, type = "l", xlab = "proportion", ylab = "#occurences of certain proportion", main = "cumulative distribution of longest transcripts length\ndivided by union transcript length")
 
 dev.off()
