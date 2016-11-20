@@ -35,6 +35,6 @@ png(args[2])
 plot(same, sameVal, type = "l", xlim = c(0, maxX), ylim = c(0, maxY), col = "red", main=biotype, xlab = "#overlapping genes", ylab = "#genes with x overlapping genes(cumulative)")
 lines(diff, diffVal, col = "blue")
 lines(disregard, disregardVal, col = "black")
-legend("topleft", c("sameStrand", "differentStrand", "disregardingStrand"), lty=c(1,1,1), col = c("red","blue","black"))
+legend("toprigth", c("sameStrand", "differentStrand", "disregardingStrand"), lty=c(1,1,1), col = c("red","blue","black"), inset=c(0,0))
 
 dev.off()
