@@ -173,8 +173,7 @@ public class OverlappingGenes {
 				args.add(next.getAbsolutePath().replace(".overlapStats", "_overlapStats.png"));
 				args.add(e1.getKey());
 				plotPaths.add(next.getAbsolutePath().replace(".overlapStats", "_overlapStats"));
-				new RScriptCaller(pathToJarDir + "OverlapPlotter.R", next.getAbsolutePath(), args).execRScript();
-				return plotPaths;
+				new Thread(new RScriptCaller(pathToJarDir + "OverlapPlotter.R", next.getAbsolutePath(), args)).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);

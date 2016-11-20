@@ -45,25 +45,26 @@ public class Runner {
 			// .replace("Runner.jar", "") + "UnionTranscriptPlotter.R",
 			// unionTrs.getOutputFile(), arguments).execRScript();
 			//
-			// OverlappingGenes og = new OverlappingGenes(ga,
+			OverlappingGenes og = new OverlappingGenes(ga, ga.getClass().getProtectionDomain().getCodeSource()
+					.getLocation().toExternalForm().substring(5).replace("Runner.jar", "") + "output/");
+			og.writeOverlappingGenesToFile();
+			og.writeOverlapsPerBiotypeToFile(ga.getClass().getProtectionDomain().getCodeSource().getLocation()
+					.toExternalForm().substring(5).replace("Runner.jar", ""));
+
+			// ExonSkippingAnalysis esa = new ExonSkippingAnalysis(ga,
 			// ga.getClass().getProtectionDomain().getCodeSource()
 			// .getLocation().toExternalForm().substring(5).replace("Runner.jar",
 			// "") + "output/");
-			// og.writeOverlappingGenesToFile();
-			// og.writeOverlapsPerBiotypeToFile();
-
-			ExonSkippingAnalysis esa = new ExonSkippingAnalysis(ga, ga.getClass().getProtectionDomain().getCodeSource()
-					.getLocation().toExternalForm().substring(5).replace("Runner.jar", "") + "output/");
-			esa.analyseExonSkippings();
-			arguments = new LinkedList<>();
-			arguments.add(esa.getOutputDir());
-			arguments.add(ga.getName());
-			new RScriptCaller(
-					ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5)
-							.replace("Runner.jar", "") + "ExonSkippingPlotter.R",
-					esa.getOutputFile().getAbsolutePath(), arguments).execRScript();
-			System.out.println(esa.getTopTenExonSkippingText());
-			System.out.println(esa.getTopTenBasesSkippingText());
+			// esa.analyseExonSkippings();
+			// arguments = new LinkedList<>();
+			// arguments.add(esa.getOutputDir());
+			// arguments.add(ga.getName());
+			// new RScriptCaller(
+			// ga.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm().substring(5)
+			// .replace("Runner.jar", "") + "ExonSkippingPlotter.R",
+			// esa.getOutputFile().getAbsolutePath(), arguments).execRScript();
+			// System.out.println(esa.getTopTenExonSkippingText());
+			// System.out.println(esa.getTopTenBasesSkippingText());
 		}
 
 	}

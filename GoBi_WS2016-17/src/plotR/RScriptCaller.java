@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RScriptCaller {
+public class RScriptCaller implements Runnable{
 
 	private String pathToR = "/home/proj/biosoft/software/R/R-3.3.0/bin/Rscript";
 	private String outputDir = this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm()
@@ -56,11 +56,17 @@ public class RScriptCaller {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(500);
+//		} catch (InterruptedException e1) {
+//			e1.printStackTrace();
+//		}
 	}
+
+	@Override
+	public void run() {
+		execRScript();
+	}
+
 
 }
