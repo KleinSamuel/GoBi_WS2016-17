@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 
 import genomeAnnotation.Exon;
+import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Transcript;
 
@@ -176,6 +177,13 @@ public class GenomeSequenceExtractor {
 		if (negativeStrand)
 			return reverseComplement(cdna.toString());
 		return cdna.toString();
+	}
+
+	public String getTranscriptSequence(String geneId, String trId) {
+		Gene g = ga.getGene(geneId);
+		Transcript t = g.getTranscript(trId);
+		return getCDNASequenceInInterval(g.getChromosome().getID(), geneId, trId, t.getStart(), t.getStop(),
+				t.isOnNegativeStrand());
 	}
 
 	// set raf-pointer to new position --> new Buffer needed

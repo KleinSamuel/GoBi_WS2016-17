@@ -6,9 +6,16 @@ import java.util.Vector;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 
+import assignment_2.GenomeSequenceExtractor;
+import debugStuff.DebugMessageFactory;
 import fileFormats.FASTQElement;
+import genomeAnnotation.GenomeAnnotation;
 import io.AllroundFileReader;
+import io.AllroundFileWriter;
+import io.ConfigHelper;
+import io.ConfigReader;
 import javafx.util.Pair;
+import reader.GTFParser;
 
 public class ReadSimulator {
 
@@ -19,6 +26,8 @@ public class ReadSimulator {
 	
 	private NormalDistribution normalDistr;
 	private Random rand;
+	private GenomeAnnotation ga;
+	private ConfigHelper ch;
 	
 	private ArrayList<String[]> readCountList;
 	
@@ -28,9 +37,13 @@ public class ReadSimulator {
 		this.standardDeviation = standardDeviation;
 		this.mutationRate = mutationRate;
 		
+		ch = new ConfigHelper();
 		this.rand = new Random();
 		this.normalDistr = new NormalDistribution(this.mean, this.standardDeviation);
 		this.readCountList = AllroundFileReader.readReadcounts(pathToReadcounts);
+		
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Read in GenomeAnnotation.");
+		ga = GTFParser.readGtfFile("h.ens.75", "/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Homo_sapiens.GRCh37.75.gtf");
 	}
 	
 	private NormalDistribution getNormalDistribution(double mean, double deviation){
@@ -51,6 +64,8 @@ public class ReadSimulator {
 			int amount = (int)getNormalDistribution(count, 0.1*count).sample();
 			
 			int transcriptLength = 100;
+			System.out.println(getTranscriptId(geneId, transcriptId));
+			System.exit(0);
 			
 			/* iterate over generated amount of reads */
 			for (int i = 0; i < amount; i++) {
@@ -77,8 +92,18 @@ public class ReadSimulator {
 			headerCount++;
 		}
 		
+		
+		AllroundFileWriter.writeFASTQ(ch.getDefaultObjectOutputPath(), fastqVector);
+		
 	}
 
+	public String getTranscriptId(String geneId, String transId){
+		
+		GenomeSequenceExtractor gse = new GenomeSequenceExtractor(ch.getDefaultOutputPath()+"offsets.txt", "/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/Homo_sapiens.GRCh37.75.dna.toplevel.fa", ga);
+		
+		return gse.getTranscriptSequence(geneId, transId);
+	}
+	
 	public int getReadLength() {
 		return readLength;
 	}
