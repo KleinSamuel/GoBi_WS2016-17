@@ -22,7 +22,7 @@ public class SequenceExtractionComparator {
 		this.referenceFileGZIP = referenceFileGZIP;
 		this.fasta = fasta;
 		this.errorLogFile = errorLogFile;
-		gse = new GenomeSequenceExtractor(offsetFile, fasta, ga, this);
+		gse = new GenomeSequenceExtractor(offsetFile, fasta, ga);
 	}
 
 	public int compareToRef() {

@@ -12,6 +12,8 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import debugStuff.DebugMessageFactory;
+import fileFormats.FASTQElement;
+import javafx.util.Pair;
 import plotting.Base64Factory;
 
 public class AllroundFileWriter {
@@ -126,6 +128,55 @@ public class AllroundFileWriter {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Write a FASTQ file.
+	 * Used in Task 2 from Assignment 2.
+	 * Doc: https://en.wikipedia.org/wiki/FASTQ_format
+	 * 
+	 * @param filePath
+	 */
+	public static void writeFASTQ(String dirPath, Vector<Pair<FASTQElement, FASTQElement>> fastqElements){
+		
+		try {
+			
+			BufferedWriter bwForward = new BufferedWriter(new FileWriter(dirPath+"fw.fastq"));
+			BufferedWriter bwReverse = new BufferedWriter(new FileWriter(dirPath+"rw.fastq"));
+			
+			for(Pair<FASTQElement, FASTQElement> entry : fastqElements){
+				
+				/* header */
+				bwForward.write(entry.getKey().getHeader());
+				bwForward.newLine();
+				bwReverse.write(entry.getValue().getHeader());
+				bwReverse.newLine();
+				/* sequence */
+				bwForward.write(entry.getKey().getSequence());
+				bwForward.newLine();
+				bwReverse.write(entry.getValue().getSequence());
+				bwReverse.newLine();
+				/* separator */
+				bwForward.write("+\n");
+				bwReverse.write("+\n");
+				/* quality scores */
+				bwForward.write(entry.getKey().getQualityScores());
+				bwForward.newLine();
+				bwReverse.write(entry.getValue().getQualityScores());
+				bwReverse.newLine();
+				
+			}
+			
+			bwForward.flush();
+			bwForward.close();
+			bwReverse.flush();
+			bwReverse.close();
+			
+		} catch (IOException e) {
+			DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "Could not write files to: "+dirPath);
+			e.printStackTrace();
+		}
+		DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "FASTQ files successfully written to: "+dirPath);
 	}
 	
 	public static void writeXMLForTask1(String filepath, TreeMap<String, HashMap<String, Integer>> map){

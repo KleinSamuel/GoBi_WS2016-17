@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import debugStuff.DebugMessageFactory;
 
 public class AllroundFileReader {
 
@@ -53,6 +56,8 @@ public class AllroundFileReader {
 				
 			}
 			
+			br.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -87,6 +92,43 @@ public class AllroundFileReader {
 		return out;
 	}
 	
+	/**
+	 * Returns ArrayList<String[]> with String[] containing:
+	 * pos 0 : gene id
+	 * pos 1 : transcript id
+	 * pos 2 : count
+	 * 
+	 * @param filepath String
+	 * @return ArrayList<String[]>
+	 */
+	public static ArrayList<String[]> readReadcounts(String filepath){
+		
+		ArrayList<String[]> outList = new ArrayList<>();
+		
+		try {
+			
+			BufferedReader br = new BufferedReader(new FileReader(filepath));
+			
+			/* skip fist line */
+			String line = br.readLine();
+			
+			while((line = br.readLine()) != null){
+				outList.add(line.split("\t"));
+			}
+			
+			br.close();
+			
+		} catch (FileNotFoundException e) {
+			DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "Could not find file: "+filepath);
+			e.printStackTrace();
+		} catch (IOException e) {
+			DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "Could not read file: "+filepath);
+			e.printStackTrace();
+		}
+		
+		return outList;
+	}
+	
 	public static TreeMap<String, String> readAnnotation(String filepath){
 		
 		TreeMap<String, String> output = new TreeMap<>();
@@ -102,6 +144,7 @@ public class AllroundFileReader {
 				output.put(lineArray[1], lineArray[0]);
 			}
 			
+			br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
