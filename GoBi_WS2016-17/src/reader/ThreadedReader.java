@@ -38,7 +38,7 @@ public class ThreadedReader implements Runnable {
 	// String tempChrID, tempGeneID, tempTranscriptID, tempExonID, tempCDSID,
 	// tempBiotype;
 	//
-	// THashMap<String, String> tempMap;
+	// HashMap<String, String> tempMap;
 	// String[] tempAttrArr;
 	// Pattern p1 = Pattern.compile("\"; | \"");
 	// Pattern p2 = Pattern.compile("\t");
@@ -63,7 +63,7 @@ public class ThreadedReader implements Runnable {
 	// frame = tempArray[7];
 	// attribute = tempArray[8];
 	//
-	// tempMap = new THashMap<String, String>();
+	// tempMap = new HashMap<String, String>();
 	//
 	// tempAttrArr = p1.split(attribute.substring(0, attribute.length() - 2));
 	// for (int i = 0; i < tempAttrArr.length; i++) {
@@ -189,7 +189,7 @@ public class ThreadedReader implements Runnable {
 	// // schwachsinn! return map.get(key) macht dasselbe, da brauchts die
 	// methode
 	// // nicht
-	// private String getValueFromAttribute(String key, THashMap<String, String>
+	// private String getValueFromAttribute(String key, HashMap<String, String>
 	// map) {
 	// String id = null;
 	// if (map.containsKey(key)) {

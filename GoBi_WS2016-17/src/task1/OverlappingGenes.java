@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -12,7 +13,6 @@ import java.util.TreeMap;
 import genomeAnnotation.Chromosome;
 import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
-import gnu.trove.map.hash.THashMap;
 import plotR.RScriptCaller;
 
 public class OverlappingGenes {
@@ -25,7 +25,7 @@ public class OverlappingGenes {
 	// not necessary to store disregarding strand --> easy to calculate in R
 	// later
 	// 0 = same strand; 1 = different strand; 2 = disregarding strand
-	private THashMap<String, THashMap<Integer, THashMap<Integer, Integer>>> overlapsPerBiotype;
+	private HashMap<String, HashMap<Integer, HashMap<Integer, Integer>>> overlapsPerBiotype;
 
 	public OverlappingGenes(GenomeAnnotation ga, String outputDir) {
 		this.ga = ga;
@@ -39,7 +39,7 @@ public class OverlappingGenes {
 			System.out.println("dir is a file not a directory! file: " + directory.getAbsolutePath());
 			System.exit(1);
 		}
-		overlapsPerBiotype = new THashMap<>();
+		overlapsPerBiotype = new HashMap<>();
 	}
 
 	public void writeOverlappingGenesToFile() {
@@ -77,12 +77,12 @@ public class OverlappingGenes {
 		// 0 genes on same strand, 1 genes on different strand
 		int strandComparison = -1;
 		String biotypeCombi = null;
-		THashMap<Integer, THashMap<Integer, Integer>> inBiotypePair;
-		THashMap<Integer, Integer> onStrand;
+		HashMap<Integer, HashMap<Integer, Integer>> inBiotypePair;
+		HashMap<Integer, Integer> onStrand;
 
 		// error precalculate partition in biotypes
-		THashMap<String, THashMap<Integer, Integer>> numberOfOverlappingGenesPerBiotypePerStrandcomp = new THashMap<>();
-		THashMap<Integer, Integer> countsOfOverlappingGenesPerStrandInBiotype = new THashMap<>();
+		HashMap<String, HashMap<Integer, Integer>> numberOfOverlappingGenesPerBiotypePerStrandcomp = new HashMap<>();
+		HashMap<Integer, Integer> countsOfOverlappingGenesPerStrandInBiotype = new HashMap<>();
 		Integer count = 0, disregarding_strand = 2;
 		for (Gene overlappingG : overlappingGenes) {
 			if (g.equals(overlappingG))
@@ -97,7 +97,7 @@ public class OverlappingGenes {
 			countsOfOverlappingGenesPerStrandInBiotype = numberOfOverlappingGenesPerBiotypePerStrandcomp
 					.get(overlappingG.getBiotype());
 			if (countsOfOverlappingGenesPerStrandInBiotype == null) {
-				countsOfOverlappingGenesPerStrandInBiotype = new THashMap<>();
+				countsOfOverlappingGenesPerStrandInBiotype = new HashMap<>();
 				numberOfOverlappingGenesPerBiotypePerStrandcomp.put(overlappingG.getBiotype(),
 						countsOfOverlappingGenesPerStrandInBiotype);
 			}
@@ -116,18 +116,18 @@ public class OverlappingGenes {
 
 		}
 		// put into main count map
-		for (Entry<String, THashMap<Integer, Integer>> e1 : numberOfOverlappingGenesPerBiotypePerStrandcomp
+		for (Entry<String, HashMap<Integer, Integer>> e1 : numberOfOverlappingGenesPerBiotypePerStrandcomp
 				.entrySet()) {
 			biotypeCombi = g.getBiotype() + "_" + e1.getKey();
 			inBiotypePair = overlapsPerBiotype.get(biotypeCombi);
 			if (inBiotypePair == null) {
-				inBiotypePair = new THashMap<>();
+				inBiotypePair = new HashMap<>();
 				overlapsPerBiotype.put(biotypeCombi, inBiotypePair);
 			}
 			for (Entry<Integer, Integer> e2 : e1.getValue().entrySet()) {
 				onStrand = inBiotypePair.get(e2.getKey());
 				if (onStrand == null) {
-					onStrand = new THashMap<>();
+					onStrand = new HashMap<>();
 					inBiotypePair.put(e2.getKey(), onStrand);
 				}
 				count = onStrand.get(e2.getValue());
@@ -143,11 +143,11 @@ public class OverlappingGenes {
 	}
 
 	public ArrayList<String> writeOverlapsPerBiotypeToFile(String pathToJarDir) {
-		THashMap<Integer, Integer> countsToWrite;
+		HashMap<Integer, Integer> countsToWrite;
 		TreeMap<Integer, Integer> countsSortedAndFilled;
 		File next = null;
 		ArrayList<String> plotPaths = new ArrayList<>();
-		for (Entry<String, THashMap<Integer, THashMap<Integer, Integer>>> e1 : overlapsPerBiotype.entrySet()) {
+		for (Entry<String, HashMap<Integer, HashMap<Integer, Integer>>> e1 : overlapsPerBiotype.entrySet()) {
 			next = new File(outputDirectory + "/tmp/" + ga.getName() + "/");
 			next.mkdirs();
 			next = new File(outputDirectory + "/tmp/" + ga.getName() + "/" + ga.getName() + "_" + e1.getKey()
@@ -174,7 +174,6 @@ public class OverlappingGenes {
 				args.add(e1.getKey());
 				plotPaths.add(next.getAbsolutePath().replace(".overlapStats", "_overlapStats"));
 				new RScriptCaller(pathToJarDir + "OverlapPlotter.R", next.getAbsolutePath(), args).execRScript();
-				return plotPaths;
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
@@ -184,7 +183,7 @@ public class OverlappingGenes {
 
 	}
 
-	public TreeMap<Integer, Integer> getCountMapSortedAndFilled(THashMap<Integer, Integer> in) {
+	public TreeMap<Integer, Integer> getCountMapSortedAndFilled(HashMap<Integer, Integer> in) {
 		TreeMap<Integer, Integer> ret = new TreeMap<>(in);
 		for (int i = 0; i < ret.lastKey(); i++) {
 			if (!ret.containsKey(i))

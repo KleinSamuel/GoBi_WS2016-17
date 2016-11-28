@@ -1,0 +1,12 @@
+How To Star And HiSat
+
+STAR
+/home/proj/biosoft/software/STAR_2.3.0e.Linux_x86_64/STAR --runThreadN 16 --genomeDir /home/proj/biosoft/praktikum/genprakt/assignments/a2/data/star_index --readFilesIn forwardReads.fastq reverseReads.fastq
+
+HISAT
+/home/proj/biosoft/software/hisat-0.1.6-beta/hisat -p 16 -x /home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/hisat_index -1 forwardReads.fastq -2 reverseReads.fastq -S fileToWriteSAMoutputTo
+
+link to hisat-manual: https://ccb.jhu.edu/software/hisat/manual.shtml#running-hisat
+
+SORT SAM files
+/home/proj/biosoft/software/samtools-0.1.19/samtools view -uS Aligned.out.sam | /home/proj/biosoft/software/samtools-0.1.19/samtools sort -n Aligned.out.sorted.bam
