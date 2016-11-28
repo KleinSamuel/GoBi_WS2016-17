@@ -6,6 +6,5 @@
 	<classpathentry kind="lib" path="jar-files/commons-io-2.5.jar"/>
 	<classpathentry kind="lib" path="jar-files/colt-1.2.0.jar"/>
 	<classpathentry kind="lib" path="jar-files/AugmentedTree.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_111/lib/ext/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
