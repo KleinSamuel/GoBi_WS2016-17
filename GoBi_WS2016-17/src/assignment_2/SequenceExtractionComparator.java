@@ -7,7 +7,10 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
+import debugStuff.DebugMessageFactory;
 import genomeAnnotation.GenomeAnnotation;
+import io.ConfigHelper;
+import io.ConfigReader;
 
 public class SequenceExtractionComparator {
 
@@ -48,7 +51,7 @@ public class SequenceExtractionComparator {
 							header.getTrId(), (int) header.getStart(), (int) header.getStop(),
 							header.isOnNegativeStrand());
 					if (extractedSeq == null) {
-						System.out.println("extracted seq == null!!!");
+						DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "extracted seq == null!");
 						System.exit(1);
 					}
 					if (!extractedSeq.equals(referenceSeq.toString())) {

@@ -22,8 +22,8 @@ public class GenomeSequenceExtractor {
 	// -> contains offsets for a chromosome(tab-separated) -> default
 	// calculateOffsets() --> if file not there: creates offset-file on this
 	// path
-	// Bsp.: X 0 130000
-	// chrId start stop --> start 0-based; stop incl.
+	// Bsp.: X 130000
+	// chrId start --> start 0-based;
 	// 2. fastaFile
 
 	private HashSet<String> chromosomesToBeAnalyzed;
@@ -34,10 +34,8 @@ public class GenomeSequenceExtractor {
 	private BufferedReader br;
 	static int lineLength = 60, newLineChars = 1;
 	public GenomeAnnotation ga;
-	public SequenceExtractionComparator pgse;
 
-	public GenomeSequenceExtractor(String offsetFilePath, String fastaFilePath, GenomeAnnotation ga,
-			SequenceExtractionComparator pgse) {
+	public GenomeSequenceExtractor(String offsetFilePath, String fastaFilePath, GenomeAnnotation ga) {
 		chromosomesToBeAnalyzed = new HashSet<>();
 		offsets = new HashMap<>();
 		if (offsetFilePath == null || !new File(offsetFilePath).exists()) {
@@ -51,7 +49,6 @@ public class GenomeSequenceExtractor {
 		}
 		openRandomAccessFile(fastaFilePath);
 		this.ga = ga;
-		this.pgse = pgse;
 	}
 
 	private void openRandomAccessFile(String fasta) {
