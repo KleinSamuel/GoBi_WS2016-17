@@ -1,9 +1,5 @@
 package plotting;
 
-import java.util.Vector;
-
-import javafx.util.Pair;
-
 /**
  * Abstract class for every plot class.
  * 

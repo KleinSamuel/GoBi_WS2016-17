@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.Vector;
-import java.util.Map.Entry;
 
 import crawling.EnsemblCrawler;
 import gtf.Gene;

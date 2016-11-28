@@ -10,17 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class GenomeAnnotation implements Iterable<GenomicRegion>{
 
-	private ConcurrentHashMap<String, Chromosome> chromosomes;
+	private ConcurrenHashMap<String, Chromosome> chromosomes;
 	
 	public GenomeAnnotation(){
-		this.chromosomes = new ConcurrentHashMap<String, Chromosome>();
+		this.chromosomes = new ConcurrenHashMap<String, Chromosome>();
 	}
 
-	public ConcurrentHashMap<String, Chromosome> getChromosomeList() {
+	public ConcurrenHashMap<String, Chromosome> getChromosomeList() {
 		return chromosomes;
 	}
 	

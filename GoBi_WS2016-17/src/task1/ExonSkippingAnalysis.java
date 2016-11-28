@@ -16,7 +16,6 @@ import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Intron;
 import genomeAnnotation.Transcript;
-import gnu.trove.map.hash.THashMap;
 import util.TopTen;
 
 public class ExonSkippingAnalysis {
@@ -129,10 +128,10 @@ public class ExonSkippingAnalysis {
 		LinkedList<ExonSkippingEvent> events = new LinkedList<>();
 
 		// get all transcripts with a cds, calc their introns and store them
-		// unique in THashMap, remember parental transcripts
+		// unique in HashMap, remember parental transcripts
 		IntervalTree<Intron> allIntrons = null;
-		THashMap<Integer, THashMap<Integer, HashSet<Transcript>>> uniqueIntronStartStops = new THashMap<>();
-		THashMap<Integer, HashSet<Transcript>> stops = null;
+		HashMap<Integer, HashMap<Integer, HashSet<Transcript>>> uniqueIntronStartStops = new HashMap<>();
+		HashMap<Integer, HashSet<Transcript>> stops = null;
 		HashSet<Transcript> transcripts = null;
 		for (Transcript t : g.getAllTranscriptsSorted()) {
 			if (t.hasCDS()) {
@@ -140,7 +139,7 @@ public class ExonSkippingAnalysis {
 				for (Intron intron : allIntrons) {
 					stops = uniqueIntronStartStops.get(intron.getStart());
 					if (stops == null) {
-						stops = new THashMap<>();
+						stops = new HashMap<>();
 						uniqueIntronStartStops.put(intron.getStart(), stops);
 					}
 					transcripts = stops.get(intron.getStop());
@@ -153,7 +152,7 @@ public class ExonSkippingAnalysis {
 			}
 		}
 		TreeSet<ExonSkippingIntron> uniqueIntrons = new TreeSet<>();
-		for (Entry<Integer, THashMap<Integer, HashSet<Transcript>>> e : uniqueIntronStartStops.entrySet()) {
+		for (Entry<Integer, HashMap<Integer, HashSet<Transcript>>> e : uniqueIntronStartStops.entrySet()) {
 			for (Entry<Integer, HashSet<Transcript>> stop : e.getValue().entrySet())
 				uniqueIntrons.add(new ExonSkippingIntron(e.getKey(), stop.getKey(), stop.getValue()));
 		}

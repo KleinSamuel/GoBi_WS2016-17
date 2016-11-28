@@ -1,7 +1,7 @@
 package plotting;
 
 import java.io.File;
-import java.util.*;
+import java.util.Vector;
 
 import debugStuff.DebugMessageFactory;
 import io.AllroundFileWriter;

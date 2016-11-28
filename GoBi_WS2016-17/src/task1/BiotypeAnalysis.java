@@ -1,16 +1,16 @@
 package task1;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 import genomeAnnotation.Chromosome;
 import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
-import gnu.trove.map.hash.THashMap;
 
 public class BiotypeAnalysis {
 
-	public static THashMap<String, Integer> genesPerBiotype(GenomeAnnotation ga) {
-		THashMap<String, Integer> genesPerBiotype = new THashMap<>();
+	public static HashMap<String, Integer> genesPerBiotype(GenomeAnnotation ga) {
+		HashMap<String, Integer> genesPerBiotype = new HashMap<>();
 		String biotype = null;
 		Integer biotypeCount = null;
 

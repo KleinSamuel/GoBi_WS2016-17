@@ -1,16 +1,16 @@
 package genomeAnnotation;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 import augmentedTree.IntervalTree;
-import gnu.trove.map.hash.THashMap;
 
 public class Gene extends GenomicRegion {
 
 	private Chromosome chromosome;
 	private String biotype, name;
-	private THashMap<String, Transcript> transcripts;
-	private THashMap<String, Exon> exons;
+	private HashMap<String, Transcript> transcripts;
+	private HashMap<String, Exon> exons;
 	private IntervalTree<Transcript> transcriptsOnPositiveStrand, transcriptsOnNegativeStrand, transcriptsOnBothStrands;
 	private IntervalTree<Exon> exonsOnPositiveStrand, exonsOnNegativeStrand, exonsOnBothStrands;
 
@@ -19,11 +19,11 @@ public class Gene extends GenomicRegion {
 	public Gene(int start, int stop, String id, boolean onNegativeStrand, String biotype, String name,
 			Chromosome parent) {
 		super(start, stop, id, onNegativeStrand);
-		transcripts = new THashMap<>();
+		transcripts = new HashMap<>();
 		transcriptsOnNegativeStrand = new IntervalTree<>();
 		transcriptsOnPositiveStrand = new IntervalTree<>();
 		transcriptsOnBothStrands = new IntervalTree<>();
-		exons = new THashMap<>();
+		exons = new HashMap<>();
 		exonsOnNegativeStrand = new IntervalTree<>();
 		exonsOnPositiveStrand = new IntervalTree<>();
 		exonsOnBothStrands = new IntervalTree<>();

@@ -29,8 +29,9 @@ public class Task_4 {
 			og.writeOverlappingGenesToFile();
 			ArrayList<String> plotPaths = og.writeOverlapsPerBiotypeToFile(ch.getPathToDirOutsideOfJar());
 
-			AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + ga.getName()+"_overlaps.html", plotPaths, null, true);
+			AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + ga.getName() + "_overlaps.html",
+					plotPaths, null, true);
 		}
 	}
-	
+
 }
