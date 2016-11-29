@@ -2,6 +2,9 @@ package sequenceModifier;
 
 import java.util.Random;
 
+import debugStuff.DebugMessageFactory;
+import io.ConfigReader;
+
 /**
  * Contains operations which can be applied to a DNA sequence.
  * 
@@ -9,6 +12,26 @@ import java.util.Random;
  */
 public class DNAOperations {
 
+	/**
+	 * Check if a char is (A|T|G|C).
+	 * 
+	 * @param base char amino acid
+	 * @return true if char is (A|T|G|C)
+	 */
+	public static boolean isAminoAcid(char base){
+		return "ATGC".contains(String.valueOf(base));
+	}
+	
+	/**
+	 * Check if a sequence is a DNA sequence.
+	 * 
+	 * @param sequence String
+	 * @return true if DNA sequence
+	 */
+	public static boolean isDNASequence(String sequence){
+		return (sequence.replaceAll("[ATGC]", "").length() == 0);
+	}
+	
 	/**
 	 * Get the reverse complement for a DNA sequence.
 	 * 
@@ -73,13 +96,26 @@ public class DNAOperations {
 	}
 	
 	/**
-	 * Check if a char is (A|T|G|C).
+	 * Mutate a amino acid sequence with a mutation rate [0,1].
 	 * 
-	 * @param base char amino acid
-	 * @return true if char is (A|T|G|C)
+	 * @param sequence String
+	 * @param mutationrate double between 0 and 1
+	 * @return mutated sequence String
 	 */
-	public static boolean isAminoAcid(char base){
-		return "ATGC".contains(String.valueOf(base));
+	public static String mutateSequence(String seq, double mutationrate){
+		if(mutationrate < 0 || mutationrate > 1){
+			DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "Mutation rate must be in range 0 to 1.");
+			return null;
+		}
+		Random rand = new Random();
+		for (int j = 0; j < seq.length(); j++) {
+			if(rand.nextInt(100/(int)(mutationrate*100)) == 0){
+				StringBuilder sb = new StringBuilder(seq);
+				sb.setCharAt(j, DNAOperations.mutateAminoAcid(seq.charAt(j)));
+				seq = sb.toString();
+			}
+		}
+		return seq;
 	}
 	
 }

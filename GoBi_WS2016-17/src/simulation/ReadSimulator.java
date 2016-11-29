@@ -1,7 +1,10 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,12 +15,13 @@ import debugStuff.DebugMessageFactory;
 import fileFormats.FASTQElement;
 import fileFormats.FASTQQualityScores;
 import genomeAnnotation.GenomeAnnotation;
+import html.HTML_File;
 import io.AllroundFileReader;
-import io.AllroundFileWriter;
 import io.ConfigHelper;
 import io.ConfigReader;
 import io.ExternalFileWriter;
 import javafx.util.Pair;
+import plotting.LinePlot;
 import reader.GTFParser;
 import sequenceModifier.DNAOperations;
 
@@ -36,6 +40,10 @@ public class ReadSimulator {
 	private ConfigHelper ch;
 	
 	private ArrayList<String[]> readCountList;
+	/* contains fragment length as key and amount of fragments having this length as value */
+	private TreeMap<Integer, Integer> fragLengthMap;
+	/* contains amount mutations as key and amount of reads having this many mutations as value */
+	private TreeMap<Integer, Integer> mutationMap;
 	
 	public ReadSimulator(int readLength, double mean, double standardDeviation, double mutationRate, String pathToReadcounts){
 		this.readLength = readLength;
@@ -43,8 +51,10 @@ public class ReadSimulator {
 		this.standardDeviation = standardDeviation;
 		this.mutationRate = mutationRate;
 		
-		ch = new ConfigHelper();
+		this.ch = new ConfigHelper();
 		this.rand = new Random();
+		this.fragLengthMap = new TreeMap<>();
+		this.mutationMap = new TreeMap<>();
 		this.normalDistr = new NormalDistribution(this.mean, this.standardDeviation);
 		this.readCountList = AllroundFileReader.readReadcounts(pathToReadcounts);
 		
@@ -97,6 +107,11 @@ public class ReadSimulator {
 					fragmentLength = (int)normalDistr.sample();
 				} while(fragmentLength <= readLength || fragmentLength > (transcriptLength-readLength) || fragmentLength < 0);
 				
+				if(fragLengthMap.containsKey(fragmentLength)){
+					fragLengthMap.put(fragmentLength, fragLengthMap.get(fragmentLength)+1);
+				}else{
+					fragLengthMap.put(fragmentLength, 1);
+				}
 				
 				int max = transcriptLength-fragmentLength-readLength;
 				int min = 0;
@@ -109,18 +124,29 @@ public class ReadSimulator {
 				
 				/* mutate read */
 				for (int j = 0; j < forwardRead.length(); j++) {
-					if(rand.nextInt(100) == (int)mutationRate*100){
+					if(rand.nextInt(100/(int)(mutationRate*100)) == 0){
 						StringBuilder sb = new StringBuilder(forwardRead);
 						sb.setCharAt(j, DNAOperations.mutateAminoAcid(forwardRead.charAt(j)));
 						forwardRead = sb.toString();
 						fwMut.add(j);
 					}
-					if(rand.nextInt(100) == (int)mutationRate*100){
+					if(rand.nextInt(100/(int)(mutationRate*100)) == 0){
 						StringBuilder sb = new StringBuilder(reverseRead);
 						sb.setCharAt(j, DNAOperations.mutateAminoAcid(reverseRead.charAt(j)));
 						reverseRead = sb.toString();
 						rwMut.add(j);
 					}
+				}
+				
+				if(mutationMap.containsKey(fwMut.size())){
+					mutationMap.put(fwMut.size(), mutationMap.get(fwMut.size())+1);
+				}else{
+					mutationMap.put(fwMut.size(), 1);
+				}
+				if(mutationMap.containsKey(rwMut.size())){
+					mutationMap.put(rwMut.size(), mutationMap.get(rwMut.size())+1);
+				}else{
+					mutationMap.put(rwMut.size(), 1);
 				}
 				
 				/* create scores */
@@ -161,6 +187,35 @@ public class ReadSimulator {
 		forwardWriter.closeWriter();
 		reverseWriter.closeWriter();
 		simulMappingWriter.closeWriter();
+		
+		/* create plots */
+		
+		int minX = fragLengthMap.firstEntry().getKey();
+		int maxX = fragLengthMap.lastEntry().getKey();
+		int minY = fragLengthMap.firstEntry().getValue();
+		int maxY = fragLengthMap.lastEntry().getValue();
+		
+		Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair;
+		
+		Vector<Vector<Object>> vecVec1 = new Vector<>();
+		Vector<Vector<Object>> vecVec2 = new Vector<>();
+		
+		Vector<Object> vecX = new Vector<>();
+		Vector<Object> vecY = new Vector<>();
+		
+		for(Entry<Integer, Integer> entry : fragLengthMap.entrySet()){
+			vecX.add(entry.getValue());
+			vecY.add(entry.getKey());
+		}
+		vecVec1.add(vecX);
+		vecVec2.add(vecY);
+		
+		pair = new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vecVec1, vecVec2);
+		
+		LinePlot lp = new LinePlot(pair, "Fragment Length Distribution", "Amount fragments", "Fragment length", minX, minY, maxX, maxY, false);
+		lp.showLegend = false;
+		lp.filename = "fragLengthDistrib";
+		lp.plot();
 		
 	}
 	
