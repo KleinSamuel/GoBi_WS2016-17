@@ -19,6 +19,7 @@ import io.ConfigReader;
 import io.ExternalFileWriter;
 import javafx.util.Pair;
 import reader.GTFParser;
+import sequenceModifier.DNAOperations;
 
 public class ReadSimulator {
 
@@ -104,19 +105,19 @@ public class ReadSimulator {
 				
 				/* create read */
 				String forwardRead = sequence.substring(start, start+readLength);
-				String reverseRead = new StringBuilder(sequence.substring(stop-readLength,stop)).reverse().toString();
+				String reverseRead = DNAOperations.getReverseComplement(sequence.substring(stop-readLength,stop));
 				
 				/* mutate read */
 				for (int j = 0; j < forwardRead.length(); j++) {
 					if(rand.nextInt(100) == (int)mutationRate*100){
 						StringBuilder sb = new StringBuilder(forwardRead);
-						sb.setCharAt(j, mutateAminoAcid(forwardRead.charAt(j)));
+						sb.setCharAt(j, DNAOperations.mutateAminoAcid(forwardRead.charAt(j)));
 						forwardRead = sb.toString();
 						fwMut.add(j);
 					}
 					if(rand.nextInt(100) == (int)mutationRate*100){
 						StringBuilder sb = new StringBuilder(reverseRead);
-						sb.setCharAt(j, mutateAminoAcid(reverseRead.charAt(j)));
+						sb.setCharAt(j, DNAOperations.mutateAminoAcid(reverseRead.charAt(j)));
 						reverseRead = sb.toString();
 						rwMut.add(j);
 					}
@@ -131,8 +132,8 @@ public class ReadSimulator {
 				String reverseScore = buff;
 				
 				/* create forward and reverse read pair */
-				FASTQElement forward = new FASTQElement("@_"+String.valueOf(headerCount)+"_forward | "+geneId+" | "+transcriptId+" | "+readLength+" | "+mutationRate, forwardRead, forwardScore);
-				FASTQElement reverse = new FASTQElement("@_"+String.valueOf(headerCount)+"_reverse | "+geneId+" | "+transcriptId+" | "+readLength+" | "+mutationRate, reverseRead, reverseScore);
+				FASTQElement forward = new FASTQElement("@_"+String.valueOf(headerCount)+"_forward", forwardRead, forwardScore);
+				FASTQElement reverse = new FASTQElement("@_"+String.valueOf(headerCount)+"_reverse", reverseRead, reverseScore);
 				
 				forwardWriter.writeToWriter(forward.getHeader()+"\n"+forward.getSequence()+"\n+\n"+forward.getQualityScores()+"\n\n");
 				reverseWriter.writeToWriter(reverse.getHeader()+"\n"+reverse.getSequence()+"\n+\n"+reverse.getQualityScores()+"\n\n");
@@ -161,17 +162,6 @@ public class ReadSimulator {
 		reverseWriter.closeWriter();
 		simulMappingWriter.closeWriter();
 		
-	}
-	
-	public char mutateAminoAcid(char origin){
-		char out;
-		char[] alph = new char[]{'A','G','C','T'};
-		
-		do{
-			out = alph[rand.nextInt(4)];
-		} while (out != origin);
-		
-		return out;
 	}
 	
 	public int getReadLength() {

@@ -12,10 +12,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
+import debugStuff.DebugMessageFactory;
 import genomeAnnotation.Exon;
 import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Transcript;
+import io.ConfigReader;
 
 public class GenomeSequenceExtractor {
 
@@ -45,9 +47,9 @@ public class GenomeSequenceExtractor {
 		} else {
 			readOffsetFile(offsetFilePath);
 		}
-		for (Entry<String, Long> offset : offsets.entrySet()) {
-			System.out.println(offset.getKey() + "\t" + offset.getValue());
-		}
+//		for (Entry<String, Long> offset : offsets.entrySet()) {
+//			DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, offset.getKey() + "\t" + offset.getValue());
+//		}
 		openRandomAccessFile(fastaFilePath);
 		this.ga = ga;
 	}
@@ -84,7 +86,7 @@ public class GenomeSequenceExtractor {
 
 	public void calculateOffsets(String offsetFilePath, String fastaFile) {
 		try {
-			System.out.println("started calculating offsets from " + fastaFile);
+			DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "started calculating offsets from " + fastaFile);
 			Long time = System.currentTimeMillis();
 			ProcessBuilder p = new ProcessBuilder(new String[] { "bash", "-c", "grep -b -A1 '^>' " + fastaFile });
 			p.redirectErrorStream(true);
@@ -95,7 +97,6 @@ public class GenomeSequenceExtractor {
 			String s = null, chrId = null;
 			String[] split = null;
 			while ((s = stdInput.readLine()) != null) {
-				System.out.println(s);
 				split = s.split("\\s+");
 				chrId = split[0].split(">")[1];
 				if (!chromosomesToBeAnalyzed.contains(chrId)) {
@@ -104,7 +105,6 @@ public class GenomeSequenceExtractor {
 					continue;
 				}
 				s = stdInput.readLine();
-				System.out.println(s);
 				Long offset = Long.parseLong(s.split("-")[0]);
 				offsets.put(chrId, offset);
 				bw.write(chrId + "\t" + offset + "\n");
@@ -114,7 +114,7 @@ public class GenomeSequenceExtractor {
 			stdInput.close();
 			proc.destroy();
 			time = System.currentTimeMillis() - time;
-			System.out.println("calculating offsets took " + time + "ms");
+			DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "calculating offsets took " + time + "ms");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -125,7 +125,7 @@ public class GenomeSequenceExtractor {
 	public String getSequence(String chr, int start, int end, boolean reverse_complement) {
 		Long offset = offsets.get(chr);
 		if (offset == null) {
-			System.out.println("Chromosome " + chr + " couldn't be found");
+			DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "Chromosome " + chr + " couldn't be found");
 			return null;
 		}
 		// *lineNumber is relative to chromosome
@@ -151,7 +151,6 @@ public class GenomeSequenceExtractor {
 			return new String(cbuffered);
 
 		} catch (Exception e) {
-			System.out.println("rafSeekError");
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -161,12 +160,12 @@ public class GenomeSequenceExtractor {
 	public String getCDNASequenceInInterval(String chrId, String geneId, String trId, int start, int end,
 			boolean negativeStrand) {
 		if (!chromosomesToBeAnalyzed.contains(chrId)) {
-			System.out.println("getCDNA couldn't find chrId " + chrId);
+			DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "getCDNA couldn't find chrId " + chrId);
 			return null;
 		}
 		Transcript t = ga.getChromosome(chrId).getGene(geneId).getTranscript(trId);
 		if (t == null) {
-			System.out.println("couldn't find tr " + trId + " in g " + geneId + " in chr " + chrId);
+			DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "couldn't find tr " + trId + " in g " + geneId + " in chr " + chrId);
 			return null;
 		}
 		StringBuilder cdna = new StringBuilder();
