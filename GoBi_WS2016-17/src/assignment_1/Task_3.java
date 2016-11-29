@@ -195,7 +195,7 @@ public class Task_3 {
 				vectorOfVectors2.add(vTMP2);
 			}
 
-			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), biot, "num tr/genes", "num genes", maxX, maxY, false);
+			LinePlot lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2), biot, "num tr/genes", "num genes", maxX, maxY, false, false);
 
 			ArrayList<String[]> tmp = new ArrayList<>();
 

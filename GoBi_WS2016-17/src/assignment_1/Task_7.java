@@ -194,7 +194,7 @@ public class Task_7 {
 
 		LinePlot lp = new LinePlot(
 				new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2),
-				"Chromsomal Distance", "distance", "Amount genes", minX, minY, maxX, maxY, true);
+				"Chromsomal Distance", "distance", "Amount genes", minX, minY, maxX, maxY, true, false);
 		lp.showLegend = false;
 		lp.filename = "chrdist";
 		lp.plot();
@@ -225,7 +225,7 @@ public class Task_7 {
 		maxY = (int) tmp.getValue().get(tmp.getValue().size() - 1);
 
 		lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2),
-				"Gene Length Differences", "length difference in bp", "amount genes", minX, minY, maxX, maxY, true);
+				"Gene Length Differences", "length difference in bp", "amount genes", minX, minY, maxX, maxY, true, false);
 		lp.showLegend = false;
 		lp.filename = "glengthdiff";
 		lp.plot();
@@ -263,7 +263,7 @@ public class Task_7 {
 		labels.add("cds");
 
 		lp = new LinePlot(new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vectorOfVectors1, vectorOfVectors2),
-				"difference #transcripts and #cds", "difference", "amount genes", minX, minY, maxX, maxY, true);
+				"difference #transcripts and #cds", "difference", "amount genes", minX, minY, maxX, maxY, true, false);
 		lp.filename = "andiff";
 		lp.showLegend = true;
 		lp.addLegendVector(labels);

@@ -190,10 +190,11 @@ public class ReadSimulator {
 		
 		/* create plots */
 		
+		/* fragment length distribution */
 		int minX = fragLengthMap.firstEntry().getKey();
 		int maxX = fragLengthMap.lastEntry().getKey();
-		int minY = fragLengthMap.firstEntry().getValue();
-		int maxY = fragLengthMap.lastEntry().getValue();
+		int minY = Integer.MAX_VALUE;
+		int maxY = Integer.MIN_VALUE;
 		
 		Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair;
 		
@@ -204,17 +205,47 @@ public class ReadSimulator {
 		Vector<Object> vecY = new Vector<>();
 		
 		for(Entry<Integer, Integer> entry : fragLengthMap.entrySet()){
-			vecX.add(entry.getValue());
-			vecY.add(entry.getKey());
+			vecY.add(entry.getValue());
+			vecX.add(entry.getKey());
+			minY = Math.min(minY, entry.getValue());
+			maxY = Math.max(maxY, entry.getValue());
 		}
 		vecVec1.add(vecX);
 		vecVec2.add(vecY);
 		
 		pair = new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vecVec1, vecVec2);
 		
-		LinePlot lp = new LinePlot(pair, "Fragment Length Distribution", "Amount fragments", "Fragment length", minX, minY, maxX, maxY, false);
+		LinePlot lp = new LinePlot(pair, "Fragment Length Distribution", "Amount fragments", "Fragment length", minX, minY, maxX, maxY, false, false);
 		lp.showLegend = false;
 		lp.filename = "fragLengthDistrib";
+		lp.plot();
+		
+		/* mutation distribution */
+		minX = mutationMap.firstEntry().getKey();
+		maxX = mutationMap.lastEntry().getKey();
+		minY = Integer.MAX_VALUE;
+		maxY = Integer.MIN_VALUE;
+		
+		vecVec1 = new Vector<>();
+		vecVec2 = new Vector<>();
+		
+		vecX = new Vector<>();
+		vecY = new Vector<>();
+		
+		for(Entry<Integer, Integer> entry : mutationMap.entrySet()){
+			vecY.add(entry.getValue());
+			vecX.add(entry.getKey());
+			minY = Math.min(minY, entry.getValue());
+			maxY = Math.max(maxY, entry.getValue());
+		}
+		vecVec1.add(vecX);
+		vecVec2.add(vecY);
+		
+		pair = new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vecVec1, vecVec2);
+		
+		lp = new LinePlot(pair, "Mutation Distribution", "Amount reads", "Amount mutations", minX, minY, maxX, maxY, false, true);
+		lp.showLegend = false;
+		lp.filename = "mutationDistrib";
 		lp.plot();
 		
 	}

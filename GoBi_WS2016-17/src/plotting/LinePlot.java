@@ -23,7 +23,7 @@ public class LinePlot extends Plot{
 	
 	public String filename;
 	
-	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int maxX, int maxY, boolean logScaleX){
+	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int maxX, int maxY, boolean logScaleX, boolean logScaleY){
 		
 		this.maxX = maxX;
 		this.maxY = maxY;
@@ -41,12 +41,23 @@ public class LinePlot extends Plot{
 			this.x = pair.getKey();
 		}
 		
-		this.y = pair.getValue();
+		if(logScaleY){
+			this.y = logScale(pair.getValue());
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		}else{
+			this.y = pair.getValue();
+		}
 		
 		setTitle(title);
 		filename = title;
 		setXLab(logScaleX ? xLab+" (log10)" : xLab);
-		setYLab(yLab);
+		setYLab(logScaleY ? yLab+" (log10)" : yLab);
 		
 		legendLabels = new Vector<>();
 		
@@ -55,9 +66,9 @@ public class LinePlot extends Plot{
 		}
 	}
 	
-	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int minX, int minY, int maxX, int maxY, boolean logScaleX){
+	public LinePlot(Pair<Vector<Vector<Object>>,Vector<Vector<Object>>> pair, String title, String xLab, String yLab, int minX, int minY, int maxX, int maxY, boolean logScaleX, boolean logScaleY){
 		
-		this(pair, title, xLab, yLab, maxX, maxY, logScaleX);
+		this(pair, title, xLab, yLab, maxX, maxY, logScaleX, logScaleY);
 		
 		this.minX = minX;
 		this.minY = minY;
