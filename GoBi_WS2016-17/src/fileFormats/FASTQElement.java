@@ -1,5 +1,10 @@
 package fileFormats;
 
+/**
+ * Element for FastQ files.
+ * 
+ * @author Samuel Klein
+ */
 public class FASTQElement {
 
 	private String header;

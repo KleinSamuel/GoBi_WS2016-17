@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="jar-files/colt-1.2.0.jar"/>
 	<classpathentry kind="lib" path="jar-files/AugmentedTree.jar"/>
 	<classpathentry kind="lib" path="jar-files/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="jar-files/commons-lang3-3.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
