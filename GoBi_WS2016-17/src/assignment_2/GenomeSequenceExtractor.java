@@ -22,8 +22,8 @@ public class GenomeSequenceExtractor {
 	// -> contains offsets for a chromosome(tab-separated) -> default
 	// calculateOffsets() --> if file not there: creates offset-file on this
 	// path
-	// Bsp.: X 0 130000
-	// chrId start stop --> start 0-based; stop incl.
+	// Bsp.: X start
+	// chrId start --> start 0-based; starts and first character of fastaSeq
 	// 2. fastaFile
 
 	private HashSet<String> chromosomesToBeAnalyzed;

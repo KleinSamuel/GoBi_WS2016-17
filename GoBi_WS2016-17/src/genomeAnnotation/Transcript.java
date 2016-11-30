@@ -1,8 +1,10 @@
 package genomeAnnotation;
 
 import java.util.Iterator;
+import java.util.Vector;
 
 import augmentedTree.IntervalTree;
+import javafx.util.Pair;
 
 public class Transcript extends GenomicRegion {
 
@@ -86,6 +88,39 @@ public class Transcript extends GenomicRegion {
 		for (Exon e : exons)
 			sum += e.getLength();
 		return sum;
+	}
+
+	public Vector<Pair<Integer, Integer>> getGenomicRegionVector(int startInTranscript, int stopInTranscript) {
+		Vector<Pair<Integer, Integer>> genomicRegionVector = new Vector<>();
+		int startToSearch = startInTranscript, stopToSearch = stopInTranscript;
+		boolean startFound = false;
+		for (Exon e : exons) {
+			if (e.getLength() <= startToSearch) {
+				startToSearch -= e.getLength();
+				stopToSearch -= e.getLength();
+				continue;
+			}
+			if (!startFound) {
+				if (e.getLength() <= stopToSearch) {
+					genomicRegionVector.add(new Pair<Integer, Integer>(e.getStart() + startToSearch, e.getStop()));
+					stopToSearch -= e.getLength();
+				} else {
+					genomicRegionVector
+							.add(new Pair<Integer, Integer>(e.getStart() + startToSearch, e.getStart() + stopToSearch));
+					return genomicRegionVector;
+				}
+				startFound = true;
+				continue;
+			}
+			if (e.getLength() <= stopToSearch) {
+				genomicRegionVector.add(new Pair<Integer, Integer>(e.getStart(), e.getStop()));
+				stopToSearch -= e.getLength();
+			} else {
+				genomicRegionVector.add(new Pair<Integer, Integer>(e.getStart(), e.getStart() + stopToSearch));
+				break;
+			}
+		}
+		return genomicRegionVector;
 	}
 
 }
