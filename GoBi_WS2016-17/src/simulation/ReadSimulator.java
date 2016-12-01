@@ -15,7 +15,6 @@ import debugStuff.DebugMessageFactory;
 import fileFormats.FASTQElement;
 import fileFormats.FASTQQualityScores;
 import genomeAnnotation.GenomeAnnotation;
-import html.HTML_File;
 import io.AllroundFileReader;
 import io.ConfigHelper;
 import io.ConfigReader;
@@ -158,11 +157,11 @@ public class ReadSimulator {
 				String reverseScore = buff;
 				
 				/* create forward and reverse read pair */
-				FASTQElement forward = new FASTQElement("@_"+String.valueOf(headerCount)+"_forward", forwardRead, forwardScore);
-				FASTQElement reverse = new FASTQElement("@_"+String.valueOf(headerCount)+"_reverse", reverseRead, reverseScore);
+				FASTQElement forward = new FASTQElement("@"+String.valueOf(headerCount), forwardRead, forwardScore);
+				FASTQElement reverse = new FASTQElement("@"+String.valueOf(headerCount), reverseRead, reverseScore);
 				
-				forwardWriter.writeToWriter(forward.getHeader()+"\n"+forward.getSequence()+"\n+\n"+forward.getQualityScores()+"\n\n");
-				reverseWriter.writeToWriter(reverse.getHeader()+"\n"+reverse.getSequence()+"\n+\n"+reverse.getQualityScores()+"\n\n");
+				forwardWriter.writeToWriter(forward.getHeader()+"\n"+forward.getSequence()+"\n+\n"+forward.getQualityScores()+"\n");
+				reverseWriter.writeToWriter(reverse.getHeader()+"\n"+reverse.getSequence()+"\n+\n"+reverse.getQualityScores()+"\n");
 				
 				simulMappingWriter.writeToWriter(
 						headerCount+"\t"+
@@ -171,8 +170,8 @@ public class ReadSimulator {
 						transcriptId+"\t"+
 						"0-0\t"+
 						"0-0\t"+
-						start+"-"+(start+readLength)+"\t"+
-						(stop-readLength)+"-"+stop+"\t"+
+						start+"-"+(start+readLength-1)+"\t"+
+						(stop-readLength+1)+"-"+stop+"\t"+
 						"["+StringUtils.join(fwMut, ", ")+"]\t"+
 						"["+StringUtils.join(rwMut, ", ")+"]\t"+
 						"\n");
@@ -243,7 +242,7 @@ public class ReadSimulator {
 		
 		pair = new Pair<Vector<Vector<Object>>, Vector<Vector<Object>>>(vecVec1, vecVec2);
 		
-		lp = new LinePlot(pair, "Mutation Distribution", "Amount reads", "Amount mutations", minX, minY, maxX, maxY, false, true);
+		lp = new LinePlot(pair, "Mutation Distribution", "Amount mutations", "Amount reads", minX, 0, maxX, maxY, false, true);
 		lp.showLegend = false;
 		lp.filename = "mutationDistrib";
 		lp.plot();
