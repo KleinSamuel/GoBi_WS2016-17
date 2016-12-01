@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
+import debugStuff.DebugMessageFactory;
 import genomeAnnotation.CDS;
 import genomeAnnotation.CDSPart;
 import genomeAnnotation.Chromosome;
@@ -14,6 +15,7 @@ import genomeAnnotation.Exon;
 import genomeAnnotation.Gene;
 import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Transcript;
+import io.ConfigReader;
 
 public class GTFParser {
 
@@ -22,7 +24,7 @@ public class GTFParser {
 	public static GenomeAnnotation readGtfFile(String name, String gtfFilePath) {
 		GenomeAnnotation ga = new GenomeAnnotation(name);
 
-		System.out.println("Started reading gtf-file: " + ga.getName());
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Started reading gtf-file: " + ga.getName());
 
 		Chromosome c = null;
 		Gene g = null;

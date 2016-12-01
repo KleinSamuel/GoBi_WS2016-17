@@ -91,9 +91,12 @@ public class Transcript extends GenomicRegion {
 	}
 	
 	public Vector<Pair<Integer, Integer>> getGenomicRegionVector(int startInTranscript, int stopInTranscript) {
+		
 		Vector<Pair<Integer, Integer>> genomicRegionVector = new Vector<>();
 		int startToSearch = startInTranscript, stopToSearch = stopInTranscript;
+		
 		boolean startFound = false;
+		
 		for (Exon e : exons) {
 			if (e.getLength() <= startToSearch) {
 				startToSearch -= e.getLength();

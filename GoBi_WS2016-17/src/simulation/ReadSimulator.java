@@ -15,6 +15,7 @@ import debugStuff.DebugMessageFactory;
 import fileFormats.FASTQElement;
 import fileFormats.FASTQQualityScores;
 import genomeAnnotation.GenomeAnnotation;
+import genomeAnnotation.Transcript;
 import io.AllroundFileReader;
 import io.ConfigHelper;
 import io.ConfigReader;
@@ -163,15 +164,38 @@ public class ReadSimulator {
 				forwardWriter.writeToWriter(forward.getHeader()+"\n"+forward.getSequence()+"\n+\n"+forward.getQualityScores()+"\n");
 				reverseWriter.writeToWriter(reverse.getHeader()+"\n"+reverse.getSequence()+"\n+\n"+reverse.getQualityScores()+"\n");
 				
+				int startInTranscriptFW = start;
+				int stopInTranscriptFW = (start+readLength-1);
+				int startInTranscriptRW = stop-readLength+1;
+				int stopInTranscriptRW = stop;
+				
+//				Vector<Pair<Integer, Integer>> genVecFW = ga.getTranscript(transcriptId).getGenomicRegionVector(startInTranscriptFW, stopInTranscriptFW);
+//				Vector<Pair<Integer, Integer>> genVecRW = ga.getTranscript(transcriptId).getGenomicRegionVector(startInTranscriptRW, stopInTranscriptRW);
+				
+				String genVecFWString = "";
+//				int cnt = 0;
+//				for(Pair<Integer, Integer> pair : genVecFW){
+//					genVecFWString += pair.getKey()+"-"+pair.getValue();
+//					genVecFWString += (cnt < genVecFW.size()) ? "|" : "";
+//					cnt++;
+//				}
+				String genVecRWString = "";
+//				cnt = 1;
+//				for(Pair<Integer, Integer> pair : genVecRW){
+//					genVecRWString += pair.getKey()+"-"+pair.getValue();
+//					genVecRWString += (cnt < genVecRW.size()) ? "|" : "";
+//					cnt++;
+//				}
+				
 				simulMappingWriter.writeToWriter(
 						headerCount+"\t"+
 						ga.getGene(geneId).getChromosome().getID()+"\t"+
 						geneId+"\t"+
 						transcriptId+"\t"+
-						"0-0\t"+
-						"0-0\t"+
-						start+"-"+(start+readLength-1)+"\t"+
-						(stop-readLength+1)+"-"+stop+"\t"+
+						genVecFWString+"\t"+
+						genVecRWString+"\t"+
+						startInTranscriptFW+"-"+stopInTranscriptFW+"\t"+
+						startInTranscriptRW+"-"+stopInTranscriptRW+"\t"+
 						"["+StringUtils.join(fwMut, ", ")+"]\t"+
 						"["+StringUtils.join(rwMut, ", ")+"]\t"+
 						"\n");
