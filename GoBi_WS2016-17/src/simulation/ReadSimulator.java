@@ -93,6 +93,8 @@ public class ReadSimulator {
 			String sequence = gse.getTranscriptSequence(geneId, transcriptId);
 			int transcriptLength = sequence.length();
 			
+			Transcript currentTranscript = ga.getTranscript(transcriptId);
+			
 			/* iterate over generated amount of reads */
 			for (int i = 0; i < amount; i++) {
 				
@@ -169,23 +171,23 @@ public class ReadSimulator {
 				int startInTranscriptRW = stop-readLength+1;
 				int stopInTranscriptRW = stop;
 				
-//				Vector<Pair<Integer, Integer>> genVecFW = ga.getTranscript(transcriptId).getGenomicRegionVector(startInTranscriptFW, stopInTranscriptFW);
-//				Vector<Pair<Integer, Integer>> genVecRW = ga.getTranscript(transcriptId).getGenomicRegionVector(startInTranscriptRW, stopInTranscriptRW);
+				Vector<Pair<Integer, Integer>> genVecFW = currentTranscript.getGenomicRegionVector(startInTranscriptFW, stopInTranscriptFW);
+				Vector<Pair<Integer, Integer>> genVecRW = currentTranscript.getGenomicRegionVector(startInTranscriptRW, stopInTranscriptRW);
 				
 				String genVecFWString = "";
-//				int cnt = 0;
-//				for(Pair<Integer, Integer> pair : genVecFW){
-//					genVecFWString += pair.getKey()+"-"+pair.getValue();
-//					genVecFWString += (cnt < genVecFW.size()) ? "|" : "";
-//					cnt++;
-//				}
+				int cnt = 0;
+				for(Pair<Integer, Integer> pair : genVecFW){
+					genVecFWString += pair.getKey()+"-"+pair.getValue();
+					genVecFWString += (cnt < genVecFW.size()) ? "|" : "";
+					cnt++;
+				}
 				String genVecRWString = "";
-//				cnt = 1;
-//				for(Pair<Integer, Integer> pair : genVecRW){
-//					genVecRWString += pair.getKey()+"-"+pair.getValue();
-//					genVecRWString += (cnt < genVecRW.size()) ? "|" : "";
-//					cnt++;
-//				}
+				cnt = 1;
+				for(Pair<Integer, Integer> pair : genVecRW){
+					genVecRWString += pair.getKey()+"-"+pair.getValue();
+					genVecRWString += (cnt < genVecRW.size()) ? "|" : "";
+					cnt++;
+				}
 				
 				simulMappingWriter.writeToWriter(
 						headerCount+"\t"+
