@@ -29,7 +29,7 @@ public class LinePlot extends Plot{
 		this.maxY = maxY;
 		
 		if(logScaleX){
-			this.x = logScale(pair.getKey());
+			this.x = logScaleX(pair.getKey());
 			
 			try {
 				Thread.sleep(500);
@@ -42,7 +42,7 @@ public class LinePlot extends Plot{
 		}
 		
 		if(logScaleY){
-			this.y = logScale(pair.getValue());
+			this.y = logScaleY(pair.getValue());
 			
 			try {
 				Thread.sleep(500);
@@ -74,7 +74,7 @@ public class LinePlot extends Plot{
 		this.minY = minY;
 	}
 	
-	public Vector<Vector<Object>> logScale(Vector<Vector<Object>> in){
+	public Vector<Vector<Object>> logScaleX(Vector<Vector<Object>> in){
 		
 		Vector<Vector<Object>> tmp = new Vector<>();
 		double max = 0;
@@ -90,6 +90,25 @@ public class LinePlot extends Plot{
 		}
 		
 		this.maxX = (int)(max+1);
+		return tmp;
+	}
+	
+	public Vector<Vector<Object>> logScaleY(Vector<Vector<Object>> in){
+		
+		Vector<Vector<Object>> tmp = new Vector<>();
+		double max = 0;
+		
+		for(Vector<Object> v : in){
+			Vector<Object> tmp2 = new Vector<>();
+			for(Object v2 : v){
+				double x = Math.log10((double)((int)v2+1.0));
+				tmp2.add(x);
+				max = Math.max(max, x);
+			}
+			tmp.add(tmp2);
+		}
+		
+		this.maxY = (int)(max+1);
 		return tmp;
 	}
 	
