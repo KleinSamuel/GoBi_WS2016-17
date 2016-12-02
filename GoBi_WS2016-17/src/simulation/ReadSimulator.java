@@ -1,7 +1,6 @@
 package simulation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
@@ -17,10 +16,12 @@ import fileFormats.FASTQQualityScores;
 import genomeAnnotation.GenomeAnnotation;
 import genomeAnnotation.Transcript;
 import io.AllroundFileReader;
+import io.AllroundFileWriter;
 import io.ConfigHelper;
 import io.ConfigReader;
 import io.ExternalFileWriter;
 import javafx.util.Pair;
+import plotting.BarPlot;
 import plotting.LinePlot;
 import reader.GTFParser;
 import sequenceModifier.DNAOperations;
@@ -82,6 +83,13 @@ public class ReadSimulator {
 		simulMappingWriter.openWriter(ch.getDefaultOutputPath()+"simulmapping.info");
 		
 		simulMappingWriter.writeToWriter("READ_ID\tCHR\tGENE_ID\tTRANSCRIPT_ID\tFW_REGVEC\tRW_REGVEC\tFW_REGVEC_TRANSCRIPT\tRW_REGVEC_TRANSCRIPT\tFW_MUT\tRW_MUT\n");
+		
+		int amountReads = 0;
+		int amountNonSplicedReads = 0;
+		int amountNonSplicedReadsWithoutMismatches = 0;
+		int amountSplicedReads = 0;
+		int amountSplicedReadsWitoutMismatches = 0;
+		int amountSplicedReadsWithoutMismatchesGT5BPs = 0;
 		
 		/* iterate over all transcripts for readCounts file */
 		for(String[] array : readCountList){
@@ -175,7 +183,7 @@ public class ReadSimulator {
 				Vector<Pair<Integer, Integer>> genVecRW = currentTranscript.getGenomicRegionVector(startInTranscriptRW, stopInTranscriptRW);
 				
 				String genVecFWString = "";
-				int cnt = 0;
+				int cnt = 1;
 				for(Pair<Integer, Integer> pair : genVecFW){
 					genVecFWString += pair.getKey()+"-"+pair.getValue();
 					genVecFWString += (cnt < genVecFW.size()) ? "|" : "";
@@ -203,6 +211,35 @@ public class ReadSimulator {
 						"\n");
 				
 				headerCount++;
+				
+				/* compute numbers for barplot */
+				amountReads++;
+				if(genVecFW.size() == 1 && genVecRW.size() == 1){
+					if(fwMut.size() == 0 && rwMut.size() == 0){
+						amountNonSplicedReadsWithoutMismatches++;
+					}
+					amountNonSplicedReads++;
+				}else{
+					amountSplicedReads++;
+					if(fwMut.size() == 0 && rwMut.size() == 0){
+						amountSplicedReadsWitoutMismatches++;
+						
+						boolean shorterThan5BP = false;
+						for(Pair<Integer, Integer> pair : genVecFW){
+							if(pair.getValue()-pair.getKey() < 5){
+								shorterThan5BP = true;
+							}
+						}
+						for(Pair<Integer, Integer> pair : genVecRW){
+							if(pair.getValue()-pair.getKey() < 5){
+								shorterThan5BP = true;
+							}
+						}
+						if(!shorterThan5BP){
+							amountSplicedReadsWithoutMismatchesGT5BPs++;
+						}
+					}
+				}
 			}
 			
 			DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Finished "+fin+"/"+readCountList.size());
@@ -214,6 +251,8 @@ public class ReadSimulator {
 		simulMappingWriter.closeWriter();
 		
 		/* create plots */
+		
+		ArrayList<String> pathList = new ArrayList<>();
 		
 		/* fragment length distribution */
 		int minX = fragLengthMap.firstEntry().getKey();
@@ -244,6 +283,7 @@ public class ReadSimulator {
 		lp.showLegend = false;
 		lp.filename = "fragLengthDistrib";
 		lp.plot();
+		pathList.add(ch.getDefaultOutputPath()+lp.filename);
 		
 		/* mutation distribution */
 		minX = mutationMap.firstEntry().getKey();
@@ -272,7 +312,34 @@ public class ReadSimulator {
 		lp.showLegend = false;
 		lp.filename = "mutationDistrib";
 		lp.plot();
+		pathList.add(ch.getDefaultOutputPath()+lp.filename);
 		
+		Vector<Object> vecKey = new Vector<>();
+		Vector<Object> vecValue = new Vector<>();
+		
+		vecKey.add(amountReads);
+		vecValue.add("Total reads");
+		vecKey.add(amountNonSplicedReads);
+		vecValue.add("Unspliced reads");
+		vecKey.add(amountNonSplicedReadsWithoutMismatches);
+		vecValue.add("Unspliced reads w/o mismatches");
+		vecKey.add(amountSplicedReads);
+		vecValue.add("Spliced reads");
+		vecKey.add(amountSplicedReadsWitoutMismatches);
+		vecValue.add("Spliced reads w/o mismatches");
+		vecKey.add(amountSplicedReadsWithoutMismatchesGT5BPs);
+		vecValue.add("Spliced reads w/o mismatches > 5 bp");
+		
+		Pair<Vector<Object>, Vector<Object>> pairBP = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecValue);
+		
+		BarPlot bp = new BarPlot(pairBP, "Simulated Reads", "", "Amount", true);
+		bp.filename = "simReadInfo";
+		bp.bottomMargin = 15;
+		bp.leftMargin = 7;
+		bp.plot();
+		pathList.add(ch.getDefaultOutputPath()+bp.filename);
+		
+		AllroundFileWriter.createHTMLforPlots(ch.getDefaultOutputPath() + "simulation.html", pathList, null, true);
 	}
 	
 	public int getReadLength() {
