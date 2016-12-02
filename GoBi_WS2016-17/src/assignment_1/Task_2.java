@@ -97,7 +97,7 @@ public class Task_2 {
 
 			Pair<Vector<Object>, Vector<Object>> tmpVector = new Pair<>(values, descr);
 
-			BarPlot bp = new BarPlot(tmpVector, entryMain.getKey(), "", "");
+			BarPlot bp = new BarPlot(tmpVector, entryMain.getKey(), "", "", false);
 			bp.plot();
 
 			pathList.add(ch.getDefaultOutputPath() + "" + entryMain.getKey());
