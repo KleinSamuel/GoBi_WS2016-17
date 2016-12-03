@@ -1,16 +1,2 @@
-/output/
-/assignment_1/
-/assignment_2/
-/crawling/
-/fileFormats/
-/genomeAnnotation/
-/gtf/
-/io/
-/plotR/
-/plotting/
-/reader/
-/sequenceModifier/
+/samfiles/
 /simulation/
-/task1/
-/tempFiles/
-/util/

@@ -8,5 +8,8 @@
 	<classpathentry kind="lib" path="jar-files/commons-math3-3.6.1.jar"/>
 	<classpathentry kind="lib" path="jar-files/commons-lang3-3.5.jar"/>
 	<classpathentry kind="lib" path="SAMsTOOL_v.ALPHA.01.jar"/>
+	<classpathentry kind="lib" path="jar-files/samtools_java_htsjdk.jar"/>
+	<classpathentry kind="lib" path="jar-files/picard-1.119.jar"/>
+	<classpathentry kind="lib" path="jar-files/htsjdk-1.119.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -206,8 +206,8 @@ public class ReadSimulator {
 						genVecRWString+"\t"+
 						startInTranscriptFW+"-"+stopInTranscriptFW+"\t"+
 						startInTranscriptRW+"-"+stopInTranscriptRW+"\t"+
-						"["+StringUtils.join(fwMut, ", ")+"]\t"+
-						"["+StringUtils.join(rwMut, ", ")+"]\t"+
+						StringUtils.join(fwMut, ", ")+"\t"+
+						StringUtils.join(rwMut, ", ")+"\t"+
 						"\n");
 				
 				headerCount++;
