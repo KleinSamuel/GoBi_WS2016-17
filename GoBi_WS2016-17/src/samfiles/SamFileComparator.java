@@ -128,7 +128,7 @@ public class SamFileComparator {
 			stop = rec.getAlignmentEnd();
 			chromsomeID = rec.getReferenceName();
 
-			if (refChromsomeID == chromsomeID) {
+			if (refChromsomeID.equals(chromsomeID)) {
 				/* mapped correct */
 				if (refStartRW == start && refStopRW == stop) {
 					okMappedRW++;
@@ -177,7 +177,7 @@ public class SamFileComparator {
 		Pair<Vector<Object>, Vector<Object>> pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
 		BarPlot bp = new BarPlot(pairVec, "", "", "Amount", false);
 		bp.filename = "eval_fw";
-//		bp.plot();
+		bp.plot();
 		vecKey = new Vector<>();
 		vecKey.add(okMappedRW);
 		vecKey.add(partialMappedRW);
@@ -186,7 +186,7 @@ public class SamFileComparator {
 		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
 		bp = new BarPlot(pairVec, "", "", "Amount", false);
 		bp.filename = "eval_rw";
-//		bp.plot();
+		bp.plot();
 		vecKey = new Vector<>();
 		vecKey.add(okMappedBOTH);
 		vecKey.add(partialMappedBOTH);
@@ -195,7 +195,7 @@ public class SamFileComparator {
 		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
 		bp = new BarPlot(pairVec, "", "", "Amount", false);
 		bp.filename = "eval_both";
-//		bp.plot();
+		bp.plot();
 		
 		extFW.writeToWriter("" + okMappedFW);
 		extFW.writeToWriter("\t" + partialMappedFW);
