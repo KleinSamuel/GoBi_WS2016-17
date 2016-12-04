@@ -2,6 +2,7 @@ package samfiles;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Vector;
 
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
@@ -11,6 +12,8 @@ import htsjdk.samtools.ValidationStringency;
 import io.ConfigHelper;
 import io.ExternalFileReader;
 import io.ExternalFileWriter;
+import javafx.util.Pair;
+import plotting.BarPlot;
 
 public class SamFileComparator {
 
@@ -129,14 +132,16 @@ public class SamFileComparator {
 				/* mapped correct */
 				if (refStartRW == start && refStopRW == stop) {
 					okMappedRW++;
-					if (ok) {
+					if(ok) {
 						okMappedBOTH++;
+					}else if(part){
+						partialMappedBOTH++;
 					}
 				}
 				/* mapped partially correct */
 				else if (refStartRW <= start && refStopRW >= stop) {
 					partialMappedRW++;
-					if (part) {
+					if(part || ok) {
 						partialMappedBOTH++;
 					}
 				}
@@ -159,6 +164,39 @@ public class SamFileComparator {
 		ExternalFileWriter extFW = new ExternalFileWriter();
 		extFW.openWriter(new ConfigHelper().getDefaultOutputPath() + "readmapper_eval.txt");
 
+		Vector<Object> vecKey = new Vector<>();
+		vecKey.add(okMappedFW);
+		vecKey.add(partialMappedFW);
+		vecKey.add(wrongChrMappedFW);
+		vecKey.add(elseMappedFW);
+		Vector<Object> vecVal = new Vector<>();
+		vecVal.add("ok");
+		vecVal.add("partial");
+		vecVal.add("wrong-chr");
+		vecVal.add("everything else");
+		Pair<Vector<Object>, Vector<Object>> pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
+		BarPlot bp = new BarPlot(pairVec, "", "", "Amount", false);
+		bp.filename = "eval_fw";
+		bp.plot();
+		vecKey = new Vector<>();
+		vecKey.add(okMappedRW);
+		vecKey.add(partialMappedRW);
+		vecKey.add(wrongChrMappedRW);
+		vecKey.add(elseMappedRW);
+		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
+		bp = new BarPlot(pairVec, "", "", "Amount", false);
+		bp.filename = "eval_rw";
+		bp.plot();
+		vecKey = new Vector<>();
+		vecKey.add(okMappedBOTH);
+		vecKey.add(partialMappedBOTH);
+		vecKey.add(wrongChrMappedBOTH);
+		vecKey.add(elseMappedBOTH);
+		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
+		bp = new BarPlot(pairVec, "", "", "Amount", false);
+		bp.filename = "eval_both";
+		bp.plot();
+		
 		extFW.writeToWriter("" + okMappedFW);
 		extFW.writeToWriter("\t" + partialMappedFW);
 		extFW.writeToWriter("\t" + wrongChrMappedFW);
