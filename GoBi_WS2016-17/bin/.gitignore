@@ -1,3 +1,2 @@
-*.class
-/io/
 /samfiles/
+/output/
