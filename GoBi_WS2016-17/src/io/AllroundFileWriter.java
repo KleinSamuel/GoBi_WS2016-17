@@ -77,7 +77,27 @@ public class AllroundFileWriter {
 		}
 		
 		DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "File written.");
+	}
+	
+	public static void writeSimpleFile(String filepath, ArrayList<String> list){
 		
+		try {
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(filepath));
+			
+			for(String s : list){
+				bw.write(s);
+				bw.newLine();
+			}
+			
+			bw.flush();
+			bw.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		DebugMessageFactory.printNormalDebugMessage(ConfigReader.DEBUG_MODE, "File written.");
 	}
 	
 	public static void createHTMLforPlots(String filepath, ArrayList<String> plotPaths, ArrayList<ArrayList<String[]>> info, boolean includeBase64){

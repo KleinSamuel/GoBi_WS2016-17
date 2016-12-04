@@ -15,7 +15,6 @@ import debugStuff.DebugMessageFactory;
 
 public class AllroundFileReader {
 
-	
 	public HashMap<String, HashMap<String, Integer>> readXMLForTask1(String filepath){
 		
 		HashMap<String, HashMap<String, Integer>> mainMap = new HashMap<>();
