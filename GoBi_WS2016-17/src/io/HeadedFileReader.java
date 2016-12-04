@@ -74,7 +74,7 @@ public class HeadedFileReader {
 
 		public LineObject(String[] header, String[] line) {
 			if (header.length != line.length) {
-				DebugMessageFactory.printErrorDebugMessage(true, "Error in LineObject: headerLength != lineLength");
+				DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "Error in LineObject: headerLength != lineLength");
 			}
 			keyValuePairs = new HashMap<>();
 			for (int i = 0; i < header.length; i++) {
