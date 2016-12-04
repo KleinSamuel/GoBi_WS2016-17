@@ -1,7 +1,9 @@
 package samfiles;
 
 import java.io.File;
+import java.util.HashMap;
 
+import debugStuff.DebugMessageFactory;
 import htsjdk.samtools.SAMFileReader;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
@@ -35,6 +37,8 @@ public class SamFileComparator {
 	String refChromsomeID;
 	boolean refIsNegative;
 	
+	HashMap<Integer, Object[]> simulMap;
+	
 	public SamFileComparator(){
 		okMappedFW = 0;
 		partialMappedFW = 0;
@@ -48,15 +52,21 @@ public class SamFileComparator {
 		partialMappedBOTH = 0;
 		wrongChrMappedBOTH = 0;
 		elseMappedBOTH = 0;
+		
+		this.simulMap = new HashMap<>();
 	}
 	
 	public void compareSamFileToSimulmapping(String[] args){
 		
 		ExternalFileReader extFR = new ExternalFileReader();
-//		extFR.openReader("/home/sam/Desktop/simulmapping_first50.info");
 		extFR.openReader(args[1]);
+		String l = null;
+		extFR.readNextLine();
+		while((l = extFR.readNextLine()) != null){
+			parseInfoLine(l);
+		}
+		extFR.closeReader();
 		
-//		SAMFileReader fr = new SAMFileReader(new File("/home/sam/Desktop/STAR_testfile.sam"));
 		SAMFileReader fr = new SAMFileReader(new File(args[0]));
 		fr.setValidationStringency(ValidationStringency.SILENT);
 		
@@ -66,23 +76,20 @@ public class SamFileComparator {
 		int start, stop;
 		int readNumber;
 		String chromsomeID;
-		boolean isNegative;
-		
-		/* skip first line in info file */
-		extFR.readNextLine();
 		
 		while(iterator.hasNext()){
 			rec = iterator.next();
-
-			while(Integer.parseInt(rec.getReadName()) > refNumber){
-				parseInfoLine(extFR.readNextLine());
-			}
 			
 			readNumber = Integer.parseInt(rec.getReadName());
 			start = rec.getAlignmentStart()-1;
 			stop = rec.getAlignmentEnd()-1;
 			chromsomeID = rec.getReferenceName();
-			isNegative = rec.getReadNegativeStrandFlag();
+			
+			refChromsomeID = (String)simulMap.get(readNumber)[4];
+			refStartFW = (int)simulMap.get(readNumber)[0];
+			refStopFW = (int)simulMap.get(readNumber)[1];
+			refStartRW = (int)simulMap.get(readNumber)[2];
+			refStopRW = (int)simulMap.get(readNumber)[3];
 			
 			boolean ok = false;
 			boolean part = false;
@@ -116,7 +123,6 @@ public class SamFileComparator {
 			start = rec.getAlignmentStart();
 			stop = rec.getAlignmentEnd();
 			chromsomeID = rec.getReferenceName();
-			isNegative = rec.getReadNegativeStrandFlag();
 			
 			if(refChromsomeID == chromsomeID){
 				/* mapped correct */
@@ -163,10 +169,9 @@ public class SamFileComparator {
 		extFW.writeToWriter("\n"+okMappedBOTH);
 		extFW.writeToWriter("\t"+partialMappedBOTH);
 		extFW.writeToWriter("\t"+wrongChrMappedBOTH);
-		extFW.writeToWriter("\t"+elseMappedBOTH);
+		extFW.writeToWriter("\t"+elseMappedBOTH+"\n");
 		
 		extFW.closeWriter();
-		extFR.closeReader();
 	}
 	
 	public void parseInfoLine(String line){
@@ -187,6 +192,8 @@ public class SamFileComparator {
 			refStartRW = Integer.parseInt(lineArray[5].split("-")[0]);
 			refStopRW = Integer.parseInt(lineArray[5].split("-")[1]);
 		}
+		
+		this.simulMap.put(refNumber, new Object[]{refStartFW,refStopFW,refStartRW,refStopRW,refChromsomeID});
 	}
 	
 	public static void main(String[] args) {
