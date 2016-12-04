@@ -3,15 +3,15 @@ package samfiles;
 import java.io.File;
 import java.util.HashMap;
 
-import htsjdk.samtools.SAMFileReader;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SAMRecordIterator;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
 import io.ConfigHelper;
 import io.ExternalFileReader;
 import io.ExternalFileWriter;
 
-@SuppressWarnings("deprecation")
 public class SamFileComparator {
 
 	/* info for plots */
@@ -66,12 +66,12 @@ public class SamFileComparator {
 		}
 		extFR.closeReader();
 
-		SAMFileReader fr = new SAMFileReader(new File(args[0]));
-		fr.setValidationStringency(ValidationStringency.SILENT);
-		// SamReaderFactory.setDefaultValidationStringency(ValidationStringency.SILENT);
-		// SamReader sr = SamReaderFactory.makeDefault().open(args[0]);
+		// SAMFileReader fr = new SAMFileReader(new File(args[0]));
+		// fr.setValidationStringency(ValidationStringency.SILENT);
+		SamReaderFactory.setDefaultValidationStringency(ValidationStringency.SILENT);
+		SamReader sr = SamReaderFactory.makeDefault().open(new File(args[0]));
 
-		SAMRecordIterator iterator = fr.iterator();
+		SAMRecordIterator iterator = sr.iterator();
 		SAMRecord rec = null;
 
 		int start, stop;
