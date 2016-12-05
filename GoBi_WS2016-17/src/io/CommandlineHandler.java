@@ -1,6 +1,7 @@
 package io;
 
 import java.util.HashMap;
+import java.util.Scanner;
 
 import assignment_1.Task_2;
 import assignment_1.Task_3;
@@ -8,6 +9,7 @@ import assignment_1.Task_4;
 import assignment_1.Task_5;
 import assignment_1.Task_6;
 import assignment_1.Task_7;
+import simulation.ReadSimulator;
 
 public class CommandlineHandler {
 	
@@ -27,12 +29,15 @@ public class CommandlineHandler {
 		s += "###########################################################\n";
 		s += "FLAGS\t\tHINTS\n\n";
 		s += "-i x\t\tPrint information about specific task x.\n\n";
-		s += "-t 2\t\tExecute task #2.\n";
-		s += "-t 3\t\tExecute task #3.\n";
-		s += "-t 4\t\tExecute task #4.\n";
-		s += "-t 5\t\tExecute task #5.\n";
-		s += "-t 6\t\tExecute task #6.\n";
-		s += "-t 7\t\tExecute task #7.\n\n";
+		s += "-t 12\t\tExecute assignment 1 task #2.\n";
+		s += "-t 13\t\tExecute assignment 1 task #3.\n";
+		s += "-t 14\t\tExecute assignment 1 task #4.\n";
+		s += "-t 15\t\tExecute assignment 1 task #5.\n";
+		s += "-t 16\t\tExecute assignment 1 task #6.\n";
+		s += "-t 17\t\tExecute assignment 1 task #7.\n\n";		
+		s += "-t 22\t\tExecute assignment 2 task #2.\n";
+		s += "-t 23\t\tExecute assignment 2 task #3.\n";
+		s += "-t 24\t\tExecute assignment 2 task #4.\n\n";
 		s += "-q\t\tQuiet mode (no print statements)\n\n";
 		s += "###########################################################\n";
 		s += "\nTHESE DIRECTORIES NEED TO BE NEXT TO THE JAR-FILE:\n\n";
@@ -206,22 +211,22 @@ public class CommandlineHandler {
 			
 			if(argsNew.containsKey("-i")){
 				switch (parseArguments(args).get("-i")) {
-				case "2":
+				case "12":
 					System.out.println(printInfo(2));
 					break;
-				case "3":
+				case "13":
 					System.out.println(printInfo(3));
 					break;
-				case "4":
+				case "14":
 					System.out.println(printInfo(4));
 					break;
-				case "5":
+				case "15":
 					System.out.println(printInfo(5));
 					break;
-				case "6":
+				case "16":
 					System.out.println(printInfo(6));
 					break;
-				case "7":
+				case "17":
 					System.out.println(printInfo(7));
 					break;
 					
@@ -235,23 +240,32 @@ public class CommandlineHandler {
 			
 			if(argsNew.containsKey("-t")){
 				switch (parseArguments(args).get("-t")) {
-				case "2":
+				case "12":
 					new Task_2().execute_task_2();
 					break;
-				case "3":
+				case "13":
 					new Task_3().execute_task_3();
 					break;
-				case "4":
+				case "14":
 					new Task_4().execute_task_4();
 					break;
-				case "5":
+				case "15":
 					new Task_5().execute_task_5();
 					break;
-				case "6":
+				case "16":
 					new Task_6().execute_task_6();
 					break;
-				case "7":
+				case "17":
 					new Task_7().execute_task_7();
+					break;
+				case "22":
+//					new ReadSimulator(readLength, mean, standardDeviation, mutationRate, pathToReadcountFile);
+					break;
+				case "23":
+					
+					break;
+				case "24":
+					
 					break;
 					
 				default:
