@@ -62,6 +62,18 @@ public class ReadSimulator {
 		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Read in GenomeAnnotation.");
 		ga = GTFParser.readGtfFile("h.ens.75", "/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Homo_sapiens.GRCh37.75.gtf");
 		
+////		9	ENSG00000241978 ENST00000374525 2680-2755       2755-2830
+//		Vector<Pair<Integer, Integer>> v = ga.getChromosome("9").getGene("ENSG00000241978").getTranscript("ENST00000374525").getGenomicRegionVector(2680, 2754);
+//		Vector<Pair<Integer, Integer>> v2 = ga.getChromosome("9").getGene("ENSG00000241978").getTranscript("ENST00000374525").getGenomicRegionVector(2755, 2829);
+//		for(Pair<Integer, Integer> p : v){
+//			System.out.print(p.getKey()+"-"+p.getValue()+"|");
+//		}
+//		System.out.println();
+//		for(Pair<Integer, Integer> p : v2){
+//			System.out.print(p.getKey()+"-"+p.getValue()+"|");
+//		}
+//		System.out.println();
+		
 		gse = new GenomeSequenceExtractor(ch.getDefaultOutputPath()+"offsets.txt", "/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/Homo_sapiens.GRCh37.75.dna.toplevel.fa", ga);
 	}
 	
