@@ -276,33 +276,33 @@ public class SamFileComparator {
 		extFW.openWriter(new ConfigHelper().getDefaultOutputPath() + "readmapper_eval.txt");
 
 		Vector<Object> vecKey = new Vector<>();
-		vecKey.add(okMappedFW);
-		vecKey.add(partialMappedFW);
-		vecKey.add(wrongChrMappedFW);
-		vecKey.add(elseMappedFW);
+//		vecKey.add(okMappedFW);
+//		vecKey.add(partialMappedFW);
+//		vecKey.add(wrongChrMappedFW);
+//		vecKey.add(elseMappedFW);
 		Vector<Object> vecVal = new Vector<>();
-		vecVal.add("ok");
-		vecVal.add("partial");
-		vecVal.add("wrong-chr");
-		vecVal.add("everything else");
+//		vecVal.add("ok");
+//		vecVal.add("partial");
+//		vecVal.add("wrong-chr");
+//		vecVal.add("everything else");
 		Pair<Vector<Object>, Vector<Object>> pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
-		BarPlot bp = new BarPlot(pairVec, "eval_fw", "", "Amount", true);
-		bp.filename = "eval_fw";
-		bp.plot();
+		BarPlot bp = new BarPlot(pairVec, "eval_fw", "", "Amount", false);
+//		bp.filename = "eval_fw";
+//		bp.plot();
 		
-		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
+//		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
 		
-		vecKey = new Vector<>();
-		vecKey.add(okMappedRW);
-		vecKey.add(partialMappedRW);
-		vecKey.add(wrongChrMappedRW);
-		vecKey.add(elseMappedRW);
-		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
-		bp = new BarPlot(pairVec, "eval_rw", "", "Amount", true);
-		bp.filename = "eval_rw";
-		bp.plot();
+//		vecKey = new Vector<>();
+//		vecKey.add(okMappedRW);
+//		vecKey.add(partialMappedRW);
+//		vecKey.add(wrongChrMappedRW);
+//		vecKey.add(elseMappedRW);
+//		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
+//		bp = new BarPlot(pairVec, "eval_rw", "", "Amount", false);
+//		bp.filename = "eval_rw";
+//		bp.plot();
 		
-		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
+//		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
 		
 		vecKey = new Vector<>();
 		vecKey.add(okMappedBOTH);
@@ -310,7 +310,7 @@ public class SamFileComparator {
 		vecKey.add(wrongChrMappedBOTH);
 		vecKey.add(elseMappedBOTH);
 		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
-		bp = new BarPlot(pairVec, "eval_both", "", "Amount", true);
+		bp = new BarPlot(pairVec, "eval_both", "", "Amount", false);
 		bp.filename = "eval_both";
 		bp.plot();
 		
