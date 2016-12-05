@@ -30,7 +30,7 @@ public class BarPlot extends Plot{
 		for(Object o : pair.getKey()){
 			maxY = Math.max((int)o,maxY);
 		}
-		
+//		maxY *= 10;
 	}
 	
 	public void plot(){
@@ -78,10 +78,10 @@ public class BarPlot extends Plot{
 		command += String.format("x<-scan(\"%s\",nlines=1,skip=0);", tmp);
 		command += String.format("y<-scan(\"%s\",nlines=1,skip=1,what=character());", tmp);
 		command += String.format("op<-par(mar=c("+bottomMargin+","+leftMargin+",4,2)+0.1);");
-		if(logScaleY){
+//		if(logScaleY){
 			command += String.format("options(scipen=10);");
-		}
-		command += String.format("barplot(x,names.arg=y,col=rainbow(\"%s\"),las=2"+(logScaleY ? ",log=\"y\"" : "")+");", this.pair.getKey().size());
+//		}
+		command += String.format("barplot(x,names.arg=y,col=rainbow(\"%s\"),las=2"+(logScaleY ? ",log=\"y\"" : "")+",ylim=c("+1+","+maxY+"));", this.pair.getKey().size());
 		command += String.format("par(op);");
 		command += String.format("title(main=\"%s\", xlab=\"%s\", ylab=\"%s\");", super.title, super.xLab, super.yLab);
 		command += "dev.off();";
