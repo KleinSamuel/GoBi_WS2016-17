@@ -15,6 +15,7 @@ import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
+import io.AllroundFileWriter;
 import io.ConfigHelper;
 import io.ConfigReader;
 import io.ExternalFileReader;
@@ -122,6 +123,7 @@ public class SamFileComparator {
 			rec = iterator.next();
 			
 			if(!validRecord(rec)){
+				rec = iterator.next();
 				continue;
 			}
 
@@ -171,23 +173,24 @@ public class SamFileComparator {
 					otherFW = true;
 				}
 				
+
+				if(otherFW){
+					elseMappedFW++;
+					putInHashMapFW(catNum, "other");
+				}else if(partFW){
+					partialMappedFW++;
+					putInHashMapFW(catNum, "part");
+				}else if(okFW){
+					okMappedFW++;
+					putInHashMapFW(catNum, "ok");
+				}
+				
 			}
 			/* read is mapped to wrong chromosome */
 			else{
 				wrongChrMappedFW++;
 				putInHashMapFW(catNum, "wrongChr");
 				wrongCHRFW = true;
-			}
-			
-			if(otherFW){
-				elseMappedFW++;
-				putInHashMapFW(catNum, "other");
-			}else if(partFW){
-				partialMappedFW++;
-				putInHashMapFW(catNum, "part");
-			}else if(okFW){
-				okMappedFW++;
-				putInHashMapFW(catNum, "ok");
 			}
 			
 			rec = iterator.next();
@@ -232,23 +235,23 @@ public class SamFileComparator {
 					otherRW = true;
 				}
 				
+				if(otherRW){
+					elseMappedRW++;
+					putInHashMapRW(catNum, "other");
+				}else if(partRW){
+					partialMappedRW++;
+					putInHashMapRW(catNum, "part");
+				}else if(okRW){
+					okMappedRW++;
+					putInHashMapRW(catNum, "ok");
+				}
+				
 			}
 			/* read is mapped to wrong chromosome */
 			else{
 				wrongChrMappedRW++;
 				putInHashMapRW(catNum, "wrongChr");
 				wrongCHRRW = true;
-			}
-			
-			if(otherRW){
-				elseMappedRW++;
-				putInHashMapRW(catNum, "other");
-			}else if(partRW){
-				partialMappedRW++;
-				putInHashMapRW(catNum, "part");
-			}else if(okRW){
-				okMappedRW++;
-				putInHashMapRW(catNum, "ok");
 			}
 			
 			if(otherFW && otherRW){
@@ -267,6 +270,8 @@ public class SamFileComparator {
 		
 		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Finished comparing SAM/BAM file to simulmapping.info.");
 
+		ArrayList<String> plotPaths = new ArrayList<>();
+		
 		ExternalFileWriter extFW = new ExternalFileWriter();
 		extFW.openWriter(new ConfigHelper().getDefaultOutputPath() + "readmapper_eval.txt");
 
@@ -284,6 +289,9 @@ public class SamFileComparator {
 		BarPlot bp = new BarPlot(pairVec, "eval_fw", "", "Amount", true);
 		bp.filename = "eval_fw";
 		bp.plot();
+		
+		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
+		
 		vecKey = new Vector<>();
 		vecKey.add(okMappedRW);
 		vecKey.add(partialMappedRW);
@@ -294,6 +302,8 @@ public class SamFileComparator {
 		bp.filename = "eval_rw";
 		bp.plot();
 		
+		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
+		
 		vecKey = new Vector<>();
 		vecKey.add(okMappedBOTH);
 		vecKey.add(partialMappedBOTH);
@@ -303,6 +313,8 @@ public class SamFileComparator {
 		bp = new BarPlot(pairVec, "eval_both", "", "Amount", true);
 		bp.filename = "eval_both";
 		bp.plot();
+		
+		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
 		
 		vecKey = new Vector<>();
 		vecVal = new Vector<>();
@@ -317,7 +329,10 @@ public class SamFileComparator {
 		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
 		bp = new BarPlot(pairVec, "eval_criteria_fw", "", "Amount", true);
 		bp.filename = "eval_criteria_fw";
+		bp.bottomMargin = 15;
 		bp.plot();
+		
+		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
 		
 		vecKey = new Vector<>();
 		vecVal = new Vector<>();
@@ -332,7 +347,10 @@ public class SamFileComparator {
 		pairVec = new Pair<Vector<Object>, Vector<Object>>(vecKey, vecVal);
 		bp = new BarPlot(pairVec, "eval_criteria_rw", "", "Amount", true);
 		bp.filename = "eval_criteria_rw";
+		bp.bottomMargin = 15;
 		bp.plot();
+		
+		plotPaths.add(new ConfigHelper().getDefaultOutputPath()+bp.filename);
 		
 		extFW.writeToWriter("" + okMappedFW);
 		extFW.writeToWriter("\t" + partialMappedFW);
@@ -348,6 +366,8 @@ public class SamFileComparator {
 		extFW.writeToWriter("\t" + elseMappedBOTH + "\n");
 
 		extFW.closeWriter();
+		
+		AllroundFileWriter.createHTMLforPlots(new ConfigHelper().getDefaultOutputPath()+"simple_eval.html", plotPaths, null, true);
 	}
 	
 	private enum TASK_2_CATEGORY{
@@ -491,7 +511,7 @@ public class SamFileComparator {
 	}
 
 	public void parseInfoLine(String line, int colFW, int colRW) {
-		String[] lineArray = line.split("\t");
+		String[] lineArray = line.split("\t",-1);
 		refNumber = Integer.parseInt(lineArray[0]);
 		refChromsomeID = lineArray[1];
 		
@@ -517,7 +537,7 @@ public class SamFileComparator {
 				smaller5 = (Integer.parseInt(cuttedAtMinus[1])-Integer.parseInt(cuttedAtMinus[0]) <= 5) ? true : false;
 			}
 			fw = 3;
-			if(lineArray.length <= 7){
+			if(lineArray[8].equals("")){
 				fw = 4;
 				if(!smaller5){
 					fw = 5;
@@ -525,7 +545,7 @@ public class SamFileComparator {
 			}
 		} else {
 			fw = 1;
-			if(lineArray.length <= 7){
+			if(lineArray[8].equals("")){
 				fw = 2;
 			}
 			refStartFW.add(Integer.parseInt(lineArray[colFW].split("-")[0]));
@@ -541,7 +561,7 @@ public class SamFileComparator {
 				smaller5 = (Integer.parseInt(cuttedAtMinus[1])-Integer.parseInt(cuttedAtMinus[0]) <= 5) ? true : false;
 			}
 			rw = 3;
-			if(lineArray.length <= 7){
+			if(lineArray[9].equals("")){
 				rw = 4;
 				if(!smaller5){
 					rw = 5;
@@ -549,7 +569,7 @@ public class SamFileComparator {
 			}
 		} else {
 			rw = 1;
-			if(lineArray.length <= 7){
+			if(lineArray[9].equals("")){
 				rw = 2;
 			}
 			refStartRW.add(Integer.parseInt(lineArray[colRW].split("-")[0]));
@@ -560,10 +580,7 @@ public class SamFileComparator {
 	}
 	
 	public boolean validRecord(SAMRecord s) {
-		if (!s.getReadUnmappedFlag() && !s.getMateUnmappedFlag() && !s.getNotPrimaryAlignmentFlag()) {
-			return true;
-		}
-		return false;
+		return (!s.getReadUnmappedFlag() && !s.getMateUnmappedFlag() && !s.getNotPrimaryAlignmentFlag());
 	}
 	
 	public boolean validMate(SAMRecord sam, SAMRecord mate) {
