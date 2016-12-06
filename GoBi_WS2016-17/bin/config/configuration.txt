@@ -18,8 +18,11 @@ r_binary	/home/proj/biosoft/software/R/R-3.3.0/bin/R
 # output directory for objects
 object_directory	DEFAULT
 #
-# params for read simulation assignment 2 task 2 || read length,mean,average deviation,mutation rate, filepath for readcounts
+# assignment 2 task 2 || read length,mean,average deviation,mutation rate, filepath for readcounts
 read_sim_params	75,200.0,80.0,0.01,/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/readcounts.simulation
 #
 # assignment 2 task 3 || path to bam or sam file, path to simulation.info
 bam_comp_params	/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/bams/star.bam,/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/comparative_eval.mappinginfo
+#
+# assignment 2 task 4 || bamsListFile,mainDirectory,mappingInfo,GTF
+bam_multi_comp_params	/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/bams.list,/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/,/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/comparative_eval.mappinginfo,/home/proj/biosoft/praktikum/genprakt-ws16/gtf/Homo_sapiens.GRCh37.75.gtf
