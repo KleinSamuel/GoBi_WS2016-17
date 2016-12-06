@@ -10,12 +10,11 @@ public class HeadedFileReader {
 	private ArrayList<LineObject> lineObjects;
 	private String delimiter;
 	private String filepath;
-	private ArrayList<String> header;
+	private ArrayList<String> header = null;
 
 	public HeadedFileReader(String filepath, String delimiter) {
 		this.filepath = filepath;
 		this.delimiter = delimiter;
-		readHeadedFile(filepath, delimiter);
 	}
 
 	/**
@@ -25,13 +24,13 @@ public class HeadedFileReader {
 	 * @param delimiter
 	 * @return
 	 */
-	public void readHeadedFile(String filepath, String delimiter) {
+	public void readHeadedFile() {
 		lineObjects = new ArrayList<>();
 		String nextLine = null;
 		String[] header = null;
 		ExternalFileReader efr = new ExternalFileReader();
 		efr.openReader(filepath);
-		while ((nextLine = efr.readNextLine()) != null) {
+		while ((nextLine = efr.readNextLine()) != null && !nextLine.isEmpty()) {
 			if (header == null) {
 				header = nextLine.split(delimiter);
 				this.header = new ArrayList<>(header.length);
@@ -68,13 +67,14 @@ public class HeadedFileReader {
 	 * @author Dennis
 	 *
 	 */
-	static class LineObject {
+	public static class LineObject {
 
 		HashMap<String, String> keyValuePairs;
 
 		public LineObject(String[] header, String[] line) {
 			if (header.length != line.length) {
-				DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE, "Error in LineObject: headerLength != lineLength");
+				DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE,
+						"Error in LineObject: headerLength != lineLength");
 			}
 			keyValuePairs = new HashMap<>();
 			for (int i = 0; i < header.length; i++) {
