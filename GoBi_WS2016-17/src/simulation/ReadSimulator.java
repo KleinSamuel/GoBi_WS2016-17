@@ -81,7 +81,7 @@ public class ReadSimulator {
 		return new NormalDistribution(mean, deviation);
 	}
 
-	private void simulateReads(){
+	public void simulateReads(){
 		
 		int headerCount = 0;
 		int fin = 1;
@@ -386,12 +386,10 @@ public class ReadSimulator {
 		this.mutationRate = mutationRate;
 	}
 	
-	
-	public static void main(String[] args) {
-		
-		ReadSimulator rsim = new ReadSimulator(75, 200.0, 80.0, 0.01, "/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/readcounts.simulation");
-		
-		rsim.simulateReads();
-		
-	}
+//	public static void main(String[] args) {
+//		
+//		ReadSimulator rsim = new ReadSimulator(75, 200.0, 80.0, 0.01, "/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/readcounts.simulation");
+//		rsim.simulateReads();
+//		
+//	}
 }

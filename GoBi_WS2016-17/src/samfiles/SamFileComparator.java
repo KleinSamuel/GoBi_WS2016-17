@@ -594,11 +594,11 @@ public class SamFileComparator {
 		return false;
 	}
 
-	public static void main(String[] args) {
-
-		SamFileComparator sfc = new SamFileComparator();
-
-//		sfc.compareSamFileToSimulmapping(new String[]{"/home/proj/biocluster/praktikum/genprakt-ws16/KleinPost/Solution2/output/star/star.bam","/home/proj/biocluster/praktikum/genprakt-ws16/KleinPost/Solution2/output/task_2/simulmapping.info"});
-		sfc.compareSamFileToSimulmapping(new String[]{"/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/bams/star.bam","/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/comparative_eval.mappinginfo"});
-	}
+//	public static void main(String[] args) {
+//
+//		SamFileComparator sfc = new SamFileComparator();
+//
+////		sfc.compareSamFileToSimulmapping(new String[]{"/home/proj/biocluster/praktikum/genprakt-ws16/KleinPost/Solution2/output/star/star.bam","/home/proj/biocluster/praktikum/genprakt-ws16/KleinPost/Solution2/output/task_2/simulmapping.info"});
+//		sfc.compareSamFileToSimulmapping(new String[]{"/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/bams/star.bam","/home/proj/biosoft/praktikum/genprakt-ws16/assignment/a2/data/comparative_eval.mappinginfo"});
+//	}
 }
