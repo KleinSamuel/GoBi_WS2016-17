@@ -29,19 +29,45 @@ public class Interval implements augmentedTree.Interval {
 		this.stop = stop;
 	}
 
+	public int getLength() {
+		return this.stop - this.start + 1;
+	}
+
+	@Override
+	public String toString() {
+		return start + "-" + stop;
+	}
+
+	/**
+	 * returns 1 if equal, 0 if this contains i, -1 if none of that
+	 * 
+	 * @param i
+	 * @return
+	 */
+	public int compareIntervals(Interval i) {
+		if (start == i.getStart() && stop == i.getStop()) {
+			return 1;
+		}
+		if (start <= i.getStart() && stop >= i.getStop()) {
+			return 0;
+		}
+		return -1;
+	}
+
 	/**
 	 * returns Interval
 	 * 
 	 * @param s
 	 *            splits string by '-'
 	 */
-	public static Interval parseInterval(String s) {
+	public static Interval parseInterval(String s, int startPlusMinus, int stopPlusMinus) {
 		int i = s.indexOf("-");
 		if (i < 0) {
 			DebugMessageFactory.printErrorDebugMessage(true, "couldn`t parse " + s + " to Interval. '-' is missing");
 			return null;
 		}
-		return new Interval(Integer.parseInt(s.substring(0, i)), Integer.parseInt(s.substring(i + 1)));
+		return new Interval(Integer.parseInt(s.substring(0, i)) + startPlusMinus,
+				Integer.parseInt(s.substring(i + 1)) + stopPlusMinus);
 	}
 
 }
