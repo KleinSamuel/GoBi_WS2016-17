@@ -5,12 +5,11 @@
     <!--define folder properties-->
     <property name="dir.buildfile" value="."/>
     <!--<property name="dir.jarfile" value="C:/Users/Samuel/Documents"/>-->
-	<property name="dir.jarfile" value="/home/sam/Desktop"/>
+	<property name="dir.jarfile" value="/home/k/kleins/Documents/GenomorientierteBioinformatik/FINAL_JAR/assignment_2"/>
     <target name="create_run_jar">
         <jar destfile="${dir.jarfile}/solut_1.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <!--<attribute name="Main-Class" value="io.CommandlineHandler"/>-->
-            	<attribute name="Main-Class" value="samfiles.SamFileComparator"/>
+                <attribute name="Main-Class" value="io.CommandlineHandler"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="${dir.buildfile}/bin"/>
