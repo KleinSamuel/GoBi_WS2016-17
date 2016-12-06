@@ -9,6 +9,7 @@ import assignment_1.Task_4;
 import assignment_1.Task_5;
 import assignment_1.Task_6;
 import assignment_1.Task_7;
+import samfiles.SamFileComparator;
 import simulation.ReadSimulator;
 
 public class CommandlineHandler {
@@ -259,10 +260,14 @@ public class CommandlineHandler {
 					new Task_7().execute_task_7();
 					break;
 				case "22":
-//					new ReadSimulator(readLength, mean, standardDeviation, mutationRate, pathToReadcountFile);
+					String[] tmp22 = ConfigReader.readConfig().get("read_sim_params").split(",");
+					ReadSimulator rsim = new ReadSimulator(Integer.parseInt(tmp22[0]), Double.parseDouble(tmp22[1]), Double.parseDouble(tmp22[2]), Double.parseDouble(tmp22[3]), tmp22[4]);
+					rsim.simulateReads();
 					break;
 				case "23":
-					
+					SamFileComparator sfc = new SamFileComparator();
+					String[] tmp23 = ConfigReader.readConfig().get("bam_comp_params").split(",");
+					sfc.compareSamFileToSimulmapping(new String[]{tmp23[0],tmp23[1]});
 					break;
 				case "24":
 					
