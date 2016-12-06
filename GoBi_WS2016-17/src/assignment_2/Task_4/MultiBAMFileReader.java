@@ -43,12 +43,12 @@ public class MultiBAMFileReader {
 			samReaders.add(new BamFileReader(mainDirectory + line.getValue("relative_path"), line.getValue("name"),
 					line.getValue("transcriptome").equals("true"), line.getValue("convert_to_genomic").equals("true")));
 		}
-		System.out.println(samReaders.size());
 
 		ArrayList<Object> nextSimulmappingLine = null;
 		sminfoReader = new SimulmappingInfoReader(mappingFile);
 		int readIdOfInterest, currentId, counter = 0;
 		ReadPair nextPair = null;
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "currentReadId\treadPairsFound");
 		while ((nextSimulmappingLine = sminfoReader.readNextLine()) != null) {
 			readIdOfInterest = (Integer) nextSimulmappingLine.get(0);
 			if (readIdOfInterest % 100000 == 0) {
@@ -66,7 +66,8 @@ public class MultiBAMFileReader {
 						counter++;
 					} else {
 						if (currentId < readIdOfInterest) {
-							System.out.println(samReaders.get(i).getName() + ":" + currentId + "-" + readIdOfInterest);
+							DebugMessageFactory.printErrorDebugMessage(ConfigReader.DEBUG_MODE,
+									samReaders.get(i).getName() + ":" + currentId + "-" + readIdOfInterest);
 							System.exit(1);
 						}
 					}
