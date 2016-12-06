@@ -9,6 +9,7 @@ import assignment_1.Task_4;
 import assignment_1.Task_5;
 import assignment_1.Task_6;
 import assignment_1.Task_7;
+import assignment_2.Task_4.MultiBAMFileReader;
 import samfiles.SamFileComparator;
 import simulation.ReadSimulator;
 
@@ -232,7 +233,7 @@ public class CommandlineHandler {
 					break;
 					
 				default:
-					System.out.println("THERE IS NO SUCH TASK.");
+					System.out.println("THERE IS NO INFO.");
 					break;
 				}
 				
@@ -270,7 +271,8 @@ public class CommandlineHandler {
 					sfc.compareSamFileToSimulmapping(new String[]{tmp23[0],tmp23[1]});
 					break;
 				case "24":
-					
+					String[] tmp24 = ConfigReader.readConfig().get("bam_multi_comp_params").split(",");
+					MultiBAMFileReader multi = new MultiBAMFileReader(tmp24[0], tmp24[1], tmp24[2], tmp24[3]);
 					break;
 					
 				default:
