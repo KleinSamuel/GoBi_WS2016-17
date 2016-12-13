@@ -9,11 +9,13 @@ public class GenomeAnnotation {
 	private String name;
 	private LinkedList<Chromosome> chromosomesInFileOrder;
 	private HashMap<String, Chromosome> chromosomes;
+	private HashMap<String, Transcript> transcripts;
 
 	public GenomeAnnotation(String name) {
 		this.name = name;
 		chromosomes = new HashMap<>();
 		chromosomesInFileOrder = new LinkedList<>();
+		transcripts = new HashMap<>();
 	}
 
 	public void addChromosome(Chromosome c) {
@@ -48,15 +50,20 @@ public class GenomeAnnotation {
 	}
 
 	public Transcript getTranscript(String id) {
-		Transcript tr = null;
-		for (Chromosome c : chromosomes.values()) {
-			for (Gene g : c.getGenes().values()) {
-				tr = g.getTranscript(id);
-				if (tr != null)
-					return tr;
-			}
-		}
-		return null;
+		// Transcript tr = null;
+		// for (Chromosome c : chromosomes.values()) {
+		// for (Gene g : c.getGenes().values()) {
+		// tr = g.getTranscript(id);
+		// if (tr != null)
+		// return tr;
+		// }
+		// }
+		// return null;
+		return transcripts.get(id);
+	}
+
+	public void addTranscript(Transcript t) {
+		transcripts.put(t.getId(), t);
 	}
 
 	public CDS getCDS(String ccds_id) {

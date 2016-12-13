@@ -39,8 +39,8 @@ public class SimulmappingInfoReader {
 		retArray.add(split[1]); // chrId
 		retArray.add(split[2]); // geneId
 		retArray.add(split[3]); // trId
-		retArray.add(Interval.parseInterval(split[4], -1, -2)); // tr_fw
-		retArray.add(Interval.parseInterval(split[5], -1, -2)); // tr_rw
+		retArray.add(Interval.parseInterval(split[4], 0, -1)); // tr_fw
+		retArray.add(Interval.parseInterval(split[5], 0, -1)); // tr_rw
 		Vector<Interval> fw_regvec = new Vector<>(), rw_regvec = new Vector<>();
 		for (String s : split[6].split("\\|")) { // genomic_fw
 			fw_regvec.add(Interval.parseInterval(s, -1, -2));

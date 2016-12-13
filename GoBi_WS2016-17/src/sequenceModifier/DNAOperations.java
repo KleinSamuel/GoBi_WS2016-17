@@ -91,7 +91,7 @@ public class DNAOperations {
 		char[] alph = new char[]{'A','G','C','T'};
 		do{
 			out = alph[rand.nextInt(4)];
-		} while (out != origin);
+		} while (out != origin); // ==
 		return out;
 	}
 	

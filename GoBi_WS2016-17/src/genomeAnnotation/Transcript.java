@@ -3,8 +3,8 @@ package genomeAnnotation;
 import java.util.Iterator;
 import java.util.Vector;
 
-import javafx.util.Pair;
 import augmentedTree.IntervalTree;
+import util.Interval;
 
 public class Transcript extends GenomicRegion {
 
@@ -12,6 +12,7 @@ public class Transcript extends GenomicRegion {
 	private IntervalTree<Exon> exons;
 	private IntervalTree<Intron> introns;
 	private CDS cds;
+	private int exonicLength = -1;
 
 	public Transcript(int start, int stop, String id, boolean onNegativeStrand, Gene g) {
 		super(start, stop, id, onNegativeStrand);
@@ -84,17 +85,22 @@ public class Transcript extends GenomicRegion {
 	}
 
 	public int calculateExonicLength() {
-		int sum = 0;
-		for (Exon e : exons)
-			sum += e.getLength();
-		return sum;
+		if (exonicLength == -1) {
+			for (Exon e : exons)
+				exonicLength += e.getLength();
+		}
+		return exonicLength;
 	}
 
-	public Vector<Pair<Integer, Integer>> getGenomicRegionVector(int startInTranscript, int stopInTranscript) {
+	// 0-based; last incl.
+	public Vector<Interval> getGenomicRegionVector(int startInTranscript, int stopInTranscript) {
 
-		Vector<Pair<Integer, Integer>> genomicRegionVector = new Vector<>();
+		Vector<Interval> genomicRegionVector = new Vector<>();
 		int startToSearch = startInTranscript, stopToSearch = stopInTranscript;
-
+		if (isOnNegativeStrand()) {
+			startToSearch = calculateExonicLength() - stopInTranscript;
+			stopToSearch = calculateExonicLength() - startInTranscript;
+		}
 		boolean startFound = false;
 
 		for (Exon e : exons) {
@@ -105,21 +111,20 @@ public class Transcript extends GenomicRegion {
 			}
 			if (!startFound) {
 				if (e.getLength() <= stopToSearch) {
-					genomicRegionVector.add(new Pair<Integer, Integer>(e.getStart() + startToSearch, e.getStop()));
+					genomicRegionVector.add(new Interval(e.getStart() + startToSearch, e.getStop()));
 					stopToSearch -= e.getLength();
 				} else {
-					genomicRegionVector
-							.add(new Pair<Integer, Integer>(e.getStart() + startToSearch, e.getStart() + stopToSearch));
+					genomicRegionVector.add(new Interval(e.getStart() + startToSearch, e.getStart() + stopToSearch));
 					return genomicRegionVector;
 				}
 				startFound = true;
 				continue;
 			}
 			if (e.getLength() <= stopToSearch) {
-				genomicRegionVector.add(new Pair<Integer, Integer>(e.getStart(), e.getStop()));
+				genomicRegionVector.add(new Interval(e.getStart(), e.getStop()));
 				stopToSearch -= e.getLength();
 			} else {
-				genomicRegionVector.add(new Pair<Integer, Integer>(e.getStart(), e.getStart() + stopToSearch));
+				genomicRegionVector.add(new Interval(e.getStart(), e.getStart() + stopToSearch));
 				break;
 			}
 		}
