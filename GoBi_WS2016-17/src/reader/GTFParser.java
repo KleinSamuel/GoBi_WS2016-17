@@ -93,6 +93,7 @@ public class GTFParser {
 				case "transcript":
 					t = new Transcript(start, stop, tempAttributes.get("transcript_id"), onNegativeStrand, g);
 					g.addTranscript(t);
+					ga.addTranscript(t);
 					break;
 				case "exon":
 					exonId = tempAttributes.get("exon_id");

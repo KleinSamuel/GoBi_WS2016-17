@@ -12,7 +12,6 @@ import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
-import io.ConfigHelper;
 import io.ConfigReader;
 import io.ExternalFileWriter;
 import io.HeadedFileReader;
@@ -83,7 +82,7 @@ public class MultiBAMFileReader {
 
 			efw.writeToWriter(bamStat.getStatsAsString() + "\n");
 
-			Vector<Object> key = new Vector<>(); // höhe
+			Vector<Object> key = new Vector<>(); // hï¿½he
 			key.add(bamStat.getOk());
 			key.add(bamStat.getPartial());
 			key.add(bamStat.getEverthingElse());
@@ -205,11 +204,9 @@ public class MultiBAMFileReader {
 		}
 
 		public boolean validMate(SAMRecord sam, SAMRecord mate) {
-			if (sam.getReferenceName().equals(mate.getReferenceName())) {
-				if (sam.getFirstOfPairFlag() && mate.getSecondOfPairFlag()) {
-					if (sam.getAlignmentStart() == mate.getMateAlignmentStart()) {
-						return true;
-					}
+			if (sam.getFirstOfPairFlag() && mate.getSecondOfPairFlag()) {
+				if (sam.getAlignmentStart() == mate.getMateAlignmentStart()) {
+					return true;
 				}
 			}
 			return false;

@@ -5,11 +5,12 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import genomeAnnotation.GenomeAnnotation;
+import genomeAnnotation.Transcript;
 import htsjdk.samtools.AlignmentBlock;
 import htsjdk.samtools.SAMRecord;
-import javafx.util.Pair;
 import util.Interval;
 
+@SuppressWarnings("unchecked")
 public class ReadPair {
 
 	private int id;
@@ -47,10 +48,19 @@ public class ReadPair {
 					rwStat = "wrongChr";
 					okStat = "wrongChr";
 				}
-				if (okStat != null && okStat.equals("wrongChr"))
+				if (okStat != null && okStat.equals("wrongChr")) {
+					if (fwStat == null) {
+						calculateOKetcForSingleRegVec(mergeAndParseAlignmentBlocks(forward),
+								(Vector<Interval>) simulmap.get(6), true);
+					}
+					if (rwStat == null) {
+						calculateOKetcForSingleRegVec(mergeAndParseAlignmentBlocks(reverse),
+								(Vector<Interval>) simulmap.get(7), false);
+					}
 					return okStat;
-				calculateOKetc((Vector<Interval>) simulmap.get(6), (Vector<Interval>) simulmap.get(7), false, null,
-						simulmap);
+				}
+				calculateOKetc(mergeAndParseAlignmentBlocks(forward), (Vector<Interval>) simulmap.get(6),
+						mergeAndParseAlignmentBlocks(reverse), (Vector<Interval>) simulmap.get(7));
 			} else {
 				if (transcriptome && !convert_to_genomic) {
 					if (!forward.getReferenceName().equals((String) simulmap.get(3))) {
@@ -61,25 +71,51 @@ public class ReadPair {
 						rwStat = "wrongChr";
 						okStat = "wrongChr";
 					}
-					if (okStat != null && okStat.equals("wrongChr"))
+					if (okStat != null && okStat.equals("wrongChr")) {
+						if (fwStat == null) {
+							compareTranscriptomeNotConvertedForSingleRegvec((Interval) simulmap.get(4), true);
+						}
+						if (rwStat == null) {
+							compareTranscriptomeNotConvertedForSingleRegvec((Interval) simulmap.get(5), false);
+						}
 						return okStat;
+					}
 					compareTranscriptomeNotConverted(simulmap);
 				} else {
 					if (transcriptome && convert_to_genomic) {
-						String chr = (String) simulmap.get(1), gene = (String) simulmap.get(2),
-								tr = (String) simulmap.get(3);
-						if (!forward.getReferenceName().equals(tr)) {
+						String chromosomeId = (String) simulmap.get(1);
+						Transcript forwardRead = ga.getTranscript(forward.getReferenceName()),
+								reverseRead = ga.getTranscript(reverse.getReferenceName());
+						if (!forwardRead.getParentalGene().getChromosome().getID().equals(chromosomeId)) {
 							fwStat = "wrongChr";
 							okStat = "wrongChr";
 						}
-						if (!reverse.getReferenceName().equals(tr)) {
+						if (!reverseRead.getParentalGene().getChromosome().getID().equals(chromosomeId)) {
 							rwStat = "wrongChr";
 							okStat = "wrongChr";
 						}
-						if (okStat != null && okStat.equals("wrongChr"))
+						if (okStat != null && okStat.equals("wrongChr")) {
+							if (fwStat == null) {
+								calculateOKetcForSingleRegVec(
+										forwardRead.getGenomicRegionVector(forward.getAlignmentStart() - 1,
+												forward.getAlignmentEnd() - 2),
+										(Vector<Interval>) simulmap.get(6), true);
+							}
+							if (rwStat == null) {
+								calculateOKetcForSingleRegVec(
+										reverseRead.getGenomicRegionVector(reverse.getAlignmentStart() - 1,
+												reverse.getAlignmentEnd() - 2),
+										(Vector<Interval>) simulmap.get(7), false);
+							}
 							return okStat;
-						calculateOKetc((Vector<Interval>) simulmap.get(6), (Vector<Interval>) simulmap.get(7), true, ga,
-								simulmap);
+						}
+						calculateOKetc(
+								forwardRead.getGenomicRegionVector(forward.getAlignmentStart() - 1,
+										forward.getAlignmentEnd() - 2),
+								(Vector<Interval>) simulmap.get(6),
+								reverseRead.getGenomicRegionVector(reverse.getAlignmentStart() - 1,
+										reverse.getAlignmentEnd() - 2),
+								(Vector<Interval>) simulmap.get(7));
 					}
 				}
 			}
@@ -128,32 +164,39 @@ public class ReadPair {
 		return reverse;
 	}
 
-	public void calculateOKetc(Vector<Interval> fwRegVec, Vector<Interval> rwRegVec, boolean convert_to_genomic,
-			GenomeAnnotation ga, ArrayList<Object> simulmap) {
-		int fwOKstat = compareRegVectorWithABs(forward, fwRegVec, convert_to_genomic, ga, simulmap);
-		int rwOKstat = compareRegVectorWithABs(reverse, rwRegVec, convert_to_genomic, ga, simulmap);
-		switch (fwOKstat) {
+	/**
+	 * return "ok" if 1, "partial" if 0, else "everythingElse"
+	 * 
+	 * @param stat
+	 * @return
+	 */
+	public String parseStat(int stat) {
+		switch (stat) {
 		case -1:
-			fwStat = "everythingElse";
-			break;
+			return "everythingElse";
 		case 0:
-			fwStat = "partial";
-			break;
+			return "partial";
 		case 1:
-			fwStat = "ok";
-			break;
+			return "ok";
 		}
-		switch (rwOKstat) {
-		case -1:
-			rwStat = "everythingElse";
-			break;
-		case 0:
-			rwStat = "partial";
-			break;
-		case 1:
-			rwStat = "ok";
-			break;
+		return null;
+	}
+
+	public void calculateOKetcForSingleRegVec(Vector<Interval> regVec, Vector<Interval> regVecRef, boolean forward) {
+		int oKstat = compareRegionVectors(regVec, regVecRef);
+		if (forward) {
+			fwStat = parseStat(oKstat);
+		} else {
+			rwStat = parseStat(oKstat);
 		}
+	}
+
+	public void calculateOKetc(Vector<Interval> fwRegVec, Vector<Interval> fwRegVecRef, Vector<Interval> rwRegVec,
+			Vector<Interval> rwRegVecRef) {
+		int fwOKstat = compareRegionVectors(fwRegVec, fwRegVecRef);
+		int rwOKstat = compareRegionVectors(rwRegVec, rwRegVecRef);
+		fwStat = parseStat(fwOKstat);
+		rwStat = parseStat(rwOKstat);
 		if (fwOKstat == 1 && rwOKstat == 1) {
 			okStat = "ok";
 		} else {
@@ -165,38 +208,16 @@ public class ReadPair {
 		}
 	}
 
-	/**
-	 * returns 1 if ok; 0 if partial; -1 if none of that
-	 * 
-	 * @param sam
-	 */
-	public int compareRegVectorWithABs(SAMRecord sam, Vector<Interval> regVec, boolean convert_to_genomic,
-			GenomeAnnotation ga, ArrayList<Object> simulmap) {
-		Vector<Interval> blocks;
-		if (!convert_to_genomic) {
-			blocks = mergeAndParseAlignmentBlocks(sam);
-		} else {
-			Interval i = new Interval(sam.getAlignmentBlocks().get(0).getReferenceStart() - 1,
-					sam.getAlignmentBlocks().get(0).getReferenceStart() + sam.getAlignmentBlocks().get(0).getLength()
-							- 2);
-			String chr = (String) simulmap.get(1), gene = (String) simulmap.get(2), tr = (String) simulmap.get(3);
-			Vector<Pair<Integer, Integer>> regs = ga.getChromosome(chr).getGene(gene).getTranscript(tr)
-					.getGenomicRegionVector(i.getStart(), i.getStop());
-			blocks = new Vector<>();
-			for (Pair<Integer, Integer> p : regs) {
-				blocks.add(new Interval(p.getKey(), p.getValue()));
-			}
-		}
-		Vector<Interval> regions = regVec;
-		if (blocks.size() != regions.size())
+	public int compareRegionVectors(Vector<Interval> regvec1, Vector<Interval> regvecRef) {
+		if (regvec1.size() != regvecRef.size())
 			return -1;
 		int returnSoFar = 1; // ok
-		Iterator<Interval> blockIt = blocks.iterator(), regionsIt = regions.iterator();
-		Interval block = null, region = null;
-		while (blockIt.hasNext() && regionsIt.hasNext()) {
-			block = blockIt.next();
-			region = regionsIt.next();
-			int comparison = region.compareIntervals(block);
+		Iterator<Interval> reg1it = regvec1.iterator(), reg2it = regvecRef.iterator();
+		Interval region1 = null, region2 = null;
+		while (reg1it.hasNext() && reg2it.hasNext()) {
+			region1 = reg1it.next();
+			region2 = reg2it.next();
+			int comparison = region2.compareIntervals(region1);
 			if (comparison == -1) {
 				return -1;
 			}
@@ -217,31 +238,26 @@ public class ReadPair {
 				sam.getAlignmentBlocks().get(0).getReferenceStart() + sam.getAlignmentBlocks().get(0).getLength() - 2));
 	}
 
+	public void compareTranscriptomeNotConvertedForSingleRegvec(Interval trRef, boolean forwardRead) {
+		SAMRecord read = null;
+		if (forwardRead)
+			read = forward;
+		else
+			read = reverse;
+		int comp = trRef.compareIntervals(new Interval(read.getAlignmentBlocks().get(0).getReferenceStart() - 1,
+				read.getAlignmentBlocks().get(0).getReferenceStart() + read.getAlignmentBlocks().get(0).getLength()
+						- 2));
+		if (forwardRead)
+			fwStat = parseStat(comp);
+		else
+			rwStat = parseStat(comp);
+	}
+
 	public void compareTranscriptomeNotConverted(ArrayList<Object> simulmap) {
 		int fw = compareTrRegVecWithTrRegVec(forward, (Interval) simulmap.get(4));
 		int rw = compareTrRegVecWithTrRegVec(reverse, (Interval) simulmap.get(5));
-		switch (fw) {
-		case -1:
-			fwStat = "everythingElse";
-			break;
-		case 0:
-			fwStat = "partial";
-			break;
-		case 1:
-			fwStat = "ok";
-			break;
-		}
-		switch (rw) {
-		case -1:
-			rwStat = "everythingElse";
-			break;
-		case 0:
-			rwStat = "partial";
-			break;
-		case 1:
-			rwStat = "ok";
-			break;
-		}
+		fwStat = parseStat(fw);
+		rwStat = parseStat(rw);
 		if (fw == 1 && rw == 1) {
 			okStat = "ok";
 		} else {
@@ -290,29 +306,5 @@ public class ReadPair {
 		// }
 		// return ret;
 	}
-
-	// public void calcMissmatches() {
-	// Integer missInForw = null, missInRev = null;
-	// if (forward.getAttribute("NM") != null && reverse.getAttribute("NM") !=
-	// null) {
-	// missInForw = (Integer) forward.getAttribute("NM");
-	// missInRev = (Integer) reverse.getAttribute("NM");
-	// } else {
-	// if (forward.getAttribute("nM") != null && reverse.getAttribute("nM") !=
-	// null) {
-	// missInForw = (Integer) forward.getAttribute("nM");
-	// missInRev = (Integer) reverse.getAttribute("nM");
-	// } else if (forward.getAttribute("XM") != null &&
-	// reverse.getAttribute("XM") != null) {
-	// missInForw = (Integer) forward.getAttribute("XM");
-	// missInRev = (Integer) reverse.getAttribute("XM");
-	// }
-	// }
-	// if (this.protocol.contains("star")) {
-	// this.missmatchCount = missInForw;
-	// } else {
-	// this.missmatchCount = missInForw + missInRev;
-	// }
-	// }
 
 }
