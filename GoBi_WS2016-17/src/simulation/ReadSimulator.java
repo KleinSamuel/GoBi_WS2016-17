@@ -25,6 +25,7 @@ import plotting.BarPlot;
 import plotting.LinePlot;
 import reader.GTFParser;
 import sequenceModifier.DNAOperations;
+import util.Interval;
 
 public class ReadSimulator {
 
@@ -191,20 +192,20 @@ public class ReadSimulator {
 				int startInTranscriptRW = stop-readLength+1;
 				int stopInTranscriptRW = stop;
 				
-				Vector<Pair<Integer, Integer>> genVecFW = currentTranscript.getGenomicRegionVector(startInTranscriptFW, stopInTranscriptFW);
-				Vector<Pair<Integer, Integer>> genVecRW = currentTranscript.getGenomicRegionVector(startInTranscriptRW, stopInTranscriptRW);
+				Vector<Interval> genVecFW = currentTranscript.getGenomicRegionVector(startInTranscriptFW, stopInTranscriptFW);
+				Vector<Interval> genVecRW = currentTranscript.getGenomicRegionVector(startInTranscriptRW, stopInTranscriptRW);
 				
 				String genVecFWString = "";
 				int cnt = 1;
-				for(Pair<Integer, Integer> pair : genVecFW){
-					genVecFWString += pair.getKey()+"-"+pair.getValue();
+				for(Interval pair : genVecFW){
+					genVecFWString += pair.getStart()+"-"+pair.getStop();
 					genVecFWString += (cnt < genVecFW.size()) ? "|" : "";
 					cnt++;
 				}
 				String genVecRWString = "";
 				cnt = 1;
-				for(Pair<Integer, Integer> pair : genVecRW){
-					genVecRWString += pair.getKey()+"-"+pair.getValue();
+				for(Interval pair : genVecRW){
+					genVecRWString += pair.getStart()+"-"+pair.getStop();
 					genVecRWString += (cnt < genVecRW.size()) ? "|" : "";
 					cnt++;
 				}
@@ -237,13 +238,13 @@ public class ReadSimulator {
 						amountSplicedReadsWitoutMismatches++;
 						
 						boolean shorterThan5BP = false;
-						for(Pair<Integer, Integer> pair : genVecFW){
-							if(pair.getValue()-pair.getKey() < 5){
+						for(Interval pair : genVecFW){
+							if(pair.getStop()-pair.getStart() < 5){
 								shorterThan5BP = true;
 							}
 						}
-						for(Pair<Integer, Integer> pair : genVecRW){
-							if(pair.getValue()-pair.getKey() < 5){
+						for(Interval pair : genVecRW){
+							if(pair.getStop()-pair.getStart() < 5){
 								shorterThan5BP = true;
 							}
 						}
