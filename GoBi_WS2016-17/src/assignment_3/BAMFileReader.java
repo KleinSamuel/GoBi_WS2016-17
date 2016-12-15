@@ -15,14 +15,16 @@ public class BAMFileReader {
 
 	// readId, waitingRead
 	private HashMap<String, SAMRecord> waitingRecords;
+	private String bamFile;
 
 	public BAMFileReader(String bamPath) {
+		bamFile = bamPath;
 		waitingRecords = new HashMap<>();
 	}
 
-	public void readBAMFile(String bamFilePath) {
+	public void readBAMFile() {
 		SamReaderFactory.setDefaultValidationStringency(ValidationStringency.SILENT);
-		SamReader sr = SamReaderFactory.makeDefault().open(new File(bamFilePath));
+		SamReader sr = SamReaderFactory.makeDefault().open(new File(bamFile));
 		Iterator<SAMRecord> it = sr.iterator();
 		SAMRecord sam = null, possibleMate = null;
 		// reads are sorted by start --> so if new chromosome clear map
@@ -70,11 +72,16 @@ public class BAMFileReader {
 				invalidRecords++;
 			}
 		}
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE,
+				"checkedRecords: " + checkedRecords + "\tvalidRecords: " + validRecords + "\tinvalidRecords: "
+						+ invalidRecords + "\tvalidPairs: " + validPairs + "\tnonValidPairs: " + nonValidPairs);
+		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Finished reading");
+
 	}
 
 	public boolean validRecord(SAMRecord sam) {
 		return (!sam.getReadUnmappedFlag() && !sam.getMateUnmappedFlag() && !sam.getNotPrimaryAlignmentFlag()
-				&& !sam.getReferenceName().equals(sam.getMateReferenceName())
+				&& sam.getReferenceName().equals(sam.getMateReferenceName())
 				&& sam.getReadNegativeStrandFlag() != sam.getMateNegativeStrandFlag());
 	}
 
