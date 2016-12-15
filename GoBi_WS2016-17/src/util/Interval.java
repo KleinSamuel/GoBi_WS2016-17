@@ -39,6 +39,15 @@ public class Interval implements augmentedTree.Interval {
 	}
 
 	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+	public boolean overlaps(Interval i) {
+		return !(i.getStop() < this.start || i.getStart() > this.stop);
+	}
+
+	/**
 	 * returns 1 if equal, 0 if this contains i, -1 if none of that
 	 * 
 	 * @param i
