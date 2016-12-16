@@ -97,23 +97,23 @@ public class ReadPair {
 						if (okStat != null && okStat.equals("wrongChr")) {
 							if (fwStat == null) {
 								calculateOKetcForSingleRegVec(
-										forwardRead.getGenomicRegionVector(forward.getAlignmentStart(),
+										forwardRead.getGenomicRegionVector(forward.getAlignmentStart() - 1,
 												forward.getAlignmentEnd() - 1),
 										(Vector<Interval>) simulmap.get(6), true);
 							}
 							if (rwStat == null) {
 								calculateOKetcForSingleRegVec(
-										reverseRead.getGenomicRegionVector(reverse.getAlignmentStart(),
+										reverseRead.getGenomicRegionVector(reverse.getAlignmentStart() - 1,
 												reverse.getAlignmentEnd() - 1),
 										(Vector<Interval>) simulmap.get(7), false);
 							}
 							return okStat;
 						}
 						calculateOKetc(
-								forwardRead.getGenomicRegionVector(forward.getAlignmentStart(),
+								forwardRead.getGenomicRegionVector(forward.getAlignmentStart() - 1,
 										forward.getAlignmentEnd() - 1),
 								(Vector<Interval>) simulmap.get(6),
-								reverseRead.getGenomicRegionVector(reverse.getAlignmentStart(),
+								reverseRead.getGenomicRegionVector(reverse.getAlignmentStart() - 1,
 										reverse.getAlignmentEnd() - 1),
 								(Vector<Interval>) simulmap.get(7));
 					}
@@ -234,8 +234,8 @@ public class ReadPair {
 	 * @param sam
 	 */
 	public int compareTrRegVecWithTrRegVec(SAMRecord sam, Interval trRef) {
-		return trRef.compareIntervals(new Interval(sam.getAlignmentBlocks().get(0).getReferenceStart(),
-				sam.getAlignmentBlocks().get(0).getReferenceStart() + sam.getAlignmentBlocks().get(0).getLength() - 1));
+		return trRef.compareIntervals(new Interval(sam.getAlignmentBlocks().get(0).getReferenceStart() - 1,
+				sam.getAlignmentBlocks().get(0).getReferenceStart() + sam.getAlignmentBlocks().get(0).getLength() - 2));
 	}
 
 	public void compareTranscriptomeNotConvertedForSingleRegvec(Interval trRef, boolean forwardRead) {
@@ -244,9 +244,9 @@ public class ReadPair {
 			read = forward;
 		else
 			read = reverse;
-		int comp = trRef.compareIntervals(new Interval(read.getAlignmentBlocks().get(0).getReferenceStart(),
+		int comp = trRef.compareIntervals(new Interval(read.getAlignmentBlocks().get(0).getReferenceStart() - 1,
 				read.getAlignmentBlocks().get(0).getReferenceStart() + read.getAlignmentBlocks().get(0).getLength()
-						- 1));
+						- 2));
 		if (forwardRead)
 			fwStat = parseStat(comp);
 		else
@@ -279,7 +279,7 @@ public class ReadPair {
 	public Vector<Interval> mergeAndParseAlignmentBlocks(SAMRecord sam) {
 		Vector<Interval> ret = new Vector<>();
 		for (AlignmentBlock ab : sam.getAlignmentBlocks()) {
-			ret.add(new Interval(ab.getReferenceStart(), ab.getReferenceStart() + ab.getLength() - 1));
+			ret.add(new Interval(ab.getReferenceStart() - 1, ab.getReferenceStart() + ab.getLength() - 2));
 		}
 		return ret;
 		// Interval merged = null;

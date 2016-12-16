@@ -48,4 +48,11 @@ public class Chromosome {
 		return genesOnBothStrands;
 	}
 
+	public IntervalTree<Gene> getSpecificStrandGenes(boolean negativeStrand) {
+		if (negativeStrand) {
+			return genesOnNegativeStrand;
+		}
+		return genesOnPositiveStrand;
+	}
+
 }

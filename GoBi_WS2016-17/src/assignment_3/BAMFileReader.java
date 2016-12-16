@@ -5,21 +5,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import debugStuff.DebugMessageFactory;
+import genomeAnnotation.GenomeAnnotation;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.ValidationStringency;
 import io.ConfigReader;
+import reader.GTFParser;
 
 public class BAMFileReader {
 
 	// readId, waitingRead
 	private HashMap<String, SAMRecord> waitingRecords;
 	private String bamFile;
+	public static GenomeAnnotation ga;
 
-	public BAMFileReader(String bamPath) {
+	public BAMFileReader(String bamPath, String gtfPath) {
 		bamFile = bamPath;
 		waitingRecords = new HashMap<>();
+		ga = GTFParser.readGtfFile("h.ens.75", gtfPath);
 	}
 
 	public void readBAMFile() {
@@ -31,14 +35,10 @@ public class BAMFileReader {
 		String chromId = null;
 		ReadPair rp = null;
 		int validRecords = 0, validPairs = 0, invalidRecords = 0, nonValidPairs = 0, checkedRecords = 0;
+		int splitInconsistent = 0, wrong = 0;
 		while (it.hasNext()) {
 			sam = it.next();
 			checkedRecords++;
-			if (checkedRecords % 100000 == 0) {
-				DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE,
-						"checkedRecords: " + checkedRecords + "\tvalidRecords: " + validRecords + "\tinvalidRecords: "
-								+ invalidRecords + "\tvalidPairs: " + validPairs + "\tnonValidPairs: " + nonValidPairs);
-			}
 			if (validRecord(sam)) {
 				validRecords++;
 				// check if new chromosome
@@ -66,15 +66,27 @@ public class BAMFileReader {
 					} else {
 						waitingRecords.remove(sam.getReadName());
 						validPairs++;
+						// if (rp.getSplitCount() < 0) {
+						// splitInconsistent++;
+						// } else if (!rp.checkIfOutputEqualsRef()) {
+						// wrong++;
+						// }
 					}
 				}
 			} else {
 				invalidRecords++;
 			}
+			if (checkedRecords % 100000 == 0) {
+				DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE,
+						"checkedRecords: " + checkedRecords + "\tvalidRecords: " + validRecords + "\tinvalidRecords: "
+								+ invalidRecords + "\tvalidPairs: " + validPairs + "\tnonValidPairs: " + nonValidPairs
+								+ "\tinconsistent: " + splitInconsistent + "\twrong: " + wrong);
+			}
 		}
 		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE,
 				"checkedRecords: " + checkedRecords + "\tvalidRecords: " + validRecords + "\tinvalidRecords: "
-						+ invalidRecords + "\tvalidPairs: " + validPairs + "\tnonValidPairs: " + nonValidPairs);
+						+ invalidRecords + "\tvalidPairs: " + validPairs + "\tnonValidPairs: " + nonValidPairs
+						+ "\tinconsistent: " + splitInconsistent + "\twrong: " + wrong);
 		DebugMessageFactory.printInfoDebugMessage(ConfigReader.DEBUG_MODE, "Finished reading");
 
 	}
@@ -89,7 +101,8 @@ public class BAMFileReader {
 		if (!first.getReferenceName().equals(second.getReferenceName()))
 			return null;
 		if (first.getFirstOfPairFlag() && second.getSecondOfPairFlag()
-				&& first.getAlignmentStart() == second.getMateAlignmentStart()) {
+				&& first.getAlignmentStart() == second.getMateAlignmentStart()
+				&& first.getMateAlignmentStart() == second.getAlignmentStart()) {
 			return new ReadPair(first, second, false);
 		}
 		return null;
