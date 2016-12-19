@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import debugStuff.DebugMessageFactory;
+import genomeAnnotation.Exon;
 import genomeAnnotation.GenomeAnnotation;
+import genomeAnnotation.Transcript;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
@@ -66,11 +68,11 @@ public class BAMFileReader {
 					} else {
 						waitingRecords.remove(sam.getReadName());
 						validPairs++;
-						// if (rp.getSplitCount() < 0) {
-						// splitInconsistent++;
-						// } else if (!rp.checkIfOutputEqualsRef()) {
-						// wrong++;
-						// }
+						if (rp.getSplitCount() < 0) {
+							splitInconsistent++;
+						} else if (!rp.checkIfOutputEqualsRef()) {
+							wrong++;
+						}
 					}
 				}
 			} else {

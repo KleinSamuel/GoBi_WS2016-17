@@ -10,7 +10,7 @@ public class Transcript extends GenomicRegion {
 
 	private Gene gene;
 	private IntervalTree<Exon> exons;
-	private IntervalTree<Intron> introns;
+	private IntervalTree<Interval> introns;
 	private CDS cds;
 	private int exonicLength = -1;
 
@@ -56,7 +56,7 @@ public class Transcript extends GenomicRegion {
 		cds.addCDSPart(cdsPart);
 	}
 
-	public IntervalTree<Intron> getIntrons() {
+	public IntervalTree<Interval> getIntrons() {
 		if (introns == null)
 			calcIntrons();
 		return introns;
@@ -68,19 +68,13 @@ public class Transcript extends GenomicRegion {
 		Exon current = null, next = null;
 		if (exonIt.hasNext()) {
 			current = exonIt.next();
-			if (current.getStart() > this.getStart())
-				introns.add(new Intron(this.getStart(), current.getStart() - 1, "", this.isOnNegativeStrand()));
 		}
 		while (exonIt.hasNext()) {
 			next = exonIt.next();
 			// check that they are not directly one after the other
-			if (current.getStop() < next.getStart() - 1)
-				introns.add(new Intron(current.getStop() + 1, next.getStart() - 1, "", this.isOnNegativeStrand()));
+			if (next.getStart() > current.getStop() + 1)
+				introns.add(new Interval(current.getStop() + 1, next.getStart() - 1));
 			current = next;
-		}
-		if (current != null) {
-			if (current.getStop() < this.getStop())
-				introns.add(new Intron(current.getStop() + 1, this.getStop(), "", this.isOnNegativeStrand()));
 		}
 	}
 
